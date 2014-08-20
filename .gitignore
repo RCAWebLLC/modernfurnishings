@@ -1,6 +1,6 @@
-hop/downloader/*
-shop/var/*
-shop/media/*
+shop/downloader/*
+shop/var/cache/*
+shop/var/sessions/*
 !shop/var/.gitkeep
 cms/system/expressionengine/config/config.php
 cms/system/expressionengine/config/database.php
