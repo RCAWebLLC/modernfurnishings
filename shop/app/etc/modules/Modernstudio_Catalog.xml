@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+/**
+ * @category   Modernstudio
+ * @package    Modernstudio_ModernstudioCustom
+ * @author     Mathew Epstein
+ */
+-->
+<config>
+    <modules>
+        <Modernstudio_Catalog>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Catalog />
+            </depends>
+        </Modernstudio_Catalog>
+    </modules>
+</config> 

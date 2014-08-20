@@ -1,0 +1,329 @@
+<?xml version="1.0"?>
+<config>
+	<sections>
+		<carriers>
+			<groups>
+				<upsfreight translate="label" module="shipping">
+					<label>UPS LTL Freight</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>1</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<model translate="label">
+							<label>Model</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>900</sort_order>
+							<show_in_default>0</show_in_default>
+							<show_in_website>0</show_in_website>
+						</model>
+						<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>1</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</active>
+						<testMode translate="label">
+							<label>*Run in test mode (required to generate rate for
+								production access). After acquiring production access (follow
+								install doc), turn this value to false.</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>2</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</testMode>
+						<title translate="label">
+							<label>Title</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>3</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</title>
+						<usefixedrate translate="label">
+							<label>Fixed Rate (If yes, the rate request will be ignored and
+								only the handling fees will be applied)</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>5</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</usefixedrate>
+						<prod_gateway_url translate="label">
+							<label>Production Gateway URL</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</prod_gateway_url>
+						<test_gateway_url translate="label">
+							<label>Test Gateway URL</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>11</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</test_gateway_url>
+						<key translate="label">
+							<label>UPS Access License Number (key)</label>
+							<frontend_type>obscure</frontend_type>
+							<backend_model>adminhtml/system_config_backend_encrypted
+							</backend_model>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</key>
+
+						<module_key translate="label">
+							<label>Module Registration Key</label>
+							<frontend_type>obscure</frontend_type>
+							<backend_model>adminhtml/system_config_backend_encrypted
+							</backend_model>
+							<sort_order>21</sort_order>
+							<show_in_default>0</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</module_key>
+
+
+						<token_username translate="label">
+							<label>UPS Username</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>23</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</token_username>
+						<token_password translate="label">
+							<label>UPS Password</label>
+							<frontend_type>obscure</frontend_type>
+							<backend_model>adminhtml/system_config_backend_encrypted</backend_model>							
+							<sort_order>24</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</token_password>
+
+
+						<requestor_type translate="label">
+							<label>Requestor Type</label>
+							<frontend_type>select</frontend_type>
+							<source_model>upsfreightmodule/carrier_upsfreight_source_roleofrequestor
+							</source_model>
+							<sort_order>30</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</requestor_type>
+						<billto_address translate="label">
+							<label>Bill To Address</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>31</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</billto_address>
+						<billto_city translate="label">
+							<label>Bill To City</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>32</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</billto_city>
+						<billto_state translate="label">
+							<label>Bill To State</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>33</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</billto_state>
+						<billto_zip translate="label">
+							<label>Bill To Zip</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>34</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</billto_zip>
+						<billto_country translate="label">
+							<label>Bill To Country</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>35</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</billto_country>
+						<activation_weight translate="label">
+							<label>Activation Weight (Display this shipping method only when
+								the combined package weight exceeds this value)</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>39</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</activation_weight>
+						<max_package_weight translate="label">
+							<label>Maximum Package Weight (Please consult your shipping
+								carrier for maximum supported shipping weight)</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>40</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</max_package_weight>
+						<max_freight_cost translate="label">
+							<label>Maximum Freight Cost (The max estimated freight charge
+								will not exceed this value)</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>41</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</max_freight_cost>
+
+						<allowed_methods translate="label">
+							<label>Allowed methods</label>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>upsfreightmodule/carrier_upsfreight_source_method
+							</source_model>
+							<sort_order>55</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</allowed_methods>
+						<palletweight translate="label">
+							<label>Pallet Weight</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>56</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</palletweight>
+						<methodtext translate="label">
+							<label>Rate Text (this is the text that will be displayed with
+								the rate quote)</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>59</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</methodtext>
+						<freight_class translate="label">
+							<label>Freight Class</label>
+							<frontend_type>select</frontend_type>
+							<source_model>upsfreightmodule/carrier_upsfreight_source_freightclass
+							</source_model>
+							<sort_order>60</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</freight_class>
+						<package_type translate="label">
+							<label>Package Type</label>
+							<frontend_type>select</frontend_type>
+							<source_model>upsfreightmodule/carrier_upsfreight_source_packagetype
+							</source_model>
+							<sort_order>70</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</package_type>
+
+						<showResidentialFee translate="label">
+							<label>Show Residential Rate</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>75</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</showResidentialFee>
+						<residentialfee translate="label">
+							<label>Residential Rate to add</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>76</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</residentialfee>
+						<residentialratetext translate="label">
+							<label>Residential Rate Text (this is the text that will be
+								displayed with the residential rate quote)</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>77</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</residentialratetext>
+
+						<handling1_type translate="label">
+							<label>Calculate Additional Handling Fee (applied to shipping
+								rate)</label>
+							<frontend_type>select</frontend_type>
+							<source_model>shipping/source_handlingType</source_model>
+							<sort_order>80</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</handling1_type>
+						<handling1_fee translate="label">
+							<label>Handling Fee</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>81</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</handling1_fee>
+						<handling2_type translate="label">
+							<label>Calculate Additional Handling Fee (applied to result of
+								first handling fee)</label>
+							<frontend_type>select</frontend_type>
+							<source_model>shipping/source_handlingType</source_model>
+							<sort_order>82</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</handling2_type>
+						<handling2_fee translate="label">
+							<label>Additional Handling Fee</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>83</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</handling2_fee>
+						<showmethod translate="label">
+							<label>Show Method if Not Applicable</label>
+							<frontend_type>select</frontend_type>
+							<sort_order>109</sort_order>
+							<frontend_class>shipping-skip-hide</frontend_class>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</showmethod>
+						<specificerrmsg translate="label">
+							<label>Displayed Error Message</label>
+							<frontend_type>textarea</frontend_type>
+							<sort_order>110</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</specificerrmsg>
+					</fields>
+				</upsfreight>
+			</groups>
+		</carriers>
+	</sections>
+</config>

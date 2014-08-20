@@ -1,0 +1,21 @@
+SetEnvIf SSL_OFFLOADED 1 HTTPS=on
+
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^(files|cache|images|themes|min)/(.*)$ /cms/$1/$2 [PT,L]
+
+RewriteRule shop$ / [R=301,L]
+RewriteRule ^$ shop/index.php [L]
+
+# Hide index.php from the homepage
+# But allow EE ajax calls to itself
+RewriteCond %{QUERY_STRING} !\bACT=\d
+RewriteRule ^index.php$ / [R=301,L]
+
+RewriteCond %{QUERY_STRING} \bACT=\d
+RewriteRule ^index.php$ cms/index.php
+
+RewriteCond  %{REQUEST_FILENAME} !-f
+RewriteCond  %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ cms/index.php/$1 [L]

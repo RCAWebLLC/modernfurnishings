@@ -1,0 +1,20 @@
+{exp:magento:block block="head"}
+{exp:magento:block block="header"}
+{exp:channel:entries
+	channel="blog"
+	dynamic="no"
+	limit="1"
+	year="{freeway_2}"
+	month="{freeway_3}"
+	day="{freeway_4}"
+	url_title="{freeway_5}"
+}<article data-id="{entry_id}" data-year="{year}" data-month="{month}" data-day="{day}" data-uri="{url_title}" data-title="{title}">
+
+<h1>{title}</h1>
+
+<section class="blog-content">
+{content}
+</section>
+
+</article>{/exp:channel:entries}
+{exp:magento:block block="footer"}

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<ZmoduleZ_UpsFreightModule>
+			<version>1.6.0</version>
+		</ZmoduleZ_UpsFreightModule>
+	</modules>
+	<global>
+		<models>
+			<upsfreightmodule>
+				<class>ZmoduleZ_UpsFreightModule_Model</class>
+			</upsfreightmodule>
+		</models>
+		
+		<sales>
+            <shipping>
+                <carriers>
+                    <upsfreight>
+                        <class>ZmoduleZ_UpsFreightModule_Model_Carrier_Upsfreight</class>
+                    </upsfreight>
+                </carriers>
+            </shipping>
+        </sales>
+
+		<resources>
+			<!-- resource identifier -->
+			<upsfreightmodule_setup>
+				<setup>
+					<module>ZmoduleZ_UpsFreightModule</module>
+				</setup>
+			</upsfreightmodule_setup>
+			<upsfreightmodule_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</upsfreightmodule_read>
+		</resources>
+	</global>
+	<default>
+        <carriers>
+            <upsfreight>
+                    <active>1</active>
+                    <testMode>1</testMode>
+                    <sallowspecific>0</sallowspecific>
+					<model>upsfreightmodule/carrier_upsfreight</model>
+                    <name>UpsFreight</name>
+                    <title>UPS Freight LTL</title>
+                    <prod_gateway_url>https://onlinetools.ups.com/webservices/FreightRate</prod_gateway_url>
+                    <test_gateway_url>https://wwwcie.ups.com/webservices/FreightRate</test_gateway_url>
+                    <usefixedrate>0</usefixedrate>
+                    <activation_weight>0</activation_weight>
+                    <handling1_fee>0</handling1_fee>
+                    <handling2_fee>0</handling2_fee>
+                    <palletweight>0</palletweight>
+                    <methodtext>Standard Service</methodtext>     
+                    <showResidentialFee>0</showResidentialFee>
+                    <residentialfee>80</residentialfee>
+                    <residentialratetext>Standard Service (residential delivery)</residentialratetext>                                   
+                    <allowed_methods>STANDARD</allowed_methods>
+                    <max_package_weight>50000</max_package_weight>
+                    <max_freight_cost>100000</max_freight_cost>
+                    <showmethod>1</showmethod>
+                    <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+            </upsfreight>
+        </carriers>
+    </default>
+</config>

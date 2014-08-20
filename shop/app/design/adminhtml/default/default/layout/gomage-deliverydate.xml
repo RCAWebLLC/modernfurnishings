@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+ /**
+ * GoMage LightCheckout Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2012 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 3.2
+ * @since        Class available since Release 1.0
+ */ 
+ -->
+<layout version="1.0">
+    <adminhtml_sales_order_view>
+        <reference name="gomage.order_info">
+            <block type="gomage_deliverydate/adminhtml_sales_order_view_info" name="gomage_deliverydate.order_info" template="gomage/deliverydate/sales/order/view/info.phtml" />
+        </reference>
+    </adminhtml_sales_order_view>
+</layout>

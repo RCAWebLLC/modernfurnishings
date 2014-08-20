@@ -1,0 +1,255 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Shopping cart template
+ *
+ * @see Mage_Checkout_Block_Cart
+ */
+?>
+<div class="cart">
+    <div class="page-title title-buttons">
+        <h1><?php echo $this->__('Shopping Cart') ?></h1>
+    </div>
+    <div class="wrapper">
+    	 <?php if(!$this->hasError()): ?>
+        <ul class="checkout-types">
+        <?php foreach ($this->getMethods('top_methods') as $method): ?>
+            <?php if ($methodHtml = $this->getMethodHtml($method)): ?>
+            <li><?php echo $methodHtml; ?></li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getChildHtml('form_before') ?>
+    <form action="<?php echo $this->getUrl('checkout/cart/updatePost') ?>" method="post">
+        <fieldset>
+            <table id="shopping-cart-table" class="data-table cart-table">
+                <col />
+                <col width="1" />
+                <col width="1" />
+            <?php if ($this->helper('wishlist')->isAllowInCart()) : ?>
+                <col width="1" />
+            <?php endif ?>
+            <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+            <?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+                <col width="1" />
+            <?php if ($this->helper('tax')->displayCartPriceExclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+            <?php if ($this->helper('tax')->displayCartPriceInclTax() || $this->helper('tax')->displayCartBothPrices()): ?>
+                <col width="1" />
+            <?php endif; ?>
+                <col width="1" />
+
+            <?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
+                <thead>
+                    <tr>
+                        <th rowspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Product Name') ?></span></th>
+                        <th rowspan="<?php echo $mergedCells; ?>">&nbsp;</th>
+                        <th rowspan="<?php echo $mergedCells; ?>"></th>
+                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><span class="nobr"><?php echo $this->__('Unit Price') ?></span></th>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Qty') ?></th>
+                        <th class="a-center" colspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Subtotal') ?></th>
+                        <th rowspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Delete') ?></th>
+                    </tr>
+                    <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                    <tr>
+                        <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                        <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                        <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                        <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                    </tr>
+                    <?php endif; ?>
+                </thead>
+                <tbody>
+                <?php foreach($this->getItems() as $_item): ?>
+                    <?php echo $this->getItemHtml($_item) ?>
+                <?php endforeach ?>
+                </tbody>
+            </table>
+            <script type="text/javascript">decorateTable('shopping-cart-table')</script>
+        </fieldset>
+		<table id="shopping-cart-foot">
+			<tr>
+				<td colspan="50" class="a-right">
+					<?php if($this->getContinueShoppingUrl()): ?>
+						<button type="button" title="<?php echo $this->__('Continue Shopping') ?>" class="button btn-continue" onclick="setLocation('<?php echo $this->getContinueShoppingUrl() ?>')"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+					<?php endif; ?>
+					<button type="submit" title="<?php echo $this->__('Update Shopping Cart') ?>" class="button btn-update"><span><span><?php echo $this->__('Update Shopping Cart') ?></span></span></button>
+				</td>
+			</tr>
+		</table>
+    </form>
+
+    <!--=============================================================
+                        Begin:Button CheckOut | 9/10/2013
+    ================================================================-->
+    <?php
+    echo '<form id="bongoForm" action="'.BONGO_CHECKOUT_URL.'" method="post" >';
+    echo '<input type="hidden" name="PARTNER_KEY" value="'.BONGO_CHECKOUT_PARTNER_KEY.'" />';
+    ?>
+    <?php
+    foreach(Mage::getSingleton('checkout/cart')->getQuote()->getAllVisibleItems() as $contador =>  $_item): ?>
+        <input type="hidden" name="PRODUCT_ID_<?php echo $contador + 1 ?>" value="<?php echo htmlspecialchars($_item->getProduct()->getSku()) ?>" />
+        <input type="hidden" name="PRODUCT_NAME_<?php echo $contador + 1 ?>" value="<?php echo htmlspecialchars($_item->getProduct()->getName()) ?>" />
+       
+           
+    <?php
+    //------------------------------------------------------------
+    $productId = htmlspecialchars($_item->getProduct()->getId());
+    $product = Mage::getModel('catalog/product')->load($productId);
+    $attributes = $product->getAttributes();
+    //get price bongo
+    foreach ($attributes as $attribute) {
+        $attributeCode = $attribute->getAttributeCode();
+       
+            $codeFrom = 'special_from_date';
+        if ($attributeCode == $codeFrom) {
+            $valueFrom = $attribute->getFrontend()->getValue($product);
+        }
+           
+            $codeTo = 'special_to_date';
+        if ($attributeCode == $codeTo) {
+            $valueTo = $attribute->getFrontend()->getValue($product);
+        }
+     
+        $code = 'bongo';
+        if ($attributeCode == $code) {
+            $value = $attribute->getFrontend()->getValue($product);
+        }
+           
+    }
+     $dateCurrent = explode("/",date("d/m/Y"));
+     
+     $datefrom = explode(" ", $valueFrom);
+     $dateFrom = explode("-",$datefrom[0]);
+     if($dateFrom[1][0]=='0'){
+      $dateFrom[1]=$dateFrom[1][1];
+     }
+     
+     $dateto = explode(" ",$valueTo);
+     $dateTo = explode("-",$dateto[0]);
+     if($dateTo[1][0]=='0'){
+      $dateTo[1]=$dateTo[1][1];
+     }
+     
+     if($_item->getProduct()->getSpecialPrice()){
+        if((int)$dateFrom[0]<=(int)$dateCurrent[2] && (int)$dateCurrent[2]<=(int)$dateTo[0]){
+           if((int)$dateFrom[1]<=(int)$dateCurrent[1] && (int)$dateCurrent[1]<=(int)$dateTo[1]){
+                 if((int)$dateFrom[2]<=(int)$dateCurrent[0] && (int)$dateCurrent[0]<=(int)$dateTo[2]){
+                     $price = (float)$_item->getProduct()->getSpecialPrice();
+                     }else{$price = (float)$_item->getProduct()->getPrice();}
+               }else{$price = (float)$_item->getProduct()->getPrice();}
+        }
+        else{
+        $price = (float)$_item->getProduct()->getPrice();
+        }
+     }
+     else{
+         $price = (float)$_item->getProduct()->getPrice();
+     }
+     
+     $custom = '';
+    if ($_options = Mage::helper('catalog/product_configuration')->getOptions($_item)) {
+            foreach ($_options as $_option) {
+                    if ($custom != '') {
+                            $custom .= ', ';
+                    }
+                    $custom .= $_option['label'] . ': ' . $_option['value'];
+            }
+    }
+    //------------------------------------------------------------------
+     ?>
+            <input type="hidden" name="PRODUCT_PRICE_<?php echo $contador + 1 ?>" value="<?php echo str_replace(',','',$_item->getCalculationPrice()) ?>" />
+     
+        <input type="hidden" name="PRODUCT_Q_<?php echo $contador + 1 ?>" value="<?php echo (int)$_item->getQty() ?>" />
+     
+        <input type="hidden" name="PRODUCT_SHIPPING_<?php echo $contador + 1 ?>" value="<?php echo SHIPPING_BONGO ?>" />  
+     
+            <input type="hidden" name="PRODUCT_CUSTOM_1_<?php echo $contador + 1 ?>" value="<?php echo $custom ?>" />
+          <input type="hidden" name="PRODUCT_CUSTOM_2_<?php echo $contador + 1 ?>" value="" />
+          <input type="hidden" name="PRODUCT_CUSTOM_3_<?php echo $contador + 1 ?>" value="" />
+    <?php endforeach ?>
+    <input type="hidden" name="TOTAL_DOMESTIC_SHIPPING_CHARGE" value=""/>
+    </form>
+     
+    <!--====== this code is for push botton of Bongo and Send the form on click in the botoon =========-->
+     <script type="text/javascript">
+     document.observe('dom:loaded', function(){
+        $$('.checkout-types li')[0].insert({before:'<li><input id="topBongo" type="image" src="https://www.modern-furnishings.com/shop/media/images/akhi-chk.png" onclick="sendBongo()" /></li>'});
+        $$('.checkout-types li')[3].insert({before:'<li><input id="downBongo" type="image" src="https://www.modern-furnishings.com/shop/media/images/akhi-chk.png" onclick="sendBongo()" /></li>'});
+     });
+    //$$('.checkout-types')[0].insert({after:'<li><input type="image" src="https://bongous.com/partner/images/Bongo_Checkout_Button.png" onclick="sendBongo()" /></li>'});
+     //element2.insert( {after:element1 } );
+     //$$(".checkout-types li")[0].insert({after: });
+     function sendBongo(){
+        $("bongoForm").submit();
+     }
+    </script>
+     <style type="text/css">
+     #topBongo{
+        margin-top: 0px;
+     }
+    #downBongo{
+        padding-left: 60px;
+    }
+    </style>
+    <!--=============================================
+        End Button checkOut
+    ==================================================-->
+
+    <div class="cart-collaterals">
+        <div class="col2-set">
+            <div class="col-1">
+                <?php echo $this->getChildHtml('crosssell') ?>
+            </div>
+            <div class="col-2">
+                <?php echo $this->getChildHtml('coupon') ?>
+                <?php if (!$this->getIsVirtual()): echo $this->getChildHtml('shipping'); endif; ?>
+            </div>
+        </div>
+        <div class="totals">
+            <?php echo $this->getChildHtml('totals'); ?>
+            <?php if(!$this->hasError()): ?>
+            <ul class="checkout-types">
+            <?php foreach ($this->getMethods('methods') as $method): ?>
+                <?php if ($methodHtml = $this->getMethodHtml($method)): ?>
+                <li><?php echo $methodHtml; ?></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

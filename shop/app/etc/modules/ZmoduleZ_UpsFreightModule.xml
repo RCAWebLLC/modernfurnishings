@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<!-- declare module -->
+		<ZmoduleZ_UpsFreightModule>
+			<active>true</active>
+			<codePool>local</codePool>
+		</ZmoduleZ_UpsFreightModule>
+	</modules>
+</config>
