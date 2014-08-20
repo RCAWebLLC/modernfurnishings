@@ -1,4 +1,5 @@
-/shop/media/catalog/product/cache/*
+shop/media/catalog/category/*
+shop/media/catalog/product/cache/*
 shop/downloader/*
 shop/var/*
 !shop/var/.gitkeep
