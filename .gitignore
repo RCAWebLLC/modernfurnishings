@@ -5,13 +5,6 @@ shop/var/*
 !shop/var/.gitkeep
 cms/system/expressionengine/config/config.php
 cms/system/expressionengine/config/database.php
-shop/app/etc/local.xml
-scripts/env.cache
-scripts/adapt_environment.php
-scripts/config.php
 cms/system/expressionengine/cache/*
 !cms/system/expressionengine/cache/index.html
-shop/app/code/local/Modernstudio/Modernstudio/etc/config.xml
-shop/app/etc/modules/Modernstudio_Modernstudio.xml
-
 .DS_Store
