@@ -1,6 +1,5 @@
 shop/media/catalog/category/*
 shop/media/catalog/product/cache/*
-shop/downloader/*
 shop/var/*
 !shop/var/.gitkeep
 cms/system/expressionengine/config/config.php
