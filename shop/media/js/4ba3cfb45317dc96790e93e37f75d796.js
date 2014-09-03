@@ -6616,6 +6616,25 @@ Validation.addAllThese([
                 var test = new Date(v);
                 return Validation.get('IsEmpty').test(v) || !isNaN(test);
             }],
+    ['validate-date-range', 'The From Date value should be less than or equal to the To Date value.', function(v, elm) {
+            var m = /\bdate-range-(\w+)-(\w+)\b/.exec(elm.className);
+            if (!m || m[2] == 'to' || Validation.get('IsEmpty').test(v)) {
+                return true;
+            }
+
+            var currentYear = new Date().getFullYear() + '';
+            var normalizedTime = function(v) {
+                v = v.split(/[.\/]/);
+                if (v[2] && v[2].length < 4) {
+                    v[2] = currentYear.substr(0, v[2].length) + v[2];
+                }
+                return new Date(v.join('/')).getTime();
+            };
+
+            var dependentElements = Element.select(elm.form, '.validate-date-range.date-range-' + m[1] + '-to');
+            return !dependentElements.length || Validation.get('IsEmpty').test(dependentElements[0].value)
+                || normalizedTime(v) <= normalizedTime(dependentElements[0].value);
+        }],
     ['validate-email', 'Please enter a valid email address. For example johndoe@domain.com.', function (v) {
                 //return Validation.get('IsEmpty').test(v) || /\w{1,}[@][\w\-]{1,}([.]([\w\-]{1,})){1,3}$/.test(v)
                 //return Validation.get('IsEmpty').test(v) || /^[\!\#$%\*/?|\^\{\}`~&\'\+\-=_a-z0-9][\!\#$%\*/?|\^\{\}`~&\'\+\-=_a-z0-9\.]{1,30}[\!\#$%\*/?|\^\{\}`~&\'\+\-=_a-z0-9]@([a-z0-9_-]{1,30}\.){1,5}[a-z]{2,4}$/i.test(v)
@@ -6655,6 +6674,16 @@ Validation.addAllThese([
                     pass = $$('.validate-admin-password')[0];
                 }
                 return (pass.value == conf.value);
+            }],
+    ['validate-both-passwords', 'Please make sure your passwords match.', function(v, input) {
+                var dependentInput = $(input.form[input.name == 'password' ? 'confirmation' : 'password']),
+                    isEqualValues  = input.value == dependentInput.value;
+
+                if (isEqualValues && dependentInput.hasClassName('validation-failed')) {
+                    Validation.test(this.className, dependentInput);
+                }
+
+                return dependentInput.value == '' || isEqualValues;
             }],
     ['validate-url', 'Please enter a valid URL. Protocol is required (http://, https:// or ftp://)', function (v) {
                 v = (v || '').replace(/^\s+/, '').replace(/\s+$/, '');
@@ -6780,17 +6809,17 @@ Validation.addAllThese([
                     return true;
                 }
 
-                // Matched credit card type
-                var ccMatchedType = '';
-
+                var validationFailure = false;
                 Validation.creditCartTypes.each(function (pair) {
-                    if (pair.value[0] && v.match(pair.value[0])) {
-                        ccMatchedType = pair.key;
+                    if (pair.key == ccType) {
+                        if (pair.value[0] && !v.match(pair.value[0])) {
+                            validationFailure = true;
+                        }
                         throw $break;
                     }
                 });
 
-                if(ccMatchedType != ccType) {
+                if (validationFailure) {
                     return false;
                 }
 
@@ -6962,12 +6991,13 @@ function parseNumber(v)
 Validation.creditCartTypes = $H({
 //    'SS': [new RegExp('^((6759[0-9]{12})|(5018|5020|5038|6304|6759|6761|6763[0-9]{12,19})|(49[013][1356][0-9]{12})|(6333[0-9]{12})|(6334[0-4]\d{11})|(633110[0-9]{10})|(564182[0-9]{10}))([0-9]{2,3})?$'), new RegExp('^([0-9]{3}|[0-9]{4})?$'), true],
     'SO': [new RegExp('^(6334[5-9]([0-9]{11}|[0-9]{13,14}))|(6767([0-9]{12}|[0-9]{14,15}))$'), new RegExp('^([0-9]{3}|[0-9]{4})?$'), true],
-    'SM': [new RegExp('(^(5[0678])[0-9]{11,18}$)|(^(6[^05])[0-9]{11,18}$)|(^(601)[^1][0-9]{9,16}$)|(^(6011)[0-9]{9,11}$)|(^(6011)[0-9]{13,16}$)|(^(65)[0-9]{11,13}$)|(^(65)[0-9]{15,18}$)|(^(49030)[2-9]([0-9]{10}$|[0-9]{12,13}$))|(^(49033)[5-9]([0-9]{10}$|[0-9]{12,13}$))|(^(49110)[1-2]([0-9]{10}$|[0-9]{12,13}$))|(^(49117)[4-9]([0-9]{10}$|[0-9]{12,13}$))|(^(49118)[0-2]([0-9]{10}$|[0-9]{12,13}$))|(^(4936)([0-9]{12}$|[0-9]{14,15}$))'), new RegExp('^([0-9]{3}|[0-9]{4})?$'), true],
     'VI': [new RegExp('^4[0-9]{12}([0-9]{3})?$'), new RegExp('^[0-9]{3}$'), true],
     'MC': [new RegExp('^5[1-5][0-9]{14}$'), new RegExp('^[0-9]{3}$'), true],
     'AE': [new RegExp('^3[47][0-9]{13}$'), new RegExp('^[0-9]{4}$'), true],
-    'DI': [new RegExp('^6011[0-9]{12}$'), new RegExp('^[0-9]{3}$'), true],
-    'JCB': [new RegExp('^(3[0-9]{15}|(2131|1800)[0-9]{11})$'), new RegExp('^[0-9]{3,4}$'), true],
+    'DI': [new RegExp('^(30[0-5][0-9]{13}|3095[0-9]{12}|35(2[8-9][0-9]{12}|[3-8][0-9]{13})|36[0-9]{12}|3[8-9][0-9]{14}|6011(0[0-9]{11}|[2-4][0-9]{11}|74[0-9]{10}|7[7-9][0-9]{10}|8[6-9][0-9]{10}|9[0-9]{11})|62(2(12[6-9][0-9]{10}|1[3-9][0-9]{11}|[2-8][0-9]{12}|9[0-1][0-9]{11}|92[0-5][0-9]{10})|[4-6][0-9]{13}|8[2-8][0-9]{12})|6(4[4-9][0-9]{13}|5[0-9]{14}))$'), new RegExp('^[0-9]{3}$'), true],
+    'JCB': [new RegExp('^(30[0-5][0-9]{13}|3095[0-9]{12}|35(2[8-9][0-9]{12}|[3-8][0-9]{13})|36[0-9]{12}|3[8-9][0-9]{14}|6011(0[0-9]{11}|[2-4][0-9]{11}|74[0-9]{10}|7[7-9][0-9]{10}|8[6-9][0-9]{10}|9[0-9]{11})|62(2(12[6-9][0-9]{10}|1[3-9][0-9]{11}|[2-8][0-9]{12}|9[0-1][0-9]{11}|92[0-5][0-9]{10})|[4-6][0-9]{13}|8[2-8][0-9]{12})|6(4[4-9][0-9]{13}|5[0-9]{14}))$'), new RegExp('^[0-9]{3,4}$'), true],
+    'DICL': [new RegExp('^(30[0-5][0-9]{13}|3095[0-9]{12}|35(2[8-9][0-9]{12}|[3-8][0-9]{13})|36[0-9]{12}|3[8-9][0-9]{14}|6011(0[0-9]{11}|[2-4][0-9]{11}|74[0-9]{10}|7[7-9][0-9]{10}|8[6-9][0-9]{10}|9[0-9]{11})|62(2(12[6-9][0-9]{10}|1[3-9][0-9]{11}|[2-8][0-9]{12}|9[0-1][0-9]{11}|92[0-5][0-9]{10})|[4-6][0-9]{13}|8[2-8][0-9]{12})|6(4[4-9][0-9]{13}|5[0-9]{14}))$'), new RegExp('^[0-9]{3}$'), true],
+    'SM': [new RegExp('(^(5[0678])[0-9]{11,18}$)|(^(6[^05])[0-9]{11,18}$)|(^(601)[^1][0-9]{9,16}$)|(^(6011)[0-9]{9,11}$)|(^(6011)[0-9]{13,16}$)|(^(65)[0-9]{11,13}$)|(^(65)[0-9]{15,18}$)|(^(49030)[2-9]([0-9]{10}$|[0-9]{12,13}$))|(^(49033)[5-9]([0-9]{10}$|[0-9]{12,13}$))|(^(49110)[1-2]([0-9]{10}$|[0-9]{12,13}$))|(^(49117)[4-9]([0-9]{10}$|[0-9]{12,13}$))|(^(49118)[0-2]([0-9]{10}$|[0-9]{12,13}$))|(^(4936)([0-9]{12}$|[0-9]{14,15}$))'), new RegExp('^([0-9]{3}|[0-9]{4})?$'), true],
     'OT': [false, new RegExp('^([0-9]{3}|[0-9]{4})?$'), false]
 });
 
@@ -10474,7 +10504,7 @@ Control.Slider = Class.create({
  *
  * @category    Varien
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 function popWin(url,win,para) {
@@ -10735,10 +10765,12 @@ if (!window.Varien)
     var Varien = new Object();
 
 Varien.showLoading = function(){
-    Element.show('loading-process');
+    var loader = $('loading-process');
+    loader && loader.show();
 }
 Varien.hideLoading = function(){
-    Element.hide('loading-process');
+    var loader = $('loading-process');
+    loader && loader.hide();
 }
 Varien.GlobalHandlers = {
     onCreate: function() {
@@ -10892,10 +10924,13 @@ Varien.DateElement.prototype = {
     },
     validate: function() {
         var error = false,
-            day = parseInt(this.day.value.replace(/^0*/, '')) || 0,
-            month = parseInt(this.month.value.replace(/^0*/, '')) || 0,
-            year = parseInt(this.year.value) || 0;
-        if (!day && !month && !year) {
+            day   = parseInt(this.day.value, 10)   || 0,
+            month = parseInt(this.month.value, 10) || 0,
+            year  = parseInt(this.year.value, 10)  || 0;
+        if (this.day.value.strip().empty()
+            && this.month.value.strip().empty()
+            && this.year.value.strip().empty()
+        ) {
             if (this.required) {
                 error = 'This date is a required value.';
             } else {
@@ -11179,7 +11214,7 @@ if ((typeof Range != "undefined") && !Range.prototype.createContextualFragment)
  *
  * @category    Varien
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 VarienForm = Class.create();
@@ -11449,6 +11484,7 @@ RegionUpdater.prototype = {
             }
             this.setMarkDisplay(this.regionSelectEl, true);
         } else {
+            this.regionSelectEl.options.length = 1;
             if (this.disableAction=='hide') {
                 if (this.regionTextEl) {
                     this.regionTextEl.style.display = '';
@@ -11515,6 +11551,7 @@ ZipUpdater.prototype = {
 
         // Ajax-request and normal content load compatibility
         if (this.zipElement != undefined) {
+            Validation.reset(this.zipElement)
             this._setPostcodeOptional();
         } else {
             Event.observe(window, "load", this._setPostcodeOptional.bind(this));
@@ -11572,7 +11609,7 @@ ZipUpdater.prototype = {
  *
  * @category    Varien
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -11705,7 +11742,7 @@ document.observe("dom:loaded", function() {
  *
  * @category    Mage
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -11756,7 +11793,7 @@ Translate.prototype = {
  *
  * @category    Mage
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 // old school cookie functions grabbed off the web
@@ -12914,7 +12951,7 @@ function ganSHBlockContent(control){
  *
  * @category    Varien
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 if(typeof Product=='undefined') {
@@ -13028,14 +13065,17 @@ Product.Zoom.prototype = {
         this.imageZoom = this.floorZoom+(v*(this.ceilingZoom-this.floorZoom));
 
         if (overSize) {
-            if (this.imageDim.width > this.containerDim.width) {
+            if (this.imageDim.width > this.imageDim.height) {
                 this.imageEl.style.width = (this.imageZoom*this.containerDim.width)+'px';
-            } else if (this.imageDim.height > this.containerDim.height) {
+            } else {
                 this.imageEl.style.height = (this.imageZoom*this.containerDim.height)+'px';
             }
-
-            if(this.containerDim.ratio){
-                this.imageEl.style.height = (this.imageZoom*this.containerDim.width*this.containerDim.ratio)+'px'; // for safari
+            if (this.containerDim.ratio) {
+                if (this.imageDim.width > this.imageDim.height) {
+                    this.imageEl.style.height = (this.imageZoom*this.containerDim.width*this.containerDim.ratio)+'px'; // for safari
+                } else {
+                    this.imageEl.style.width = (this.imageZoom*this.containerDim.height*this.containerDim.ratio)+'px'; // for safari
+                }
             }
         } else {
             this.slider.setDisabled();
@@ -13260,7 +13300,8 @@ Product.Config.prototype = {
         var attributeId = element.id.replace(/[a-z]*/, '');
         var options = this.getAttributeOptions(attributeId);
         this.clearSelect(element);
-        element.options[0] = new Option(this.config.chooseText, '');
+        element.options[0] = new Option('', '');
+        element.options[0].innerHTML = this.config.chooseText;
 
         var prevConfig = false;
         if(element.prevSetting){
@@ -13456,7 +13497,7 @@ Product.OptionsPrice.prototype = {
         this.productOldPrice    = config.productOldPrice;
         this.priceInclTax       = config.priceInclTax;
         this.priceExclTax       = config.priceExclTax;
-        this.skipCalculate      = config.skipCalculate;//@deprecated after 1.5.1.0
+        this.skipCalculate      = config.skipCalculate; /** @deprecated after 1.5.1.0 */
         this.duplicateIdSuffix  = config.idSuffix;
         this.specialTaxPrice    = config.specialTaxPrice;
         this.tierPrices         = config.tierPrices;
@@ -13640,28 +13681,58 @@ Product.OptionsPrice.prototype = {
             };
         }.bind(this));
 
-        for (var i = 0; i < this.tierPrices.length; i++) {
-            $$('.price.tier-' + i).each(function (el) {
-                var price = this.tierPrices[i] + parseFloat(optionPrices);
-                el.innerHTML = this.formatPrice(price);
-            }, this);
-            $$('.price.tier-' + i + '-incl-tax').each(function (el) {
-                var price = this.tierPricesInclTax[i] + parseFloat(optionPrices);
-                el.innerHTML = this.formatPrice(price);
-            }, this);
-            $$('.benefit').each(function (el) {
-                var parsePrice = function (html) {
-                    return parseFloat(/\d+\.?\d*/.exec(html));
-                };
-                var container = $(this.containers[3]) ? this.containers[3] : this.containers[0];
-                var price = parsePrice($(container).innerHTML);
-                var tierPrice = $$('.price.tier-' + i);
-                tierPrice = tierPrice.length ? parseInt(tierPrice[0].innerHTML, 10) : 0;
-                var $percent = Selector.findChildElements(el, ['.percent.tier-' + i]);
-                $percent.each(function (el) {
-                    el.innerHTML = Math.ceil(100 - ((100 / price) * tierPrice));
-                });
-            }, this);
+        if (typeof(skipTierPricePercentUpdate) === "undefined" && typeof(this.tierPrices) !== "undefined") {
+            for (var i = 0; i < this.tierPrices.length; i++) {
+                $$('.benefit').each(function(el) {
+                    var parsePrice = function(html) {
+                        var format = this.priceFormat;
+                        var decimalSymbol = format.decimalSymbol === undefined ? "," : format.decimalSymbol;
+                        var regexStr = '[^0-9-' + decimalSymbol + ']';
+                        //remove all characters except number and decimal symbol
+                        html = html.replace(new RegExp(regexStr, 'g'), '');
+                        html = html.replace(decimalSymbol, '.');
+                        return parseFloat(html);
+                    }.bind(this);
+
+                    var updateTierPriceInfo = function(priceEl, tierPriceDiff, tierPriceEl, benefitEl) {
+                        if (typeof(tierPriceEl) === "undefined") {
+                            //tierPrice is not shown, e.g., MAP, no need to update the tier price info
+                            return;
+                        }
+                        var price = parsePrice(priceEl.innerHTML);
+                        var tierPrice = price + tierPriceDiff;
+
+                        tierPriceEl.innerHTML = this.formatPrice(tierPrice);
+
+                        var $percent = Selector.findChildElements(benefitEl, ['.percent.tier-' + i]);
+                        $percent.each(function(el) {
+                            el.innerHTML = Math.ceil(100 - ((100 / price) * tierPrice));
+                        });
+                    }.bind(this);
+
+                    var tierPriceElArray = $$('.tier-price.tier-' + i + ' .price');
+                    if (this.showBothPrices) {
+                        var containerExclTax = $(this.containers[3]);
+                        var tierPriceExclTaxDiff = this.tierPrices[i];
+                        var tierPriceExclTaxEl = tierPriceElArray[0];
+                        updateTierPriceInfo(containerExclTax, tierPriceExclTaxDiff, tierPriceExclTaxEl, el);
+                        var containerInclTax = $(this.containers[2]);
+                        var tierPriceInclTaxDiff = this.tierPricesInclTax[i];
+                        var tierPriceInclTaxEl = tierPriceElArray[1];
+                        updateTierPriceInfo(containerInclTax, tierPriceInclTaxDiff, tierPriceInclTaxEl, el);
+                    } else if (this.showIncludeTax) {
+                        var container = $(this.containers[0]);
+                        var tierPriceInclTaxDiff = this.tierPricesInclTax[i];
+                        var tierPriceInclTaxEl = tierPriceElArray[0];
+                        updateTierPriceInfo(container, tierPriceInclTaxDiff, tierPriceInclTaxEl, el);
+                    } else {
+                        var container = $(this.containers[0]);
+                        var tierPriceExclTaxDiff = this.tierPrices[i];
+                        var tierPriceExclTaxEl = tierPriceElArray[0];
+                        updateTierPriceInfo(container, tierPriceExclTaxDiff, tierPriceExclTaxEl, el);
+                    }
+                }, this);
+            }
         }
 
     },
@@ -13691,7 +13762,7 @@ Product.OptionsPrice.prototype = {
  *
  * @category    Varien
  * @package     js
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 if (typeof Product == 'undefined') {
@@ -13712,12 +13783,12 @@ Product.Config.prototype = {
         this.state      = new Hash();
         this.priceTemplate = new Template(this.config.template);
         this.prices     = config.prices;
-        
+
         // Set default values from config
         if (config.defaultValues) {
             this.values = config.defaultValues;
         }
-        
+
         // Overwrite defaults by url
         var separatorIndex = window.location.href.indexOf('#');
         if (separatorIndex != -1) {
@@ -13730,7 +13801,7 @@ Product.Config.prototype = {
                 this.values[i] = urlValues[i];
             }
         }
-        
+
         // Overwrite defaults by inputs values if needed
         if (config.inputsInitialized) {
             this.values = {};
@@ -13741,8 +13812,8 @@ Product.Config.prototype = {
                 }
             }.bind(this));
         }
-            
-        // Put events to check select reloads 
+
+        // Put events to check select reloads
         this.settings.each(function(element){
             Event.observe(element, 'change', this.configure.bind(this))
         }.bind(this));
@@ -13777,7 +13848,7 @@ Product.Config.prototype = {
         this.configureForValues();
         document.observe("dom:loaded", this.configureForValues.bind(this));
     },
-    
+
     configureForValues: function () {
         if (this.values) {
             this.settings.each(function(element){
@@ -13840,7 +13911,8 @@ Product.Config.prototype = {
         var attributeId = element.id.replace(/[a-z]*/, '');
         var options = this.getAttributeOptions(attributeId);
         this.clearSelect(element);
-        element.options[0] = new Option(this.config.chooseText, '');
+        element.options[0] = new Option('', '');
+        element.options[0].innerHTML = this.config.chooseText;
 
         var prevConfig = false;
         if(element.prevSetting){
