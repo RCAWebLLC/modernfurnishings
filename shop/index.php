@@ -1,6 +1,4 @@
 <?php
-
- if ($_SERVER['REQUEST_URI']=='/') { $_SERVER['REQUEST_URI'] = '/shop/'; } 
 /**
  * Magento
  *
@@ -76,7 +74,7 @@ if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
     Mage::setIsDeveloperMode(true);
 }
 
-ini_set('display_errors', 1);
+#ini_set('display_errors', 1);
 
 umask(0);
 

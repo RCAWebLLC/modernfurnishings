@@ -27,14 +27,6 @@
 define('DS', DIRECTORY_SEPARATOR);
 define('PS', PATH_SEPARATOR);
 define('BP', dirname(dirname(__FILE__)));
-define('BONGO_CHECKOUT_URL', 'https://transaction.bongous.com/pay/a6d5e/index.php'); //https://transaction.bongous.com/pay/a6d5e/index.php
-define('BONGO_CHECKOUT_PARTNER_KEY', '31aba9f223a901fcfc9387538529f1ce'); 
-define('SHIPPING_BONGO',200); // 0: dynamic shipping domestic cost 
-define('BONGO_DOMESTIC_STREET','861 E. Sandhill Avenue #178502'); 
-define('BONGO_DOMESTIC_CITY', 'Carson'); 
-define('BONGO_DOMESTIC_COUNTRY', 'US'); 
-define('BONGO_DOMESTIC_ZIP_CODE', '90746'); 
-define('BONGO_DOMESTIC_REGION_ID',12); // 12: California, 14: Connecticut, 18: Florida
 
 Mage::register('original_include_path', get_include_path());
 
@@ -47,6 +39,7 @@ if (defined('COMPILER_INCLUDE_PATH')) {
     /**
      * Set include path
      */
+    $paths = array();
     $paths[] = BP . DS . 'app' . DS . 'code' . DS . 'local';
     $paths[] = BP . DS . 'app' . DS . 'code' . DS . 'community';
     $paths[] = BP . DS . 'app' . DS . 'code' . DS . 'core';
@@ -176,9 +169,9 @@ final class Mage
     {
         return array(
             'major'     => '1',
-            'minor'     => '7',
+            'minor'     => '9',
             'revision'  => '0',
-            'patch'     => '0',
+            'patch'     => '1',
             'stability' => '',
             'number'    => '',
         );
@@ -703,7 +696,7 @@ final class Mage
             }
             try {
                 self::dispatchEvent('mage_run_exception', array('exception' => $e));
-                if (!headers_sent()) {
+                if (!headers_sent() && self::isInstalled()) {
                     header('Location:' . self::getUrl('install'));
                 } else {
                     self::printException($e);

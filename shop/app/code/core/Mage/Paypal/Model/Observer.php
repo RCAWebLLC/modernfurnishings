@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Paypal
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -117,5 +117,34 @@ class Mage_Paypal_Model_Observer
         }
 
         return $this;
+    }
+
+    /**
+     * Load country dependent PayPal solutions system configuration
+     *
+     * @param Varien_Event_Observer $observer
+     * @return void
+     */
+    public function loadCountryDependentSolutionsConfig(Varien_Event_Observer $observer)
+    {
+        $countryCode = Mage::helper('paypal')->getConfigurationCountryCode();
+        $paymentGroups   = $observer->getEvent()->getConfig()->getNode('sections/payment/groups');
+        $paymentsConfigs = $paymentGroups->xpath('paypal_payments/*/backend_config/' . $countryCode);
+        if ($paymentsConfigs) {
+            foreach ($paymentsConfigs as $config) {
+                $parent = $config->getParent()->getParent();
+                $parent->extend($config, true);
+            }
+        }
+
+        $payments = $paymentGroups->xpath('paypal_payments/*');
+        foreach ($payments as $payment) {
+            if ((int)$payment->include) {
+                $fields = $paymentGroups->xpath((string)$payment->group . '/fields');
+                if (isset($fields[0])) {
+                    $fields[0]->appendChild($payment, true);
+                }
+            }
+        }
     }
 }

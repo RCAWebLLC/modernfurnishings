@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Api
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -35,8 +35,6 @@ class Mage_Api_XmlrpcController extends Mage_Api_Controller_Action
 {
     public function indexAction()
     {
-        // Fixing vulnerability described here: http://www.magentocommerce.com/blog/comments/important-security-update-zend-platform-vulnerability/
-        return;
         $this->_getServer()->init($this, 'xmlrpc')
             ->run();
     }
