@@ -1,6 +1,9 @@
 shop/media/catalog/category/*
 shop/media/catalog/product/cache/*
 shop/var/*
+shop/media/css/*
+shop/media/js/*
+shop/media/css_secure/*
 shop.tar.gz
 !shop/var/.gitkeep
 cms/system/expressionengine/config/config.php
