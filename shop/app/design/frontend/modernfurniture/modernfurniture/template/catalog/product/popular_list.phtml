@@ -29,7 +29,7 @@
                 <div class="clear"></div>
                 <div class="actions">
                     <?php if($_product->isSaleable()): ?>
-                        <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                        <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $_product->getProductUrl() ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
                     <?php else: ?>
                         <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
                     <?php endif; ?>
@@ -55,7 +55,7 @@
 					var columns = n.select('li.item');					
 					var max_height = 0;									
 					columns.each(function(m){			
-						console.log(m.getHeight());											
+						//console.log(m.getHeight());											
 						if( m.getHeight() >  max_height ){
 							max_height = m.getHeight();
 						}						

@@ -1,3 +1,5 @@
+SetEnvIf SSL_OFFLOADED 1 HTTPS=on
+
 ############################################
 ## uncomment these lines for CGI mode
 ## make sure to specify the correct cgi php binary file name
