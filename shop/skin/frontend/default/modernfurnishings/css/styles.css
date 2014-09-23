@@ -34,17 +34,19 @@ html {
 .catalog-product-compare-index > div { min-width:600px;}
 
 body          { 
-	font-size:13px; 
-	line-height:20px; 
-	color:#848484; 
-	text-align:center; 
-	min-width:320px; 
-	position:relative; 
-	-webkit-text-size-adjust: none; 
-	background: url(../images/body-bg.jpg) top center;
-	font-family: 'Roboto', sans-serif;
+	background: none repeat scroll 0 0 #cbc5bd;
+    color: #4d4d4f;
+    font-family: Arial;
+    font-size: 12px;
+    line-height: 1.5em;
 }
-body > .wrapper { position:relative;}
+body > .wrapper { position:relative;
+    background: url("../images/bg_header.jpg") repeat-x scroll center top, 
+    url("../images/body_bg.jpg") repeat scroll 0 0 rgba(0, 0, 0, 0);
+	
+	
+	
+}
 .wrapper-tail{}
 
 img           { border:0; vertical-align:top; }
