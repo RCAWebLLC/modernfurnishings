@@ -29,14 +29,15 @@
  * Template for Mage_Page_Block_Html
  */
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>">
 <head>
 <?php echo $this->getChildHtml('head') ?>
 </head>
-<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
-<div class="global-header"><?php echo $this->getChildHtml('global_banner') ?></div>
-<?php echo $this->getChildHtml('global_notices') ?>
+<body<?php echo $this->getBodyClass()?' class="ps-static '.$this->getBodyClass().'"':'' ?>>
+<?php echo $this->getChildHtml('after_body_start') ?>
+<div class="wrapper ps-static <?php echo $this->getLang().'-lang-class';?>">
+    <?php echo $this->getChildHtml('global_notices') ?>
 <div class="wrapper">
     <div class="page">
         <?php echo $this->getChildHtml('header') ?>

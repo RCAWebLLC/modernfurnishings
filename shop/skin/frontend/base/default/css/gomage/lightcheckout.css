@@ -1,0 +1,110 @@
+.gomage-checkout-onepage-index .col-main { position: relative; }
+.glc-login-and-paypal { position: absolute; top: 2px; left: 180px; }
+
+#gcheckout-onepage-address.checkout-step,
+#gcheckout-onepage-methods .shipping-methods,
+#gcheckout-onepage-methods .gcheckout-payment-methods,
+#checkout-review-table-wrapper,
+.checkout-step .discount { margin:30px 0 0; background:url(../../images/block_bg.gif) repeat; border:1px solid #d5d5d5; }
+#checkout-review-table-wrapper{ position:relative; }
+#checkout-review-table-wrapper .block-title{ position:absolute; top:0; left:0; width:100%; }
+
+.glc-col{ background:#fff; border:1px solid #d5d5d5; margin:4px; padding:20px; overflow:hidden; clear:both; }
+.glc-col-left,
+.glc-col-right{ float:left; width:50%; }
+
+.glc-login-and-paypal { min-height: 20px; }
+#gcheckout-login-link { float: left; margin-right: 12px; }
+div.glc-paypal-express { float: left; }
+.glc-paypal-express a { float: right; }
+.paypal-or { float: left; display: block; margin: 4px 12px 0 0; }
+
+.checkout-step .step-number { height:32px; float:left; display:block; background:url(../../images/sidebarblockTitle_bg.png) right top no-repeat; margin:9px 5px 0 -6px; }
+.checkout-step .step-number strong { height:32px; display:block; background:url(../../images/sidebarblockTitle_shadow.jpg) bottom left no-repeat; padding:0 30px 0 20px; }
+.checkout-step .step-number strong span { height:32px; display:block; font:800 12px/27px "Open Sans", arial, sans-serif; color:#fff; text-shadow:1px 1px 0 #000; text-transform:uppercase; }
+h2.glc-title{ font-size:14px; text-transform:uppercase; padding-top:15px; }
+
+.checkout-step .form-list .field{ width:100%; }
+.checkout-step p{ font:normal 12px/26px Arial, Helvetica, sans-serif; color:#6a6969; }
+.checkout-step label{ width:110px; text-align:right; line-height:26px; color:#6a6969; }
+.checkout-step .control label{ width:auto; float:none; text-align:left; }
+.checkout-step .input-box{ float:right; width:252px; margin-right:71px; clear:none; }
+.checkout-step .input-box .input-text{ width:240px; }
+.checkout-step select{ width:252px; margin-top:4px; }
+.checkout-step .radio{ margin:-2px 6px 0 0; }
+.checkout-step .fields{ margin-bottom:0; }
+.checkout-step .fields .field,
+.checkout-step #billing_street1,
+.checkout-step #shipping_street1,
+.checkout-step .control{ margin-bottom:13px; }
+
+.gcheckout-payment-methods{ position:relative; }
+#gcheckout-payment-methods-available { width: 500px; }
+#gcheckout-payment-methods .glc-col { padding-bottom: 10px; }
+
+#payment_form_ccsave{ width:50%; padding:0; }
+#checkout-payment-method-load.sp-methods dt { height:36px; line-height:30px; display:block; margin-bottom:10px; }
+#checkout-payment-method-load.sp-methods dd { clear:both; margin-bottom: 20px; }
+#checkout-payment-method-load.sp-methods label{ text-align:left; display:inline-block; float:left; width:auto; }
+#checkout-payment-method-load.sp-methods .radio{ float:left; margin:7px 6px 0 0; }
+#checkout-payment-method-load label[for="p_method_paypal_express"]{ background:url(../../images/gomage/lightcheckout/paypal_logo.gif) 4px 4px no-repeat; display: block; font-size: 0; height: 32px !important; line-height: 0; overflow: hidden; padding: 6px 110px 0 0; }
+#checkout-payment-method-load label[for="p_method_paypal_express"] img { display: none; }
+#checkout-payment-method-load label[for="p_method_authorizenet"],
+#checkout-payment-method-load label[for="p_method_ccsave"]{ background:url(../../images/gomage/lightcheckout/ccards_bg.jpg) 100% 0 no-repeat; padding-right:210px; padding-bottom: 6px; }
+#checkout-payment-method-load.sp-methods dd #payment_form_ccsave label{ float:none; width:110px; text-align:right; line-height:26px; }
+
+#checkout-review-table{ clear:both; }
+#checkout-review-order{ padding:4px; margin-top:11px; }
+#checkout-review-table th{ padding-bottom:10px; }
+.checkout-order-review .order-totals{ float:right; width:334px; margin-top:-1px; border:1px solid #d5d5d5; border-top:none; background:url(../../images/block_bg.gif) repeat; position:relative; padding:10px 0 20px 0; }
+.order-totals .data-table tbody{ background:none; border:none; }
+.order-totals .data-table td{ border:none; padding:6px 20px; font-size:15px; color:#6a6969; vertical-align: baseline; }
+.order-totals .data-table td .price{ font-size:18px; color:#4d4d4f; font-weight:normal; }
+.order-totals .data-table td strong{ font-weight:normal; }
+.order-totals .data-table td strong .price{ font-weight:bold; font-size:24px; color:#f16021; }
+#checkout-review-submit{ padding:10px 0 20px; text-align:right; float:right; clear:both; width:334px; margin-top:-1px; }
+
+.lightcheckout-discount-form label  { display:block; font:800 12px/27px "Open Sans", arial, sans-serif; text-transform:uppercase; }
+.lightcheckout-discount-form .input-box,
+.lightcheckout-discount-form button { float: left; }
+
+.checkout-step .customer-comment { float: right; margin: 12px 24px 0 0; }
+.checkout-step .customer-comment label { margin-right: 6px; }
+
+.agreements,
+.advanced-options,
+#checkout-update-section{ padding:0 20px 0; }
+
+.login-button{ background:url(../../images/block_alt_bg.gif) repeat; font:600 12px/1 'open sans', arial, sans-serif; color:#fff; text-decoration:none; text-transform:uppercase; display:inline-block; padding:7px 13px; margin-left:10px; text-shadow:1px 1px 0 #000; }
+.login-button:hover{ background:#000; }
+.gomage-checkout-overlay{ background:rgba(255,255,255,.8); width:100%; height:100%; position:absolute; top:0; left:0; }
+#login-form{ background:url(../../images/block_bg.gif) repeat; border:1px solid #d5d5d5; padding:4px; width:307px; }
+#login-form .glc-popup-content{ background:#fff; border:1px solid #d5d5d5; padding:13px 20px; overflow:hidden; }
+#login-form .forgot-link{ font:normal 12px Arial, Helvetica, sans-serif; color:6a6969; }
+#login-form button.btn-submit,
+#login-form button.btn-login{ float:right; }
+#login-form button.btn-back{ float:left; }
+#login-form button.btn-back span{ background-image:url(../../images/block_alt_bg.gif); }
+#login-form button.btn-back:hover span{ background:#000; }
+
+.checkout-step .discount {
+  background: white;
+  padding: 4px 20px 20px 20px;
+  margin: 24px 0 -6px 0;
+}
+
+.checkout-step .discount label {
+  display: block;
+  text-align: left;
+  margin-top: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.checkout-step .discount .input-box,
+.checkout-step .discount button {
+  float: left;
+  margin-right: 10px;
+}
+
+#customer_comment { width: 500px; }
