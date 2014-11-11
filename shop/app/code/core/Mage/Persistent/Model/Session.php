@@ -35,8 +35,8 @@
 class Mage_Persistent_Model_Session extends Mage_Core_Model_Abstract
 {
     const KEY_LENGTH = 50;
-    const COOKIE_NAME = 'persistent_shopping_cart';
-
+    //const COOKIE_NAME = 'persistent_shopping_cart';
+    const COOKIE_NAME = '';
     /**
      * Fields which model does not save into `info` db field
      *

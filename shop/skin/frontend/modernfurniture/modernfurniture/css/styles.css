@@ -483,7 +483,7 @@ tr.summary-details-excluded { font-style:italic; }
 .header .welcome-msg { float:right; clear:right; font-size:12px; color:#96470f; font-weight:bold; padding:7px 0 0 0; margin-bottom:6px; display:none; }
 .header .welcome-msg a {}
 .header .links { float:right; clear:right; margin-bottom:9px; }
-.header .links li {float:left; font-size:13px; line-height:29px; color:#6a6969; padding-left:25px;}
+.header .links li {float:left; font-size:13px; line-height:29px; color:#6a6969; padding-left:15px;}
 .header .links li a { text-decoration:none; color:#666; }
 .header .links li .count{ background:#000; color:#fff; padding:2px 5px; margin-left:5px; }
 .header .links li a:hover {color:#000;}
@@ -1501,7 +1501,13 @@ tr.summary-details-excluded { font-style:italic; }
 .opc .form-list{margin:10px 0;}
 .opc .form-list li.wide input.input-text{width:647px;}
 .opc .form-list li.control {float:left; margin-right:50px;}
-
+.opc .form-list:after{
+	content: " "; /* Older browser do not support empty content */
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
 
 /* Multiple Addresses Checkout */
 .checkout-progress { padding:0 50px; margin:20px 0 40px; }

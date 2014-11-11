@@ -23,6 +23,7 @@
  * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+ini_set("memory_limit","512M");
 
 if (version_compare(phpversion(), '5.2.0', '<')===true) {
     echo  '<div style="font:12px/1.35em arial, helvetica, sans-serif;">

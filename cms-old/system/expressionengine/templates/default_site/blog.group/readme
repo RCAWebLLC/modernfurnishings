@@ -1,0 +1,5 @@
+These templates use Freeway
+
+blog/[0-9/]+$ => blog/router
+blog/[a-zA-Z] => blog/category_router
+blog/[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/[a-zA-Z0-9]+ => blog/entry
