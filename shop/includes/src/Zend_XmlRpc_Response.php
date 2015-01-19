@@ -175,7 +175,8 @@ class Zend_XmlRpc_Response
             $this->_fault->setEncoding($this->getEncoding());
             return false;
         }
-        $loadEntities         = libxml_disable_entity_loader(true);
+
+        $loadEntities = libxml_disable_entity_loader(true);
         $useInternalXmlErrors = libxml_use_internal_errors(true);
         try {
             $xml = new SimpleXMLElement($response);
@@ -207,7 +208,6 @@ class Zend_XmlRpc_Response
 
         try {
             if (!isset($xml->params) || !isset($xml->params->param) || !isset($xml->params->param->value)) {
-                //require_once 'Zend/XmlRpc/Value/Exception.php';
                 throw new Zend_XmlRpc_Value_Exception('Missing XML-RPC value in XML');
             }
             $valueXml = $xml->params->param->value->asXML();

@@ -103,8 +103,12 @@ class Mage_Archive_Tar extends Mage_Archive_Abstract implements Mage_Archive_Int
      */
     protected static final function _getFormatParseHeader()
     {
-        return 'a100name/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1type/a100symlink/a6magic/a2version/'
+        if (version_compare(phpversion(), '5.5.0', '<') === true) {
+            return 'a100name/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1type/a100symlink/a6magic/a2version/'
             . 'a32uname/a32gname/a8devmajor/a8devminor/a155prefix/a12closer';
+        }
+        return 'Z100name/Z8mode/Z8uid/Z8gid/Z12size/Z12mtime/Z8checksum/Z1type/Z100symlink/Z6magic/Z2version/'
+        . 'Z32uname/Z32gname/Z8devmajor/Z8devminor/Z155prefix/Z12closer';
     }
 
     /**
@@ -458,11 +462,8 @@ class Mage_Archive_Tar extends Mage_Archive_Abstract implements Mage_Archive_Int
                 $list[] = $currentFile . DS;
             } elseif ($header['type'] == '2') {
 
-                $symlinkResult = @symlink($header['symlink'], $currentFile);
-
-                if (false === $symlinkResult) {
-                    throw new Mage_Exception('Failed to create symlink ' . $currentFile . ' to ' . $header['symlink']);
-                }
+                //we do not interrupt unpack process if symlink creation failed as symlinks are not so important
+                @symlink($header['symlink'], $currentFile);
             }
         }
 
@@ -560,12 +561,11 @@ class Mage_Archive_Tar extends Mage_Archive_Abstract implements Mage_Archive_Int
             $checksum += ord(substr($headerBlock, $i, 1));
         }
 
-        $isUstar = 'ustar' == strtolower(substr($header['magic'], 0, 5));
-
         $checksumOk = $header['checksum'] == $checksum;
         if (isset($header['name']) && $checksumOk) {
 
             if (!($header['name'] == '././@LongLink' && $header['type'] == 'L')) {
+                $header['name'] = trim($header['name']);
                 return $header;
             }
 
@@ -575,7 +575,7 @@ class Mage_Archive_Tar extends Mage_Archive_Abstract implements Mage_Archive_Int
             $realName = substr($realNameBlock, 0, $header['size']);
 
             $headerMain = $this->_extractFileHeader();
-            $headerMain['name'] = $realName;
+            $headerMain['name'] = trim($realName);
             return $headerMain;
         }
 

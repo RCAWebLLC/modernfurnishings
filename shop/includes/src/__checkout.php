@@ -11,18 +11,18 @@
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -107,18 +107,18 @@ class Mage_CatalogIndex_Model_Price extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -190,18 +190,18 @@ class Mage_CatalogIndex_Model_Resource_Abstract extends Mage_Core_Model_Resource
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -498,18 +498,18 @@ class Mage_CatalogIndex_Model_Resource_Price extends Mage_CatalogIndex_Model_Res
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -538,6 +538,11 @@ class Mage_CatalogInventory_Model_Observer
      */
     protected $_checkedQuoteItems = array();
 
+    /**
+     * Array of items that need to be reindexed
+     *
+     * @var array
+     */
     protected $_itemsForReindex = array();
 
     /**
@@ -662,9 +667,10 @@ class Mage_CatalogInventory_Model_Observer
             'use_config_min_sale_qty'   => 1,
             'use_config_max_sale_qty'   => 1,
             'use_config_backorders'     => 1,
-            'use_config_notify_stock_qty'=> 1
+            'use_config_notify_stock_qty' => 1
         );
-        if ($currentStockItem = $currentProduct->getStockItem()) {
+        $currentStockItem = $currentProduct->getStockItem();
+        if ($currentStockItem) {
             $stockData += array(
                 'use_config_enable_qty_inc'  => $currentStockItem->getData('use_config_enable_qty_inc'),
                 'enable_qty_increments'             => $currentStockItem->getData('enable_qty_increments'),
@@ -797,13 +803,41 @@ class Mage_CatalogInventory_Model_Observer
         $qty = $quoteItem->getQty();
 
         /**
+         * Check if product in stock. For composite products check base (parent) item stosk status
+         */
+        $stockItem = $quoteItem->getProduct()->getStockItem();
+        $parentStockItem = false;
+        if ($quoteItem->getParentItem()) {
+            $parentStockItem = $quoteItem->getParentItem()->getProduct()->getStockItem();
+        }
+        if ($stockItem) {
+            if (!$stockItem->getIsInStock() || ($parentStockItem && !$parentStockItem->getIsInStock())) {
+                $quoteItem->addErrorInfo(
+                    'cataloginventory',
+                    Mage_CatalogInventory_Helper_Data::ERROR_QTY,
+                    Mage::helper('cataloginventory')->__('This product is currently out of stock.')
+                );
+                $quoteItem->getQuote()->addErrorInfo(
+                    'stock',
+                    'cataloginventory',
+                    Mage_CatalogInventory_Helper_Data::ERROR_QTY,
+                    Mage::helper('cataloginventory')->__('Some of the products are currently out of stock.')
+                );
+                return $this;
+            } else {
+                // Delete error from item and its quote, if it was set due to item out of stock
+                $this->_removeErrorsFromQuoteAndItem($quoteItem, Mage_CatalogInventory_Helper_Data::ERROR_QTY);
+            }
+        }
+
+        /**
          * Check item for options
          */
-        if (($options = $quoteItem->getQtyOptions()) && $qty > 0) {
+        $options = $quoteItem->getQtyOptions();
+        if ($options && $qty > 0) {
             $qty = $quoteItem->getProduct()->getTypeInstance(true)->prepareQuoteItemQty($qty, $quoteItem->getProduct());
             $quoteItem->setData('qty', $qty);
 
-            $stockItem = $quoteItem->getProduct()->getStockItem();
             if ($stockItem) {
                 $result = $stockItem->checkQtyIncrements($qty);
                 if ($result->getHasError()) {
@@ -828,6 +862,7 @@ class Mage_CatalogInventory_Model_Observer
                 }
             }
 
+            $quoteItemHasErrors = false;
             foreach ($options as $option) {
                 $optionValue = $option->getValue();
                 /* @var $option Mage_Sales_Model_Quote_Item_Option */
@@ -887,11 +922,12 @@ class Mage_CatalogInventory_Model_Observer
 
                 if ($result->getHasError()) {
                     $option->setHasError(true);
+                    $quoteItemHasErrors = true;
 
                     $quoteItem->addErrorInfo(
                         'cataloginventory',
                         Mage_CatalogInventory_Helper_Data::ERROR_QTY,
-                        $result->getQuoteMessage()
+                        $result->getMessage()
                     );
 
                     $quoteItem->getQuote()->addErrorInfo(
@@ -900,7 +936,7 @@ class Mage_CatalogInventory_Model_Observer
                         Mage_CatalogInventory_Helper_Data::ERROR_QTY,
                         $result->getQuoteMessage()
                     );
-                } else {
+                } elseif (!$quoteItemHasErrors) {
                     // Delete error from item and its quote, if it was set due to qty lack
                     $this->_removeErrorsFromQuoteAndItem($quoteItem, Mage_CatalogInventory_Helper_Data::ERROR_QTY);
                 }
@@ -908,7 +944,6 @@ class Mage_CatalogInventory_Model_Observer
                 $stockItem->unsIsChildItem();
             }
         } else {
-            $stockItem = $quoteItem->getProduct()->getStockItem();
             /* @var $stockItem Mage_CatalogInventory_Model_Stock_Item */
             if (!$stockItem instanceof Mage_CatalogInventory_Model_Stock_Item) {
                 Mage::throwException(Mage::helper('cataloginventory')->__('The stock item for Product is not valid.'));
@@ -941,6 +976,7 @@ class Mage_CatalogInventory_Model_Observer
             if (!is_null($productTypeCustomOption)) {
                 // Check if product related to current item is a part of grouped product
                 if ($productTypeCustomOption->getValue() == Mage_Catalog_Model_Product_Type_Grouped::TYPE_CODE) {
+                    $stockItem->setProductName($quoteItem->getProduct()->getName());
                     $stockItem->setIsChildItem(true);
                 }
             }
@@ -977,9 +1013,6 @@ class Mage_CatalogInventory_Model_Observer
             }
             if (!is_null($result->getMessage())) {
                 $quoteItem->setMessage($result->getMessage());
-                if ($quoteItem->getParentItem()) {
-                    $quoteItem->getParentItem()->setMessage($result->getMessage());
-                }
             }
 
             if (!is_null($result->getItemBackorders())) {
@@ -1191,7 +1224,7 @@ class Mage_CatalogInventory_Model_Observer
             }
         }
 
-        if( count($productIds)) {
+        if (count($productIds)) {
             Mage::getResourceSingleton('cataloginventory/indexer_stock')->reindexProducts($productIds);
         }
 
@@ -1237,8 +1270,8 @@ class Mage_CatalogInventory_Model_Observer
                     $items[$item->getProductId()]['qty'] += $qty;
                 } else {
                     $items[$item->getProductId()] = array(
-                        'qty' => $qty,
-                        'item'=> null,
+                        'qty'  => $qty,
+                        'item' => null,
                     );
                 }
             }
@@ -1259,7 +1292,8 @@ class Mage_CatalogInventory_Model_Observer
         $children = $item->getChildrenItems();
         $qty = $item->getQtyOrdered() - max($item->getQtyShipped(), $item->getQtyInvoiced()) - $item->getQtyCanceled();
 
-        if ($item->getId() && ($productId = $item->getProductId()) && empty($children) && $qty) {
+        $productId = $item->getProductId();
+        if ($item->getId() && $productId && empty($children) && $qty) {
             Mage::getSingleton('cataloginventory/stock')->backItemQty($productId, $qty);
         }
 
@@ -1351,6 +1385,35 @@ class Mage_CatalogInventory_Model_Observer
     }
 
     /**
+     * Add stock status filter to select
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Mage_CatalogInventory_Model_Observer
+     */
+    public function addStockStatusFilterToSelect(Varien_Event_Observer $observer)
+    {
+        $select         = $observer->getEvent()->getSelect();
+        $entityField    = $observer->getEvent()->getEntityField();
+        $websiteField   = $observer->getEvent()->getWebsiteField();
+
+        if ($entityField === null || $websiteField === null) {
+            return $this;
+        }
+
+        if (!($entityField instanceof Zend_Db_Expr)) {
+            $entityField = new Zend_Db_Expr($entityField);
+        }
+        if (!($websiteField instanceof Zend_Db_Expr)) {
+            $websiteField = new Zend_Db_Expr($websiteField);
+        }
+
+        Mage::getResourseSingleton('cataloginventory/stock_status')
+            ->prepareCatalogProductIndexSelect($select, $entityField, $websiteField);
+
+        return $this;
+    }
+
+    /**
      * Lock DB rows for order products
      *
      * We need do it for resolving problems with inventory on placing
@@ -1436,6 +1499,19 @@ class Mage_CatalogInventory_Model_Observer
             Mage_Catalog_Model_Product::ENTITY, Mage_Index_Model_Event::TYPE_MASS_ACTION
         );
     }
+
+    /**
+     * Detects whether product status should be shown
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Mage_CatalogInventory_Model_Observer
+     */
+    public function displayProductStatusInfo($observer)
+    {
+        $info = $observer->getEvent()->getStatus();
+        $info->setDisplayStatus(Mage::helper('cataloginventory')->isDisplayProductStockStatus());
+        return $this;
+    }
 }
 /**
  * Magento
@@ -1448,18 +1524,18 @@ class Mage_CatalogInventory_Model_Observer
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -1649,13 +1725,20 @@ class Mage_CatalogInventory_Model_Resource_Stock extends Mage_Core_Model_Resourc
     protected function _initConfig()
     {
         if (!$this->_isConfig) {
+            $configMap = array(
+                '_isConfigManageStock'  => Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK,
+                '_isConfigBackorders'   => Mage_CatalogInventory_Model_Stock_Item::XML_PATH_BACKORDERS,
+                '_configMinQty'         => Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MIN_QTY,
+                '_configNotifyStockQty' => Mage_CatalogInventory_Model_Stock_Item::XML_PATH_NOTIFY_STOCK_QTY
+            );
+
+            foreach ($configMap as $field => $const) {
+                $this->$field = (int)Mage::getStoreConfig($const);
+            }
+
             $this->_isConfig = true;
-            $this->_isConfigManageStock  = (int)Mage::getStoreConfigFlag(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK);
-            $this->_isConfigBackorders   = (int)Mage::getStoreConfig(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_BACKORDERS);
-            $this->_configMinQty         = (int)Mage::getStoreConfig(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MIN_QTY);
-            $this->_configNotifyStockQty = (int)Mage::getStoreConfig(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_NOTIFY_STOCK_QTY);
-            $this->_configTypeIds        = array_keys(Mage::helper('catalogInventory')->getIsQtyTypeIds(true));
-            $this->_stock                = Mage::getModel('cataloginventory/stock');
+            $this->_stock = Mage::getModel('cataloginventory/stock');
+            $this->_configTypeIds = array_keys(Mage::helper('catalogInventory')->getIsQtyTypeIds(true));
         }
     }
 
@@ -1756,6 +1839,52 @@ class Mage_CatalogInventory_Model_Resource_Stock extends Mage_Core_Model_Resourc
 
         $adapter->update($this->getTable('cataloginventory/stock_item'), $value, $where);
     }
+
+    /**
+     * Add low stock filter to product collection
+     *
+     * @param Mage_Catalog_Model_Resource_Product_Collection $collection
+     * @param array $fields
+     * @return Mage_CatalogInventory_Model_Resource_Stock
+     */
+    public function addLowStockFilter(Mage_Catalog_Model_Resource_Product_Collection $collection, $fields)
+    {
+        $this->_initConfig();
+        $adapter = $collection->getSelect()->getAdapter();
+        $qtyIf = $adapter->getCheckSql(
+            'invtr.use_config_notify_stock_qty',
+            $this->_configNotifyStockQty,
+            'invtr.notify_stock_qty'
+        );
+        $conditions = array(
+            array(
+                $adapter->prepareSqlCondition('invtr.use_config_manage_stock', 1),
+                $adapter->prepareSqlCondition($this->_isConfigManageStock, 1),
+                $adapter->prepareSqlCondition('invtr.qty', array('lt' => $qtyIf))
+            ),
+            array(
+                $adapter->prepareSqlCondition('invtr.use_config_manage_stock', 0),
+                $adapter->prepareSqlCondition('invtr.manage_stock', 1)
+            )
+        );
+
+        $where = array();
+        foreach ($conditions as $k => $part) {
+            $where[$k] = join(' ' . Zend_Db_Select::SQL_AND . ' ', $part);
+        }
+
+        $where = $adapter->prepareSqlCondition('invtr.low_stock_date', array('notnull' => true))
+            . ' ' . Zend_Db_Select::SQL_AND . ' (('
+            .  join(') ' . Zend_Db_Select::SQL_OR .' (', $where)
+            . '))';
+
+        $collection->joinTable(array('invtr' => 'cataloginventory/stock_item'),
+            'product_id = entity_id',
+            $fields,
+            $where
+        );
+        return $this;
+    }
 }
 /**
  * Magento
@@ -1768,18 +1897,18 @@ class Mage_CatalogInventory_Model_Resource_Stock extends Mage_Core_Model_Resourc
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -1896,18 +2025,18 @@ class Mage_CatalogInventory_Model_Resource_Stock_Item extends Mage_Core_Model_Re
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -2058,18 +2187,18 @@ class Mage_CatalogInventory_Model_Resource_Stock_Item_Collection extends Mage_Co
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -2326,18 +2455,18 @@ class Mage_CatalogInventory_Model_Resource_Stock_Status extends Mage_Core_Model_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -2563,18 +2692,18 @@ class Mage_CatalogInventory_Model_Stock extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -3133,7 +3262,7 @@ class Mage_CatalogInventory_Model_Stock_Item extends Mage_Core_Model_Abstract
         if (!$this->getIsInStock()) {
             $result->setHasError(true)
                 ->setMessage(Mage::helper('cataloginventory')->__('This product is currently out of stock.'))
-                ->setQuoteMessage(Mage::helper('cataloginventory')->__('Some of the products are currently out of stock'))
+                ->setQuoteMessage(Mage::helper('cataloginventory')->__('Some of the products are currently out of stock.'))
                 ->setQuoteMessageIndex('stock');
             $result->setItemUseOldQty(true);
             return $result;
@@ -3174,7 +3303,7 @@ class Mage_CatalogInventory_Model_Stock_Item extends Mage_Core_Model_Abstract
                             );
                         } else {
                             $result->setMessage(
-                               Mage::helper('cataloginventory')->__('"%s" is not available in the requested quantity. %s of the items will be backordered.', $this->getProductName(), ($backorderQty * 1))
+                                Mage::helper('cataloginventory')->__('"%s" is not available in the requested quantity. %s of the items will be backordered.', $this->getProductName(), ($backorderQty * 1))
                             );
                         }
                     } elseif (Mage::app()->getStore()->isAdmin()) {
@@ -3331,26 +3460,6 @@ class Mage_CatalogInventory_Model_Stock_Item extends Mage_Core_Model_Abstract
     }
 
     /**
-     * Reindex CatalogInventory save event
-     *
-     * @return Mage_CatalogInventory_Model_Stock_Item
-     */
-    protected function _afterSave()
-    {
-        parent::_afterSave();
-
-        /** @var $indexer Mage_Index_Model_Indexer */
-        $indexer = Mage::getSingleton('index/indexer');
-        if ($this->_processIndexEvents) {
-            $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
-        } else {
-            $indexer->logEvent($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
-        }
-        return $this;
-    }
-
-
-    /**
      * Retrieve Stock Availability
      *
      * @return bool|int
@@ -3455,6 +3564,26 @@ class Mage_CatalogInventory_Model_Stock_Item extends Mage_Core_Model_Abstract
         $this->_processIndexEvents = $process;
         return $this;
     }
+
+    /**
+     * Callback function which called after transaction commit in resource model
+     *
+     * @return Mage_CatalogInventory_Model_Stock_Item
+     */
+    public function afterCommitCallback()
+    {
+        parent::afterCommitCallback();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+
+        if ($this->_processIndexEvents) {
+            $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
+        } else {
+            $indexer->logEvent($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
+        }
+        return $this;
+    }
 }
 /**
  * Magento
@@ -3467,18 +3596,18 @@ class Mage_CatalogInventory_Model_Stock_Item extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -3734,10 +3863,12 @@ class Mage_CatalogInventory_Model_Stock_Status extends Mage_Core_Model_Abstract
      * @param int $status
      * @param int $stockId
      * @param int $websiteId
+     *
      * @return Mage_CatalogInventory_Model_Stock_Status
      */
-    protected function _processChildren($productId, $productType, $qty = 0, $status = self::STATUS_IN_STOCK, $stockId = 1, $websiteId = null)
-    {
+    protected function _processChildren($productId, $productType, $qty = 0, $status = self::STATUS_IN_STOCK,
+        $stockId = 1, $websiteId = null
+    ) {
         if ($status == self::STATUS_OUT_OF_STOCK) {
             $this->saveProductStatus($productId, $status, $qty, $stockId, $websiteId);
             return $this;
@@ -4003,18 +4134,18 @@ class Mage_CatalogInventory_Model_Stock_Status extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -4061,18 +4192,18 @@ class Mage_CatalogRule_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -4101,22 +4232,32 @@ class Mage_CatalogRule_Model_Observer
             return;
         }
 
-        $productWebsiteIds = $product->getWebsiteIds();
-
-        $rules = Mage::getModel('catalogrule/rule')->getCollection()
-            ->addFieldToFilter('is_active', 1);
-
-        foreach ($rules as $rule) {
-            $websiteIds = array_intersect($productWebsiteIds, $rule->getWebsiteIds());
-            $rule->applyToProduct($product, $websiteIds);
-        }
+        Mage::getModel('catalogrule/rule')->applyAllRulesToProduct($product);
 
         return $this;
     }
 
     /**
+     * Load matched catalog price rules for specific product.
+     * Is used for comparison in Mage_CatalogRule_Model_Resource_Rule::applyToProduct method
+     *
+     * @param   Varien_Event_Observer $observer
+     * @return  Mage_CatalogRule_Model_Observer
+     */
+    public function loadProductRules($observer)
+    {
+        /** @var Mage_Catalog_Model_Product $product */
+        $product = $observer->getEvent()->getProduct();
+        if (!$product instanceof Mage_Catalog_Model_Product) {
+            return $this;
+        }
+        Mage::getModel('catalogrule/rule')->loadProductRules($product);
+        return $this;
+    }
+
+    /**
      * Apply all price rules for current date.
-     * Handle cataolg_product_import_after event
+     * Handle catalog_product_import_after event
      *
      * @param   Varien_Event_Observer $observer
      *
@@ -4124,8 +4265,9 @@ class Mage_CatalogRule_Model_Observer
      */
     public function applyAllRules($observer)
     {
+        /** @var $resource Mage_CatalogRule_Model_Resource_Rule */
         $resource = Mage::getResourceSingleton('catalogrule/rule');
-        $resource->applyAllRulesForDateRange($resource->formatDate(mktime(0,0,0)));
+        $resource->applyAllRules();
         Mage::getModel('catalogrule/flag')->loadSelf()
             ->setState(0)
             ->save();
@@ -4257,7 +4399,9 @@ class Mage_CatalogRule_Model_Observer
      */
     public function dailyCatalogUpdate($observer)
     {
-        Mage::getResourceSingleton('catalogrule/rule')->applyAllRulesForDateRange();
+        /** @var $model Mage_CatalogRule_Model_Rule */
+        $model = Mage::getSingleton('catalogrule/rule');
+        $model->applyAll();
 
         return $this;
     }
@@ -4450,6 +4594,19 @@ class Mage_CatalogRule_Model_Observer
             Mage::getResourceSingleton('catalogrule/rule')->updateRuleProductData($rule);
         }
     }
+
+    /**
+     * Runs Catalog Product Price Reindex
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function runCatalogProductPriceReindex(Varien_Event_Observer $observer)
+    {
+        $indexProcess = Mage::getSingleton('index/indexer')->getProcessByCode('catalog_product_price');
+        if ($indexProcess) {
+            $indexProcess->reindexAll();
+        }
+    }
 }
 /**
  * Magento
@@ -4462,18 +4619,18 @@ class Mage_CatalogRule_Model_Observer
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -4535,15 +4692,49 @@ abstract class Mage_Rule_Model_Resource_Abstract extends Mage_Core_Model_Resourc
     }
 
     /**
+     * Prepare select for condition
+     *
+     * @param int $storeId
+     * @param Mage_Rule_Model_Condition_Abstract $condition
+     * @return Varien_Db_Select
+     */
+    public function getProductFlatSelect($storeId, $condition)
+    {
+        $select = $this->_getReadAdapter()->select();
+        $select->from(
+                array('p' => $this->getTable('catalog/product')),
+                array(new Zend_Db_Expr('DISTINCT p.entity_id'))
+            )
+            ->joinInner(
+                array('cpf' => $this->getTable('catalog/product_flat') . '_' . $storeId),
+                'cpf.entity_id = p.entity_id',
+                array()
+            )->joinLeft(
+                array('ccp' => $this->getTable('catalog/category_product')),
+                'ccp.product_id = p.entity_id',
+                array()
+            );
+
+        $where = $condition->prepareConditionSql();
+        if (!empty($where)) {
+            $select->where($where);
+        }
+
+        return $select;
+    }
+
+    /**
      * Bind specified rules to entities
      *
      * @param array|int|string $ruleIds
      * @param array|int|string $entityIds
      * @param string $entityType
+     * @param bool $deleteOldResults
      *
+     * @throws Exception
      * @return Mage_Rule_Model_Resource_Abstract
      */
-    public function bindRuleToEntity($ruleIds, $entityIds, $entityType)
+    public function bindRuleToEntity($ruleIds, $entityIds, $entityType, $deleteOldResults = true)
     {
         if (empty($ruleIds) || empty($entityIds)) {
             return $this;
@@ -4589,10 +4780,12 @@ abstract class Mage_Rule_Model_Resource_Abstract extends Mage_Core_Model_Resourc
                 );
             }
 
-            $adapter->delete($this->getTable($entityInfo['associations_table']),
-                $adapter->quoteInto($entityInfo['rule_id_field']   . ' IN (?) AND ', $ruleIds) .
-                $adapter->quoteInto($entityInfo['entity_id_field'] . ' NOT IN (?)',  $entityIds)
-            );
+            if ($deleteOldResults) {
+                $adapter->delete($this->getTable($entityInfo['associations_table']),
+                    $adapter->quoteInto($entityInfo['rule_id_field']   . ' IN (?) AND ', $ruleIds) .
+                    $adapter->quoteInto($entityInfo['entity_id_field'] . ' NOT IN (?)',  $entityIds)
+                );
+            }
         } catch (Exception $e) {
             $adapter->rollback();
             throw $e;
@@ -4695,9 +4888,7 @@ abstract class Mage_Rule_Model_Resource_Abstract extends Mage_Core_Model_Resourc
 
         $e = Mage::exception(
             'Mage_Core',
-            Mage::helper('rule')->__(
-                'There is no information about associated entity type "%s".', $entityType
-            )
+            Mage::helper('rule')->__('There is no information about associated entity type "%s".', $entityType)
         );
         throw $e;
     }
@@ -4713,18 +4904,18 @@ abstract class Mage_Rule_Model_Resource_Abstract extends Mage_Core_Model_Resourc
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -4743,6 +4934,11 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
     const SECONDS_IN_DAY = 86400;
 
     /**
+     * Number of products in range for insert
+     */
+    const RANGE_PRODUCT_STEP = 1000000;
+
+    /**
      * Store associated with rule entities information map
      *
      * @var array
@@ -4759,6 +4955,35 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
             'entity_id_field'    => 'customer_group_id'
         )
     );
+
+    /**
+     * Factory instance
+     *
+     * @var Mage_Core_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * App instance
+     *
+     * @var Mage_Core_Model_App
+     */
+    protected $_app;
+
+    /**
+     * Constructor with parameters
+     * Array of arguments with keys
+     *  - 'factory' Mage_Core_Model_Factory
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('core/factory');
+        $this->_app     = !empty($args['app']) ? $args['app'] : Mage::app();
+
+        parent::__construct();
+    }
 
     /**
      * Initialize main table and table id field
@@ -4814,10 +5039,192 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
     }
 
     /**
+     * Deletes records in catalogrule/product_data by rule ID and product IDs
+     *
+     * @param int $ruleId
+     * @param array $productIds
+     */
+    public function cleanProductData($ruleId, array $productIds = array())
+    {
+        /** @var $write Varien_Db_Adapter_Interface */
+        $write = $this->_getWriteAdapter();
+
+        $conditions = array('rule_id = ?' => $ruleId);
+
+        if (count($productIds) > 0) {
+            $conditions['product_id IN (?)'] = $productIds;
+        }
+
+        $write->delete($this->getTable('catalogrule/rule_product'), $conditions);
+    }
+
+    /**
+     * Return whether the product fits the rule
+     *
+     * @param Mage_CatalogRule_Model_Rule $rule
+     * @param Varien_Object $product
+     * @param array $websiteIds
+     * @return bool
+     */
+    public function validateProduct(Mage_CatalogRule_Model_Rule $rule, Varien_Object $product, $websiteIds = array())
+    {
+        /** @var $helper Mage_Catalog_Helper_Product_Flat */
+        $helper = $this->_factory->getHelper('catalog/product_flat');
+        if ($helper->isEnabled() && $helper->isBuiltAllStores()) {
+            /** @var $store Mage_Core_Model_Store */
+            foreach ($this->_app->getStores(false) as $store) {
+                if (count($websiteIds) == 0 || in_array($store->getWebsiteId(), $websiteIds)) {
+                    /** @var $selectByStore Varien_Db_Select */
+                    $selectByStore = $rule->getProductFlatSelect($store->getId());
+                    $selectByStore->where('p.entity_id = ?', $product->getId());
+                    $selectByStore->limit(1);
+                    if ($this->_getReadAdapter()->fetchOne($selectByStore)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } else {
+            return $rule->getConditions()->validate($product);
+        }
+    }
+
+    /**
+     * Inserts rule data into catalogrule/rule_product table
+     *
+     * @param Mage_CatalogRule_Model_Rule $rule
+     * @param array $websiteIds
+     * @param array $productIds
+     */
+    public function insertRuleData(Mage_CatalogRule_Model_Rule $rule, array $websiteIds, array $productIds = array())
+    {
+        /** @var $write Varien_Db_Adapter_Interface */
+        $write = $this->_getWriteAdapter();
+
+        $customerGroupIds = $rule->getCustomerGroupIds();
+
+        $fromTime = (int) strtotime($rule->getFromDate());
+        $toTime = (int) strtotime($rule->getToDate());
+        $toTime = $toTime ? ($toTime + self::SECONDS_IN_DAY - 1) : 0;
+
+        /** @var Mage_Core_Model_Date $coreDate */
+        $coreDate  = $this->_factory->getModel('core/date');
+        $timestamp = $coreDate->gmtTimestamp('Today');
+        if ($fromTime > $timestamp
+            || ($toTime && $toTime < $timestamp)
+        ) {
+            return;
+        }
+        $sortOrder = (int) $rule->getSortOrder();
+        $actionOperator = $rule->getSimpleAction();
+        $actionAmount = (float) $rule->getDiscountAmount();
+        $subActionOperator = $rule->getSubIsEnable() ? $rule->getSubSimpleAction() : '';
+        $subActionAmount = (float) $rule->getSubDiscountAmount();
+        $actionStop = (int) $rule->getStopRulesProcessing();
+        /** @var $helper Mage_Catalog_Helper_Product_Flat */
+        $helper = $this->_factory->getHelper('catalog/product_flat');
+
+        if ($helper->isEnabled() && $helper->isBuiltAllStores()) {
+            /** @var $store Mage_Core_Model_Store */
+            foreach ($this->_app->getStores(false) as $store) {
+                if (in_array($store->getWebsiteId(), $websiteIds)) {
+                    /** @var $selectByStore Varien_Db_Select */
+                    $selectByStore = $rule->getProductFlatSelect($store->getId())
+                        ->joinLeft(array('cg' => $this->getTable('customer/customer_group')),
+                            $write->quoteInto('cg.customer_group_id IN (?)', $customerGroupIds),
+                            array('cg.customer_group_id'))
+                        ->reset(Varien_Db_Select::COLUMNS)
+                        ->columns(array(
+                            new Zend_Db_Expr($store->getWebsiteId()),
+                            'cg.customer_group_id',
+                            'p.entity_id',
+                            new Zend_Db_Expr($rule->getId()),
+                            new Zend_Db_Expr($fromTime),
+                            new Zend_Db_Expr($toTime),
+                            new Zend_Db_Expr("'" . $actionOperator . "'"),
+                            new Zend_Db_Expr($actionAmount),
+                            new Zend_Db_Expr($actionStop),
+                            new Zend_Db_Expr($sortOrder),
+                            new Zend_Db_Expr("'" . $subActionOperator . "'"),
+                            new Zend_Db_Expr($subActionAmount),
+                        ));
+
+                    if (count($productIds) > 0) {
+                        $selectByStore->where('p.entity_id IN (?)', array_keys($productIds));
+                    }
+
+                    $selects = $write->selectsByRange('entity_id', $selectByStore, self::RANGE_PRODUCT_STEP);
+                    foreach ($selects as $select) {
+                        $write->query(
+                            $write->insertFromSelect(
+                                $select, $this->getTable('catalogrule/rule_product'), array(
+                                    'website_id',
+                                    'customer_group_id',
+                                    'product_id',
+                                    'rule_id',
+                                    'from_time',
+                                    'to_time',
+                                    'action_operator',
+                                    'action_amount',
+                                    'action_stop',
+                                    'sort_order',
+                                    'sub_simple_action',
+                                    'sub_discount_amount',
+                                ), Varien_Db_Adapter_Interface::INSERT_IGNORE
+                            )
+                        );
+                    }
+                }
+            }
+        } else {
+            if (count($productIds) == 0) {
+                Varien_Profiler::start('__MATCH_PRODUCTS__');
+                $productIds = $rule->getMatchingProductIds();
+                Varien_Profiler::stop('__MATCH_PRODUCTS__');
+            }
+
+            $rows = array();
+            foreach ($productIds as $productId => $validationByWebsite) {
+                foreach ($websiteIds as $websiteId) {
+                    foreach ($customerGroupIds as $customerGroupId) {
+                        if (empty($validationByWebsite[$websiteId])) {
+                            continue;
+                        }
+                        $rows[] = array(
+                            'rule_id'             => $rule->getId(),
+                            'from_time'           => $fromTime,
+                            'to_time'             => $toTime,
+                            'website_id'          => $websiteId,
+                            'customer_group_id'   => $customerGroupId,
+                            'product_id'          => $productId,
+                            'action_operator'     => $actionOperator,
+                            'action_amount'       => $actionAmount,
+                            'action_stop'         => $actionStop,
+                            'sort_order'          => $sortOrder,
+                            'sub_simple_action'   => $subActionOperator,
+                            'sub_discount_amount' => $subActionAmount,
+                        );
+
+                        if (count($rows) == 1000) {
+                            $write->insertMultiple($this->getTable('catalogrule/rule_product'), $rows);
+                            $rows = array();
+                        }
+                    }
+                }
+            }
+
+            if (!empty($rows)) {
+                $write->insertMultiple($this->getTable('catalogrule/rule_product'), $rows);
+            }
+        }
+    }
+
+    /**
      * Update products which are matched for rule
      *
      * @param Mage_CatalogRule_Model_Rule $rule
      *
+     * @throws Exception
      * @return Mage_CatalogRule_Model_Resource_Rule
      */
     public function updateRuleProductData(Mage_CatalogRule_Model_Rule $rule)
@@ -4826,15 +5233,9 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
         $write  = $this->_getWriteAdapter();
         $write->beginTransaction();
         if ($rule->getProductsFilter()) {
-            $write->delete(
-                $this->getTable('catalogrule/rule_product'),
-                array(
-                    'rule_id=?' => $ruleId,
-                    'product_id IN (?)' => $rule->getProductsFilter()
-                )
-            );
+            $this->cleanProductData($ruleId, $rule->getProductsFilter());
         } else {
-            $write->delete($this->getTable('catalogrule/rule_product'), $write->quoteInto('rule_id=?', $ruleId));
+            $this->cleanProductData($ruleId);
         }
 
         if (!$rule->getIsActive()) {
@@ -4850,59 +5251,13 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
             return $this;
         }
 
-        Varien_Profiler::start('__MATCH_PRODUCTS__');
-        $productIds = $rule->getMatchingProductIds();
-        Varien_Profiler::stop('__MATCH_PRODUCTS__');
-
-        $customerGroupIds = $rule->getCustomerGroupIds();
-        $fromTime = strtotime($rule->getFromDate());
-        $toTime = strtotime($rule->getToDate());
-        $toTime = $toTime ? ($toTime + self::SECONDS_IN_DAY - 1) : 0;
-        $sortOrder = (int)$rule->getSortOrder();
-        $actionOperator = $rule->getSimpleAction();
-        $actionAmount = $rule->getDiscountAmount();
-        $subActionOperator = $rule->getSubIsEnable() ? $rule->getSubSimpleAction() : '';
-        $subActionAmount = $rule->getSubDiscountAmount();
-        $actionStop = $rule->getStopRulesProcessing();
-
-        $rows = array();
-
         try {
-            foreach ($productIds as $productId) {
-                foreach ($websiteIds as $websiteId) {
-                    foreach ($customerGroupIds as $customerGroupId) {
-                        $rows[] = array(
-                            'rule_id' => $ruleId,
-                            'from_time' => $fromTime,
-                            'to_time' => $toTime,
-                            'website_id' => $websiteId,
-                            'customer_group_id' => $customerGroupId,
-                            'product_id' => $productId,
-                            'action_operator' => $actionOperator,
-                            'action_amount' => $actionAmount,
-                            'action_stop' => $actionStop,
-                            'sort_order' => $sortOrder,
-                            'sub_simple_action' => $subActionOperator,
-                            'sub_discount_amount' => $subActionAmount,
-                        );
-
-                        if (count($rows) == 1000) {
-                            $write->insertMultiple($this->getTable('catalogrule/rule_product'), $rows);
-                            $rows = array();
-                        }
-                    }
-                }
-            }
-            if (!empty($rows)) {
-               $write->insertMultiple($this->getTable('catalogrule/rule_product'), $rows);
-            }
-
+            $this->insertRuleData($rule, $websiteIds);
             $write->commit();
         } catch (Exception $e) {
             $write->rollback();
             throw $e;
         }
-
 
         return $this;
     }
@@ -5084,162 +5439,61 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
      * If from date is not defined - will be used previous day by UTC
      * If to date is not defined - will be used next day by UTC
      *
+     * @param int|Mage_Catalog_Model_Product $product
+     *
+     * @throws Exception
+     * @return Mage_CatalogRule_Model_Resource_Rule
+     */
+    public function applyAllRules($product = null)
+    {
+        $this->_reindexCatalogRule($product);
+        return $this;
+    }
+
+    /**
+     * Generate catalog price rules prices for specified date range
+     * If from date is not defined - will be used previous day by UTC
+     * If to date is not defined - will be used next day by UTC
+     *
      * @param int|string|null $fromDate
      * @param int|string|null $toDate
      * @param int $productId
+     *
+     * @deprecated after 1.7.0.2 use method applyAllRules
      *
      * @return Mage_CatalogRule_Model_Resource_Rule
      */
     public function applyAllRulesForDateRange($fromDate = null, $toDate = null, $productId = null)
     {
-        $write = $this->_getWriteAdapter();
-        $write->beginTransaction();
+        return $this->applyAllRules($productId);
+    }
 
-        Mage::dispatchEvent('catalogrule_before_apply', array('resource' => $this));
-
-        $clearOldData = false;
-        if ($fromDate === null) {
-            $fromDate = mktime(0,0,0,date('m'),date('d')-1);
-            /**
-             * If fromDate not specified we can delete all data oldest than 1 day
-             * We have run it for clear table in case when cron was not installed
-             * and old data exist in table
-             */
-            $clearOldData = true;
-        }
-        if (is_string($fromDate)) {
-            $fromDate = strtotime($fromDate);
-        }
-        if ($toDate === null) {
-            $toDate = mktime(0,0,0,date('m'),date('d')+1);
-        }
-        if (is_string($toDate)) {
-            $toDate = strtotime($toDate);
+    /**
+     * Run reindex
+     *
+     * @param int|Mage_Catalog_Model_Product $product
+     */
+    protected function _reindexCatalogRule($product = null)
+    {
+        $indexerCode = 'catalogrule/action_index_refresh';
+        $value = null;
+        if ($product) {
+            $value = $product instanceof Mage_Catalog_Model_Product ? $product->getId() : $product;
+            $indexerCode = 'catalogrule/action_index_refresh_row';
         }
 
-        $product = null;
-        if ($productId instanceof Mage_Catalog_Model_Product) {
-            $product    = $productId;
-            $productId  = $productId->getId();
-        }
-
-        $this->removeCatalogPricesForDateRange($fromDate, $toDate, $productId);
-        if ($clearOldData) {
-            $this->deleteOldData($fromDate, $productId);
-        }
-
-        $dayPrices  = array();
-
-        try {
-            /**
-             * Update products rules prices per each website separately
-             * because of max join limit in mysql
-             */
-            foreach (Mage::app()->getWebsites(false) as $website) {
-                $productsStmt = $this->_getRuleProductsStmt(
-                   $fromDate,
-                   $toDate,
-                   $productId,
-                   $website->getId()
-                );
-
-                $dayPrices  = array();
-                $stopFlags  = array();
-                $prevKey    = null;
-
-                while ($ruleData = $productsStmt->fetch()) {
-                    $ruleProductId  = $ruleData['product_id'];
-                    $productKey     = $ruleProductId . '_'
-                       . $ruleData['website_id'] . '_'
-                       . $ruleData['customer_group_id'];
-
-                    if ($prevKey && ($prevKey != $productKey)) {
-                        $stopFlags = array();
-                    }
-
-                    /**
-                     * Build prices for each day
-                     */
-                    for ($time=$fromDate; $time<=$toDate; $time+=self::SECONDS_IN_DAY) {
-                        if (($ruleData['from_time']==0 || $time >= $ruleData['from_time'])
-                            && ($ruleData['to_time']==0 || $time <=$ruleData['to_time'])
-                        ) {
-                            $priceKey = $time . '_' . $productKey;
-
-                            if (isset($stopFlags[$priceKey])) {
-                                continue;
-                            }
-
-                            if (!isset($dayPrices[$priceKey])) {
-                                $dayPrices[$priceKey] = array(
-                                    'rule_date'         => $time,
-                                    'website_id'        => $ruleData['website_id'],
-                                    'customer_group_id' => $ruleData['customer_group_id'],
-                                    'product_id'        => $ruleProductId,
-                                    'rule_price'        => $this->_calcRuleProductPrice($ruleData),
-                                    'latest_start_date' => $ruleData['from_time'],
-                                    'earliest_end_date' => $ruleData['to_time'],
-                                );
-                            } else {
-                                $dayPrices[$priceKey]['rule_price'] = $this->_calcRuleProductPrice(
-                                    $ruleData,
-                                    $dayPrices[$priceKey]
-                                );
-                                $dayPrices[$priceKey]['latest_start_date'] = max(
-                                    $dayPrices[$priceKey]['latest_start_date'],
-                                    $ruleData['from_time']
-                                );
-                                $dayPrices[$priceKey]['earliest_end_date'] = min(
-                                    $dayPrices[$priceKey]['earliest_end_date'],
-                                    $ruleData['to_time']
-                                );
-                            }
-
-                            if ($ruleData['action_stop']) {
-                                $stopFlags[$priceKey] = true;
-                            }
-                        }
-                    }
-
-                    $prevKey = $productKey;
-                    if (count($dayPrices)>1000) {
-                        $this->_saveRuleProductPrices($dayPrices);
-                        $dayPrices = array();
-                    }
-                }
-                $this->_saveRuleProductPrices($dayPrices);
-            }
-            $this->_saveRuleProductPrices($dayPrices);
-
-            $write->delete($this->getTable('catalogrule/rule_group_website'), array());
-
-            $timestamp = Mage::getModel('core/date')->gmtTimestamp();
-
-            $select = $write->select()
-                ->distinct(true)
-                ->from(
-                    $this->getTable('catalogrule/rule_product'),
-                    array('rule_id', 'customer_group_id', 'website_id')
-                )->where("{$timestamp} >= from_time AND (({$timestamp} <= to_time AND to_time > 0) OR to_time = 0)");
-            $query = $select->insertFromSelect($this->getTable('catalogrule/rule_group_website'));
-            $write->query($query);
-
-            $write->commit();
-        } catch (Exception $e) {
-            $write->rollback();
-            throw $e;
-        }
-
-        $productCondition = Mage::getModel('catalog/product_condition')
-            ->setTable($this->getTable('catalogrule/affected_product'))
-            ->setPkFieldName('product_id');
-        Mage::dispatchEvent('catalogrule_after_apply', array(
-            'product' => $product,
-            'product_condition' => $productCondition
-        ));
-        $write->delete($this->getTable('catalogrule/affected_product'));
-
-        return $this;
+        /** @var $indexer Mage_CatalogRule_Model_Action_Index_Refresh */
+        $indexer = Mage::getModel(
+            $indexerCode,
+            array(
+                'connection' => $this->_getWriteAdapter(),
+                'factory'    => Mage::getModel('core/factory'),
+                'resource'   => $this,
+                'app'        => Mage::app(),
+                'value'      => $value
+            )
+        );
+        $indexer->execute();
     }
 
     /**
@@ -5406,6 +5660,7 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
      * @param Mage_Catalog_Model_Product $product
      * @param array $websiteIds
      *
+     * @throws Exception
      * @return Mage_CatalogRule_Model_Resource_Rule
      */
     public function applyToProduct($rule, $product, $websiteIds)
@@ -5420,69 +5675,53 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
         $write = $this->_getWriteAdapter();
         $write->beginTransaction();
 
-        $write->delete($this->getTable('catalogrule/rule_product'), array(
-            $write->quoteInto('rule_id=?', $ruleId),
-            $write->quoteInto('product_id=?', $productId),
-        ));
-
-        if (!$rule->getConditions()->validate($product)) {
+        if ($this->_isProductMatchedRule($ruleId, $product)) {
+            $this->cleanProductData($ruleId, array($productId));
+        }
+        if ($this->validateProduct($rule, $product, $websiteIds)) {
+            try {
+                $this->insertRuleData($rule, $websiteIds, array(
+                    $productId => array_combine(array_values($websiteIds), array_values($websiteIds)))
+                );
+            } catch (Exception $e) {
+                $write->rollback();
+                throw $e;
+            }
+        } else {
             $write->delete($this->getTable('catalogrule/rule_product_price'), array(
-                $write->quoteInto('product_id=?', $productId),
+                $write->quoteInto('product_id = ?', $productId),
             ));
-            $write->commit();
-            return $this;
         }
-
-        $customerGroupIds = $rule->getCustomerGroupIds();
-        $fromTime = strtotime($rule->getFromDate());
-        $toTime = strtotime($rule->getToDate());
-        $toTime = $toTime ? $toTime + self::SECONDS_IN_DAY - 1 : 0;
-        $sortOrder = (int)$rule->getSortOrder();
-        $actionOperator = $rule->getSimpleAction();
-        $actionAmount = $rule->getDiscountAmount();
-        $actionStop = $rule->getStopRulesProcessing();
-        $subActionOperator = $rule->getSubIsEnable() ? $rule->getSubSimpleAction() : '';
-        $subActionAmount = $rule->getSubDiscountAmount();
-
-        $rows = array();
-        try {
-            foreach ($websiteIds as $websiteId) {
-                foreach ($customerGroupIds as $customerGroupId) {
-                    $rows[] = array(
-                        'rule_id' => $ruleId,
-                        'from_time' => $fromTime,
-                        'to_time' => $toTime,
-                        'website_id' => $websiteId,
-                        'customer_group_id' => $customerGroupId,
-                        'product_id' => $productId,
-                        'action_operator' => $actionOperator,
-                        'action_amount' => $actionAmount,
-                        'action_stop' => $actionStop,
-                        'sort_order' => $sortOrder,
-                        'sub_simple_action' => $subActionOperator,
-                        'sub_discount_amount' => $subActionAmount,
-                    );
-
-                    if (count($rows) == 1000) {
-                        $write->insertMultiple($this->getTable('catalogrule/rule_product'), $rows);
-                        $rows = array();
-                    }
-                }
-            }
-
-            if (!empty($rows)) {
-                $write->insertMultiple($this->getTable('catalogrule/rule_product'), $rows);
-            }
-        } catch (Exception $e) {
-            $write->rollback();
-            throw $e;
-        }
-
-        $this->applyAllRulesForDateRange(null, null, $product);
 
         $write->commit();
-
         return $this;
+    }
+
+    /**
+     * Get ids of matched rules for specific product
+     *
+     * @param int $productId
+     * @return array
+     */
+    public function getProductRuleIds($productId)
+    {
+        $read = $this->_getReadAdapter();
+        $select = $read->select()->from($this->getTable('catalogrule/rule_product'), 'rule_id');
+        $select->where('product_id = ?', $productId);
+        return array_flip($read->fetchCol($select));
+    }
+
+    /**
+     * Is product has been matched the rule
+     *
+     * @param int $ruleId
+     * @param Mage_Catalog_Model_Product $product
+     * @return bool
+     */
+    protected function _isProductMatchedRule($ruleId, $product)
+    {
+        $rules = $product->getMatchedRules();
+        return isset($rules[$ruleId]);
     }
 }
 /**
@@ -5496,18 +5735,18 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -5526,18 +5765,18 @@ interface Mage_Rule_Model_Condition_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -5589,6 +5828,16 @@ abstract class Mage_Rule_Model_Condition_Abstract
         if ($options = $this->getOperatorOptions()) {
             foreach ($options as $operator=>$dummy) { $this->setOperator($operator); break; }
         }
+    }
+
+    /**
+     * Prepare sql where by condition
+     *
+     * @return string
+     */
+    public function prepareConditionSql()
+    {
+        return '';
     }
 
     /**
@@ -6038,7 +6287,7 @@ abstract class Mage_Rule_Model_Condition_Abstract
     }
 
     /**
-     * Validate product attrbute value for condition
+     * Validate product attribute value for condition
      *
      * @param   mixed $validatedValue product attribute value
      * @return  bool
@@ -6192,22 +6441,25 @@ abstract class Mage_Rule_Model_Condition_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract Rule product condition data model
+ *
+ * @method string getAttribute()
+ * @method string getOperator()
  *
  * @category Mage
  * @package Mage_Rule
@@ -6215,6 +6467,13 @@ abstract class Mage_Rule_Model_Condition_Abstract
  */
 abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Model_Condition_Abstract
 {
+    /**
+     * Rule condition SQL builder
+     *
+     * @var Mage_Rule_Model_Resource_Rule_Condition_SqlBuilder
+     */
+    protected $_ruleResourceHelper;
+
     /**
      * All attribute values as array in form:
      * array(
@@ -6256,6 +6515,70 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
             $this->_arrayInputTypes[] = 'category';
         }
         return $this->_defaultOperatorInputByType;
+    }
+
+    /**
+     * Prepare bind array of ids from string or array
+     *
+     * @param string|int|array $value
+     * @return array
+     */
+    public function bindArrayOfIds($value)
+    {
+        if (!is_array($value)) {
+            $value = explode(',', $value);
+        }
+
+        $value = array_map('trim', $value);
+        $value = array_filter($value, 'is_numeric');
+
+        return $value;
+    }
+
+    /**
+     * Prepare sql where by condition
+     *
+     * @return string
+     */
+    public function prepareConditionSql()
+    {
+        $alias     = 'cpf';
+        $attribute = $this->getAttribute();
+        $value     = $this->getValue();
+        $operator  = $this->correctOperator($this->getOperator(), $this->getInputType());
+        if ($attribute == 'category_ids') {
+            $alias     = 'ccp';
+            $attribute = 'category_id';
+            $value     = $this->bindArrayOfIds($value);
+        }
+
+        /** @var $ruleResource Mage_Rule_Model_Resource_Rule_Condition_SqlBuilder */
+        $ruleResource = $this->getRuleResourceHelper();
+
+        return $ruleResource->getOperatorCondition($alias . '.' . $attribute, $operator, $value);
+    }
+
+    /**
+     * Rule condition SQL builder setter
+     *
+     * @param Mage_Rule_Model_Resource_Rule_Condition_SqlBuilder $ruleHelper
+     */
+    public function setRuleResourceHelper(Mage_Rule_Model_Resource_Rule_Condition_SqlBuilder $ruleHelper)
+    {
+        $this->_ruleResourceHelper = $ruleHelper;
+    }
+
+    /**
+     * Rule condition SQL builder getter
+     *
+     * @return Mage_Rule_Model_Resource_Rule_Condition_SqlBuilder
+     */
+    public function getRuleResourceHelper()
+    {
+        if (!$this->_ruleResourceHelper) {
+            $this->_ruleResourceHelper = Mage::getModel('rule/resource_rule_condition_sqlBuilder');
+        }
+        return $this->_ruleResourceHelper;
     }
 
     /**
@@ -6623,9 +6946,12 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
     public function validate(Varien_Object $object)
     {
         $attrCode = $this->getAttribute();
+        if (!($object instanceof Mage_Catalog_Model_Product)) {
+            $object = Mage::getModel('catalog/product')->load($object->getId());
+        }
 
         if ('category_ids' == $attrCode) {
-            return $this->validateAttribute($object->getAvailableInCategories());
+            return $this->validateAttribute($object->getCategoryIds());
         } elseif (! isset($this->_entityAttributeValues[$object->getId()])) {
             if (!$object->getResource()) {
                 return false;
@@ -6677,23 +7003,34 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
     }
 
     /**
-     * Correct '==' and '!=' operators
-     * Categories can't be equal because product is included categories selected by administrator and in their parents
+     * Get correct operator for validation
      *
      * @return string
      */
     public function getOperatorForValidate()
     {
-        $op = $this->getOperator();
-        if ($this->getInputType() == 'category') {
-            if ($op == '==') {
-                $op = '{}';
-            } elseif ($op == '!=') {
-                $op = '!{}';
+        return $this->correctOperator($this->getOperator(), $this->getInputType());
+    }
+
+    /**
+     * Correct '==' and '!=' operators
+     * Categories can't be equal because product is included categories selected by administrator and in their parents
+     *
+     * @param string $operator
+     * @param string $inputType
+     * @return string
+     */
+    public function correctOperator($operator, $inputType)
+    {
+        if ($inputType == 'category') {
+            if ($operator == '==') {
+                $operator = '{}';
+            } elseif ($operator == '!=') {
+                $operator = '!{}';
             }
         }
 
-        return $op;
+        return $operator;
     }
 }
 /**
@@ -6707,18 +7044,18 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -6727,7 +7064,111 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
  */
 class Mage_CatalogRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Condition_Product_Abstract
 {
+    /**
+     * Validate product attribute value for condition
+     *
+     * @param Varien_Object $object
+     * @return bool
+     */
+    public function validate(Varien_Object $object)
+    {
+        $attrCode = $this->getAttribute();
+        if ('category_ids' == $attrCode) {
+            return $this->validateAttribute($object->getCategoryIds());
+        }
+        if ('attribute_set_id' == $attrCode) {
+            return $this->validateAttribute($object->getData($attrCode));
+        }
 
+        $oldAttrValue = $object->hasData($attrCode) ? $object->getData($attrCode) : null;
+        $object->setData($attrCode, $this->_getAttributeValue($object));
+        $result = $this->_validateProduct($object);
+        $this->_restoreOldAttrValue($object, $oldAttrValue);
+
+        return (bool)$result;
+    }
+
+    /**
+     * Validate product
+     *
+     * @param Varien_Object $object
+     * @return bool
+     */
+    protected function _validateProduct($object)
+    {
+        return Mage_Rule_Model_Condition_Abstract::validate($object);
+    }
+
+    /**
+     * Restore old attribute value
+     *
+     * @param Varien_Object $object
+     * @param mixed $oldAttrValue
+     */
+    protected function _restoreOldAttrValue($object, $oldAttrValue)
+    {
+        $attrCode = $this->getAttribute();
+        if (is_null($oldAttrValue)) {
+            $object->unsetData($attrCode);
+        } else {
+            $object->setData($attrCode, $oldAttrValue);
+        }
+    }
+
+    /**
+     * Get attribute value
+     *
+     * @param Varien_Object $object
+     * @return mixed
+     */
+    protected function _getAttributeValue($object)
+    {
+        $attrCode = $this->getAttribute();
+        $storeId = $object->getStoreId();
+        $defaultStoreId = Mage_Core_Model_App::ADMIN_STORE_ID;
+        $productValues  = isset($this->_entityAttributeValues[$object->getId()])
+            ? $this->_entityAttributeValues[$object->getId()] : array();
+        $defaultValue = isset($productValues[$defaultStoreId])
+            ? $productValues[$defaultStoreId] : $object->getData($attrCode);
+        $value = isset($productValues[$storeId]) ? $productValues[$storeId] : $defaultValue;
+
+        $value = $this->_prepareDatetimeValue($value, $object);
+        $value = $this->_prepareMultiselectValue($value, $object);
+
+        return $value;
+    }
+
+    /**
+     * Prepare datetime attribute value
+     *
+     * @param mixed $value
+     * @param Varien_Object $object
+     * @return mixed
+     */
+    protected function _prepareDatetimeValue($value, $object)
+    {
+        $attribute = $object->getResource()->getAttribute($this->getAttribute());
+        if ($attribute && $attribute->getBackendType() == 'datetime') {
+            $value = strtotime($value);
+        }
+        return $value;
+    }
+
+    /**
+     * Prepare multiselect attribute value
+     *
+     * @param mixed $value
+     * @param Varien_Object $object
+     * @return mixed
+     */
+    protected function _prepareMultiselectValue($value, $object)
+    {
+        $attribute = $object->getResource()->getAttribute($this->getAttribute());
+        if ($attribute && $attribute->getFrontendInput() == 'multiselect') {
+            $value = strlen($value) ? explode(',', $value) : array();
+        }
+        return $value;
+    }
 }
 /**
  * Magento
@@ -6740,18 +7181,18 @@ class Mage_CatalogRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Cond
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -6761,9 +7202,20 @@ class Mage_CatalogRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Cond
  * @category   Mage
  * @package    Mage_Catalog
  */
-class Mage_Catalog_Block_Product_Price extends Mage_Core_Block_Template
+class Mage_Catalog_Block_Product_Price extends Mage_Catalog_Block_Product_Abstract
 {
+    /**
+     * Price display type
+     *
+     * @var int
+     */
     protected $_priceDisplayType = null;
+
+    /**
+     * The id suffix
+     *
+     * @var string
+     */
     protected $_idSuffix = '';
 
     /**
@@ -6780,17 +7232,33 @@ class Mage_Catalog_Block_Product_Price extends Mage_Core_Block_Template
         return $product;
     }
 
+    /**
+     * Returns the product's minimal price
+     *
+     * @return float
+     */
     public function getDisplayMinimalPrice()
     {
         return $this->_getData('display_minimal_price');
     }
 
+    /**
+     * Sets the id suffix
+     *
+     * @param string $idSuffix
+     * @return Mage_Catalog_Block_Product_Price
+     */
     public function setIdSuffix($idSuffix)
     {
         $this->_idSuffix = $idSuffix;
         return $this;
     }
 
+    /**
+     * Returns the id suffix
+     *
+     * @return string
+     */
     public function getIdSuffix()
     {
         return $this->_idSuffix;
@@ -6800,14 +7268,21 @@ class Mage_Catalog_Block_Product_Price extends Mage_Core_Block_Template
      * Get tier prices (formatted)
      *
      * @param Mage_Catalog_Model_Product $product
+     * @param Mage_Catalog_Model_Product $parent
      * @return array
      */
-    public function getTierPrices($product = null)
+    public function getTierPrices($product = null, $parent = null)
     {
         if (is_null($product)) {
             $product = $this->getProduct();
         }
         $prices = $product->getFormatedTierPrice();
+
+        // if our parent is a bundle, then we need to further adjust our tier prices
+        if (isset($parent) && $parent->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE) {
+            /* @var $bundlePriceModel Mage_Bundle_Model_Product_Price */
+            $bundlePriceModel = Mage::getModel('bundle/product_price');
+        }
 
         $res = array();
         if (is_array($prices)) {
@@ -6826,7 +7301,14 @@ class Mage_Catalog_Block_Product_Price extends Mage_Core_Block_Template
                 }
 
                 if ($price['price'] < $productPrice) {
+                    // use the original prices to determine the percent savings
                     $price['savePercent'] = ceil(100 - ((100 / $productPrice) * $price['price']));
+
+                    // if applicable, adjust the tier prices
+                    if (isset($bundlePriceModel)) {
+                        $price['price']         = $bundlePriceModel->getLowestPrice($parent, $price['price']);
+                        $price['website_price'] = $bundlePriceModel->getLowestPrice($parent, $price['website_price']);
+                    }
 
                     $tierPrice = Mage::app()->getStore()->convertPrice(
                         Mage::helper('tax')->getPrice($product, $price['website_price'])
@@ -6895,6 +7377,29 @@ class Mage_Catalog_Block_Product_Price extends Mage_Core_Block_Template
         $html = $this->hasRealPriceHtml() ? $this->getRealPriceHtml() : $product->getRealPriceHtml();
         return Mage::helper('core')->jsonEncode($html);
     }
+
+    /**
+     * Retrieve block cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return array_merge(parent::getCacheTags(), $this->getProduct()->getCacheIdTags());
+    }
+
+    /**
+     * Retrieve attribute instance by name, id or config node
+     *
+     * If attribute is not found false is returned
+     *
+     * @param string|integer|Mage_Core_Model_Config_Element $attribute
+     * @return Mage_Eav_Model_Entity_Attribute_Abstract || false
+     */
+    public function getProductAttribute($attribute)
+    {
+        return $this->getProduct()->getResource()->getAttribute($attribute);
+    }
 }
 /**
  * Magento
@@ -6907,20 +7412,140 @@ class Mage_Catalog_Block_Product_Price extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
+/**
+ * Catalog flat abstract helper
+ *
+ * @category   Mage
+ * @package    Mage_Catalog
+ * @author     Magento Core Team <core@magentocommerce.com>
+ */
+abstract class Mage_Catalog_Helper_Flat_Abstract extends Mage_Core_Helper_Abstract
+{
+    /**
+     * Catalog Flat index process code
+     *
+     * @var null|string
+     */
+    protected $_indexerCode = null;
+
+    /**
+     * Store catalog Flat index process instance
+     *
+     * @var Mage_Index_Model_Process|null
+     */
+    protected $_process = null;
+
+    /**
+     * Flag for accessibility
+     *
+     * @var bool
+     */
+    protected $_isAccessible = null;
+
+    /**
+     * Flag for availability
+     *
+     * @var bool
+     */
+    protected $_isAvailable = null;
+
+    /**
+     * Check if Catalog Flat Data has been initialized
+     *
+     * @param null|bool|int|Mage_Core_Model_Store $store Store(id) for which the value is checked
+     * @return bool
+     */
+    abstract public function isBuilt($store = null);
+
+    /**
+     * Check if Catalog Category Flat Data is enabled
+     *
+     * @param mixed $deprecatedParam this parameter is deprecated and no longer in use
+     *
+     * @return bool
+     */
+    abstract public function isEnabled($deprecatedParam = false);
+
+    /**
+     * Check if Catalog Category Flat Data is available
+     * without lock check
+     *
+     * @return bool
+     */
+    public function isAccessible()
+    {
+        if (is_null($this->_isAccessible)) {
+            $this->_isAccessible = $this->isEnabled()
+                && $this->getProcess()->getStatus() != Mage_Index_Model_Process::STATUS_RUNNING;
+        }
+        return $this->_isAccessible;
+    }
+
+    /**
+     * Check if Catalog Category Flat Data is available for use
+     *
+     * @return bool
+     */
+    public function isAvailable()
+    {
+        if (is_null($this->_isAvailable)) {
+            $this->_isAvailable = $this->isAccessible() && !$this->getProcess()->isLocked();
+        }
+        return $this->_isAvailable;
+    }
+
+    /**
+     * Retrieve Catalog Flat index process
+     *
+     * @return Mage_Index_Model_Process
+     */
+    public function getProcess()
+    {
+        if (is_null($this->_process)) {
+            $this->_process = Mage::getModel('index/process')
+                ->load($this->_indexerCode, 'indexer_code');
+        }
+        return $this->_process;
+    }
+}
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Mage
+ * @package     Mage_Catalog
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
 
 /**
  * Catalog Product Flat Helper
@@ -6929,33 +7554,48 @@ class Mage_Catalog_Block_Product_Price extends Mage_Core_Block_Template
  * @package    Mage_Catalog
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
+class Mage_Catalog_Helper_Product_Flat extends Mage_Catalog_Helper_Flat_Abstract
 {
+    /**
+     * Catalog Product Flat Config
+     */
     const XML_PATH_USE_PRODUCT_FLAT          = 'catalog/frontend/flat_catalog_product';
     const XML_NODE_ADD_FILTERABLE_ATTRIBUTES = 'global/catalog/product/flat/add_filterable_attributes';
     const XML_NODE_ADD_CHILD_DATA            = 'global/catalog/product/flat/add_child_data';
 
     /**
-     * Catalog Flat Product index process code
-     * 
-     * @var string
+     * Path for flat flag model
      */
-    const CATALOG_FLAT_PROCESS_CODE = 'catalog_product_flat';
-    
-    /**
-     * Catalog Product Flat index process
-     * 
-     * @var Mage_Index_Model_Process
-     */
-    protected $_process;
+    const XML_PATH_FLAT_FLAG                 = 'global/catalog/product/flat/flag/model';
 
     /**
-     * Catalog Product Flat status by store
-     * 
+     * Catalog Flat Product index process code
+     */
+    const CATALOG_FLAT_PROCESS_CODE = 'catalog_product_flat';
+
+    /**
+     * Catalog Product Flat index process code
+     *
+     * @var string
+     */
+    protected $_indexerCode = self::CATALOG_FLAT_PROCESS_CODE;
+
+    /**
+     * Catalog Product Flat index process instance
+     *
+     * @var Mage_Index_Model_Process|null
+     */
+    protected $_process = null;
+
+    /**
+     * Store flags which defines if Catalog Product Flat functionality is enabled
+     *
+     * @deprecated after 1.7.0.0
+     *
      * @var array
      */
-    protected $_isEnabled = array();    
-    
+    protected $_isEnabled = array();
+
     /**
      * Catalog Product Flat Flag object
      *
@@ -6971,43 +7611,52 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
     public function getFlag()
     {
         if (is_null($this->_flagObject)) {
-            $this->_flagObject = Mage::getSingleton('catalog/product_flat_flag')
+            $className = (string)Mage::getConfig()->getNode(self::XML_PATH_FLAT_FLAG);
+            $this->_flagObject = Mage::getSingleton($className)
                 ->loadSelf();
         }
         return $this->_flagObject;
     }
 
     /**
-     * Check is builded Catalog Product Flat Data
+     * Check Catalog Product Flat functionality is enabled
      *
-     * @return bool
-     */
-    public function isBuilt()
-    {
-        return $this->getFlag()->getIsBuilt();
-    }
-
-    /**
-     * Check is enable catalog product for store
+     * @param int|string|null|Mage_Core_Model_Store $store this parameter is deprecated and no longer in use
      *
-     * @param mixed $store
      * @return bool
      */
     public function isEnabled($store = null)
     {
-        $store = Mage::app()->getStore($store);
-        if ($store->isAdmin()) {
-            return false;
+        return Mage::getStoreConfigFlag(self::XML_PATH_USE_PRODUCT_FLAT);
+    }
+
+    /**
+     * Check if Catalog Product Flat Data has been initialized
+     *
+     * @param null|bool|int|Mage_Core_Model_Store $store Store(id) for which the value is checked
+     * @return bool
+     */
+    public function isBuilt($store = null)
+    {
+        if ($store !== null) {
+            return $this->getFlag()->isStoreBuilt(Mage::app()->getStore($store)->getId());
         }
-        
-        if (!isset($this->_isEnabled[$store->getId()])) {
-            if (Mage::getStoreConfigFlag(self::XML_PATH_USE_PRODUCT_FLAT, $store)) {
-                $this->_isEnabled[$store->getId()] = $this->getProcess()->getStatus() == Mage_Index_Model_Process::STATUS_PENDING;
-            } else {
-                $this->_isEnabled[$store->getId()] = false;
-            }
+        return $this->getFlag()->getIsBuilt();
+    }
+
+    /**
+     * Check if Catalog Product Flat Data has been initialized for all stores
+     *
+     * @return bool
+     */
+    public function isBuiltAllStores()
+    {
+        $isBuildAll = true;
+        foreach(Mage::app()->getStores(false) as $store) {
+            /** @var $store Mage_Core_Model_Store */
+            $isBuildAll = $isBuildAll && $this->isBuilt($store->getId());
         }
-        return $this->_isEnabled[$store->getId()];        
+        return $isBuildAll;
     }
 
     /**
@@ -7029,20 +7678,6 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
     {
         return intval(Mage::getConfig()->getNode(self::XML_NODE_ADD_CHILD_DATA));
     }
-
-    /**
-     * Retrive Catalog Product Flat index process
-     * 
-     * @return Mage_Index_Model_Process
-     */
-    public function getProcess()
-    {
-        if (is_null($this->_process)) {
-            $this->_process = Mage::getModel('index/process')
-                ->load(self::CATALOG_FLAT_PROCESS_CODE, 'indexer_code');
-        }
-        return $this->_process;
-    }
 }
 /**
  * Magento
@@ -7055,18 +7690,18 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -7415,28 +8050,29 @@ class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog product model
  *
  * @method Mage_Catalog_Model_Resource_Product getResource()
- * @method Mage_Catalog_Model_Resource_Product _getResource()
+ * @method Mage_Catalog_Model_Product setHasError(bool $value)
+ * @method null|bool getHasError()
  *
- * @category   Mage
- * @package    Mage_Catalog
+ * @category    Mage
+ * @package     Mage_Catalog
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
@@ -7570,7 +8206,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     public function getUrlModel()
     {
         if ($this->_urlModel === null) {
-            $this->_urlModel = Mage::getSingleton('catalog/product_url');
+            $this->_urlModel = Mage::getSingleton('catalog/factory')->getProductUrlInstance();
         }
         return $this->_urlModel;
     }
@@ -7950,12 +8586,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
         $this->getOptionInstance()->setProduct($this)
             ->saveOptions();
 
-        $result = parent::_afterSave();
-
-        Mage::getSingleton('index/indexer')->processEntityAction(
-            $this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE
-        );
-        return $result;
+        return parent::_afterSave();
     }
 
     /**
@@ -7968,9 +8599,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     {
         $this->_protectFromNonAdmin();
         $this->cleanCache();
-        Mage::getSingleton('index/indexer')->logEvent(
-            $this, self::ENTITY, Mage_Index_Model_Event::TYPE_DELETE
-        );
+
         return parent::_beforeDelete();
     }
 
@@ -7982,9 +8611,11 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     protected function _afterDeleteCommit()
     {
         parent::_afterDeleteCommit();
-        Mage::getSingleton('index/indexer')->indexEvents(
-            self::ENTITY, Mage_Index_Model_Event::TYPE_DELETE
-        );
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+
+        $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_DELETE);
     }
 
     /**
@@ -8730,7 +9361,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     public function getIsSalable()
     {
         $productType = $this->getTypeInstance(true);
-        if (is_callable(array($productType, 'getIsSalable'))) {
+        if (method_exists($productType, 'getIsSalable')) {
             return $productType->getIsSalable($this);
         }
         if ($this->hasData('is_salable')) {
@@ -8939,6 +9570,9 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
      */
     public function getRequestPath()
     {
+        if (!$this->_getData('request_path')) {
+            $this->getProductUrl();
+        }
         return $this->_getData('request_path');
     }
 
@@ -9319,7 +9953,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
         $products = $this->_getResource()->getProductsSku($productIds);
         if (count($products)) {
             foreach ($products as $product) {
-                if (empty($product['sku'])) {
+                if (!strlen($product['sku'])) {
                     return false;
                 }
             }
@@ -9341,7 +9975,12 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
         /* add product custom options data */
         $customOptions = $buyRequest->getOptions();
         if (is_array($customOptions)) {
-            $options->setOptions(array_diff($buyRequest->getOptions(), array('')));
+            foreach ($customOptions as $key => $value) {
+                if ($value === '') {
+                    unset($customOptions[$key]);
+                }
+            }
+            $options->setOptions($customOptions);
         }
 
         /* add product type selected options data */
@@ -9462,6 +10101,22 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     {
         return $this->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED;
     }
+
+    /**
+     * Callback function which called after transaction commit in resource model
+     *
+     * @return Mage_Catalog_Model_Product
+     */
+    public function afterCommitCallback()
+    {
+        parent::afterCommitCallback();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+        $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
+
+        return $this;
+    }
 }
 /**
  * Magento
@@ -9474,18 +10129,18 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -9602,8 +10257,12 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Media extends Mage_Eav_Model_
                 if (!isset($image['value_id'])) {
                     continue;
                 }
-                $duplicate[$image['value_id']] = $this->_copyImage($image['file']);
-                $newImages[$image['file']] = $duplicate[$image['value_id']];
+                $newFile = $this->_copyImage($image['file']);
+                $newImages[$image['file']] = array(
+                    'new_file' => $newFile,
+                    'label' => $image['label']
+                );
+                $duplicate[$image['value_id']] = $newFile;
             }
 
             $value['duplicate'] = $duplicate;
@@ -10166,18 +10825,18 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Media extends Mage_Eav_Model_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10274,23 +10933,23 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  *
- * Speical Start Date attribute backend
+ * Start Date attribute backend
  *
  * @category   Mage
  * @package    Mage_Catalog
@@ -10299,23 +10958,70 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
 
 class Mage_Catalog_Model_Product_Attribute_Backend_Startdate extends Mage_Eav_Model_Entity_Attribute_Backend_Datetime
 {
-    public function beforeSave($object)
+   /**
+    * Get attribute value for save.
+    *
+    * @param Varien_Object $object
+    * @return string|bool
+    */
+    protected function _getValueForSave($object)
     {
         $attributeName  = $this->getAttribute()->getName();
         $startDate      = $object->getData($attributeName);
         if ($startDate === false) {
+            return false;
+        }
+        return $startDate;
+    }
+
+   /**
+    * Before save hook.
+    * Prepare attribute value for save
+    *
+    * @param Varien_Object $object
+    * @return Mage_Catalog_Model_Product_Attribute_Backend_Startdate
+    */
+    public function beforeSave($object)
+    {
+        $startDate = $this->_getValueForSave($object);
+        if ($startDate === false) {
             return $this;
         }
-        if ($startDate == '' && $object->getSpecialPrice()) {
-            $startDate = Mage::app()->getLocale()->date();
-        }
-
-        $object->setData($attributeName, $startDate);
-
         parent::beforeSave($object);
         return $this;
     }
 
+   /**
+    * Product from date attribute validate function.
+    * In case invalid data throws exception.
+    *
+    * @param Varien_Object $object
+    * @throws Mage_Eav_Model_Entity_Attribute_Exception
+    * @return bool
+    */
+    public function validate($object)
+    {
+        $attr      = $this->getAttribute();
+        $maxDate   = $attr->getMaxValue();
+        $startDate = $this->_getValueForSave($object);
+        if ($startDate === false) {
+            return true;
+        }
+
+        if ($maxDate) {
+            $date     = Mage::getModel('core/date');
+            $value    = $date->timestamp($startDate);
+            $maxValue = $date->timestamp($maxDate);
+
+            if ($value > $maxValue) {
+                $message = Mage::helper('catalog')->__('The From Date value should be less than or equal to the To Date value.');
+                $eavExc  = new Mage_Eav_Model_Entity_Attribute_Exception($message);
+                $eavExc->setAttributeCode($attr->getName());
+                throw $eavExc;
+            }
+        }
+        return true;
+    }
 }
 /**
  * Magento
@@ -10328,18 +11034,18 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Startdate extends Mage_Eav_Mo
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10696,18 +11402,18 @@ abstract class Mage_Catalog_Model_Product_Attribute_Backend_Groupprice_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10787,18 +11493,18 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Tierprice
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -10806,11 +11512,17 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Tierprice
  *
  * @category   Mage
  * @package    Mage_Catalog
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @author     Magento Core Team <core@magentocommerce.com>
  */
-
-class Mage_Catalog_Model_Product_Attribute_Backend_Urlkey extends Mage_Eav_Model_Entity_Attribute_Backend_Abstract
+abstract class Mage_Catalog_Model_Attribute_Backend_Urlkey_Abstract
+    extends Mage_Eav_Model_Entity_Attribute_Backend_Abstract
 {
+    /**
+     * Format url key attribute before save, also use product name as url key if it empty
+     *
+     * @param Varien_Object $object
+     * @return Mage_Catalog_Model_Category_Attribute_Backend_Urlkey
+     */
     public function beforeSave($object)
     {
         $attributeName = $this->getAttribute()->getName();
@@ -10819,7 +11531,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Urlkey extends Mage_Eav_Model
         if ($urlKey === false) {
             return $this;
         }
-        if ($urlKey == '') {
+        if ($urlKey=='') {
             $urlKey = $object->getName();
         }
 
@@ -10828,16 +11540,18 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Urlkey extends Mage_Eav_Model
         return $this;
     }
 
+    /**
+     * Executes after url attribute save.
+     *
+     * @param Varien_Object $object
+     *
+     * @return Mage_Catalog_Model_Category_Attribute_Backend_Urlkey
+     */
     public function afterSave($object)
     {
-        /* @var $object Mage_Catalog_Model_Product */
         /**
-         * Logic moved to Mage_Catalog_Model_Indexer_Url
+         * This logic moved to Mage_Catalog_Model_Indexer_Url
          */
-        /*if (!$object->getExcludeUrlRewrite() &&
-            ($object->dataHasChangedFor('url_key') || $object->getIsChangedCategories() || $object->getIsChangedWebsites())) {
-            Mage::getSingleton('catalog/url')->refreshProductRewrite($object->getId());
-        }*/
         return $this;
     }
 }
@@ -10852,18 +11566,54 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Urlkey extends Mage_Eav_Model
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * Product url key attribute backend
+ *
+ * @category   Mage
+ * @package    Mage_Catalog
+ * @author     Magento Core Team <core@magentocommerce.com>
+ */
+class Mage_Catalog_Model_Product_Attribute_Backend_Urlkey extends Mage_Catalog_Model_Attribute_Backend_Urlkey_Abstract
+{
+
+}
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Mage
+ * @package     Mage_Catalog
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -11015,18 +11765,18 @@ class Mage_Catalog_Model_Product_Link extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Media
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -11082,18 +11832,18 @@ interface Mage_Media_Model_Image_Config_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -11268,18 +12018,18 @@ class Mage_Catalog_Model_Product_Media_Config implements Mage_Media_Model_Image_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -11312,30 +12062,107 @@ class Mage_Catalog_Model_Product_Media_Config implements Mage_Media_Model_Image_
  */
 class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
 {
+    /**
+     * Option group text
+     */
     const OPTION_GROUP_TEXT   = 'text';
+
+    /**
+     * Option group file
+     */
     const OPTION_GROUP_FILE   = 'file';
+
+    /**
+     * Option group select
+     */
     const OPTION_GROUP_SELECT = 'select';
+
+    /**
+     * Option group date
+     */
     const OPTION_GROUP_DATE   = 'date';
 
+    /**
+     * Option type field
+     */
     const OPTION_TYPE_FIELD     = 'field';
+
+    /**
+     * Option type area
+     */
     const OPTION_TYPE_AREA      = 'area';
+
+    /**
+     * Option group file
+     */
     const OPTION_TYPE_FILE      = 'file';
+
+    /**
+     * Option type drop down
+     */
     const OPTION_TYPE_DROP_DOWN = 'drop_down';
+
+    /**
+     * Option type radio
+     */
     const OPTION_TYPE_RADIO     = 'radio';
+
+    /**
+     * Option type checkbox
+     */
     const OPTION_TYPE_CHECKBOX  = 'checkbox';
+
+    /**
+     * Option type multiple
+     */
     const OPTION_TYPE_MULTIPLE  = 'multiple';
+
+    /**
+     * Option type date
+     */
     const OPTION_TYPE_DATE      = 'date';
+
+    /**
+     * Option type date/time
+     */
     const OPTION_TYPE_DATE_TIME = 'date_time';
+
+    /**
+     * Option type time
+     */
     const OPTION_TYPE_TIME      = 'time';
 
+    /**
+     * Product instance
+     *
+     * @var Mage_Catalog_Model_Product
+     */
     protected $_product;
 
+    /**
+     * Options
+     *
+     * @var array
+     */
     protected $_options = array();
 
+    /**
+     * Value instance
+     *
+     * @var Mage_Catalog_Model_Product_Option_Value
+     */
     protected $_valueInstance;
 
+    /**
+     * Values
+     *
+     * @var array
+     */
     protected $_values = array();
 
+    /**
+     * Constructor
+     */
     protected function _construct()
     {
         $this->_init('catalog/product_option');
@@ -11368,6 +12195,11 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
         return null;
     }
 
+    /**
+     * Get values
+     *
+     * @return array
+     */
     public function getValues()
     {
         return $this->_values;
@@ -11564,6 +12396,11 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
         return $this;
     }
 
+    /**
+     * After save
+     *
+     * @return Mage_Core_Model_Abstract
+     */
     protected function _afterSave()
     {
         $this->getValueInstance()->unsetValues();
@@ -11588,11 +12425,11 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
      * @param bool $flag
      * @return decimal
      */
-    public function getPrice($flag=false)
+    public function getPrice($flag = false)
     {
         if ($flag && $this->getPriceType() == 'percent') {
             $basePrice = $this->getProduct()->getFinalPrice();
-            $price = $basePrice*($this->_getData('price')/100);
+            $price = $basePrice * ($this->_getData('price')/100);
             return $price;
         }
         return $this->_getData('price');
@@ -11683,7 +12520,8 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
         $this->setProductId(null);
         $this->setOptionId(null);
         $newOption = $this->__toArray();
-        if ($_values = $this->getValues()) {
+        $_values = $this->getValues();
+        if ($_values) {
             $newValuesArray = array();
             foreach ($_values as $_value) {
                 $newValuesArray[] = $_value->prepareValueForDuplicate();
@@ -11746,6 +12584,21 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
         }
         return $this;
     }
+
+    /**
+     * Check whether custom option could have multiple values
+     *
+     * @return bool
+     */
+    public function isMultipleType()
+    {
+        switch ($this->getType()) {
+            case self::OPTION_TYPE_MULTIPLE:
+            case self::OPTION_TYPE_CHECKBOX:
+                return true;
+        }
+        return false;
+    }
 }
 /**
  * Magento
@@ -11758,18 +12611,18 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -12107,18 +12960,18 @@ class Mage_Catalog_Model_Product_Status extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -12333,18 +13186,18 @@ class Mage_Catalog_Model_Product_Type
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -13208,12 +14061,7 @@ abstract class Mage_Catalog_Model_Product_Type_Abstract
      */
     public function assignProductToOption($optionProduct, $option, $product = null)
     {
-        if ($optionProduct) {
-            $option->setProduct($optionProduct);
-        } else {
-            $option->setProduct($this->getProduct($product));
-        }
-
+        $option->setProduct($optionProduct ? $optionProduct : $this->getProduct($product));
         return $this;
     }
 
@@ -13338,18 +14186,18 @@ abstract class Mage_Catalog_Model_Product_Type_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -13774,18 +14622,18 @@ class Mage_Catalog_Model_Product_Type_Price
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -13809,18 +14657,18 @@ class Mage_Catalog_Model_Product_Type_Simple extends Mage_Catalog_Model_Product_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -13836,18 +14684,41 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
     const CACHE_TAG = 'url_rewrite';
 
     /**
-     * Static URL instance
+     * URL instance
      *
      * @var Mage_Core_Model_Url
      */
-    protected static $_url;
+    protected  $_url;
 
     /**
-     * Static URL Rewrite Instance
+     * URL Rewrite Instance
      *
      * @var Mage_Core_Model_Url_Rewrite
      */
-    protected static $_urlRewrite;
+    protected $_urlRewrite;
+
+    /**
+     * Factory instance
+     *
+     * @var Mage_Catalog_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * @var Mage_Core_Model_Store
+     */
+    protected $_store;
+
+    /**
+     * Initialize Url model
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('catalog/factory');
+        $this->_store = !empty($args['store']) ? $args['store'] : Mage::app()->getStore();
+    }
 
     /**
      * Retrieve URL Instance
@@ -13856,10 +14727,10 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
      */
     public function getUrlInstance()
     {
-        if (!self::$_url) {
-            self::$_url = Mage::getModel('core/url');
+        if (null === $this->_url) {
+            $this->_url = Mage::getModel('core/url');
         }
-        return self::$_url;
+        return $this->_url;
     }
 
     /**
@@ -13869,10 +14740,10 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
      */
     public function getUrlRewrite()
     {
-        if (!self::$_urlRewrite) {
-            self::$_urlRewrite = Mage::getModel('core/url_rewrite');
+        if (null === $this->_urlRewrite) {
+            $this->_urlRewrite = $this->_factory->getUrlRewriteInstance();
         }
-        return self::$_urlRewrite;
+        return $this->_urlRewrite;
     }
 
     /**
@@ -13970,66 +14841,111 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
      */
     public function getUrl(Mage_Catalog_Model_Product $product, $params = array())
     {
-        $routePath      = '';
-        $routeParams    = $params;
+        $url = $product->getData('url');
+        if (!empty($url)) {
+            return $url;
+        }
 
-        $storeId    = $product->getStoreId();
-        if (isset($params['_ignore_category'])) {
-            unset($params['_ignore_category']);
-            $categoryId = null;
+        $requestPath = $product->getData('request_path');
+        if (empty($requestPath)) {
+            $requestPath = $this->_getRequestPath($product, $this->_getCategoryIdForUrl($product, $params));
+            $product->setRequestPath($requestPath);
+        }
+
+        if (isset($params['_store'])) {
+            $storeId = $this->_getStoreId($params['_store']);
         } else {
-            $categoryId = $product->getCategoryId() && !$product->getDoNotUseCategoryId()
-                ? $product->getCategoryId() : null;
+            $storeId = $product->getStoreId();
         }
 
-        if ($product->hasUrlDataObject()) {
-            $requestPath = $product->getUrlDataObject()->getUrlRewrite();
-            $routeParams['_store'] = $product->getUrlDataObject()->getStoreId();
-        } else {
-            $requestPath = $product->getRequestPath();
-            if (empty($requestPath) && $requestPath !== false) {
-                $idPath = sprintf('product/%d', $product->getEntityId());
-                if ($categoryId) {
-                    $idPath = sprintf('%s/%d', $idPath, $categoryId);
-                }
-                $rewrite = $this->getUrlRewrite();
-                $rewrite->setStoreId($storeId)
-                    ->loadByIdPath($idPath);
-                if ($rewrite->getId()) {
-                    $requestPath = $rewrite->getRequestPath();
-                    $product->setRequestPath($requestPath);
-                } else {
-                    $product->setRequestPath(false);
-                }
-            }
-        }
-
-        if (isset($routeParams['_store'])) {
-            $storeId = Mage::app()->getStore($routeParams['_store'])->getId();
-        }
-
-        if ($storeId != Mage::app()->getStore()->getId()) {
-            $routeParams['_store_to_url'] = true;
-        }
-
-        if (!empty($requestPath)) {
-            $routeParams['_direct'] = $requestPath;
-        } else {
-            $routePath = 'catalog/product/view';
-            $routeParams['id']  = $product->getId();
-            $routeParams['s']   = $product->getUrlKey();
-            if ($categoryId) {
-                $routeParams['category'] = $categoryId;
-            }
+        if ($storeId != $this->_getStoreId()) {
+            $params['_store_to_url'] = true;
         }
 
         // reset cached URL instance GET query params
-        if (!isset($routeParams['_query'])) {
-            $routeParams['_query'] = array();
+        if (!isset($params['_query'])) {
+            $params['_query'] = array();
         }
 
-        return $this->getUrlInstance()->setStore($storeId)
-            ->getUrl($routePath, $routeParams);
+        $this->getUrlInstance()->setStore($storeId);
+        $productUrl = $this->_getProductUrl($product, $requestPath, $params);
+        $product->setData('url', $productUrl);
+        return $product->getData('url');
+    }
+
+    /**
+     * Returns checked store_id value
+     *
+     * @param int|null $id
+     * @return int
+     */
+    protected function _getStoreId($id = null)
+    {
+        return Mage::app()->getStore($id)->getId();
+    }
+
+    /**
+     * Check product category
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $params
+     *
+     * @return int|null
+     */
+    protected function _getCategoryIdForUrl($product, $params)
+    {
+        if (isset($params['_ignore_category'])) {
+            return null;
+        } else {
+            return $product->getCategoryId() && !$product->getDoNotUseCategoryId()
+                ? $product->getCategoryId() : null;
+        }
+    }
+
+    /**
+     * Retrieve product URL based on requestPath param
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @param string $requestPath
+     * @param array $routeParams
+     *
+     * @return string
+     */
+    protected function _getProductUrl($product, $requestPath, $routeParams)
+    {
+        if (!empty($requestPath)) {
+            return $this->getUrlInstance()->getDirectUrl($requestPath, $routeParams);
+        }
+        $routeParams['id'] = $product->getId();
+        $routeParams['s'] = $product->getUrlKey();
+        $categoryId = $this->_getCategoryIdForUrl($product, $routeParams);
+        if ($categoryId) {
+            $routeParams['category'] = $categoryId;
+        }
+        return $this->getUrlInstance()->getUrl('catalog/product/view', $routeParams);
+    }
+
+    /**
+     * Retrieve request path
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @param int $categoryId
+     * @return bool|string
+     */
+    protected function _getRequestPath($product, $categoryId)
+    {
+        $idPath = sprintf('product/%d', $product->getEntityId());
+        if ($categoryId) {
+            $idPath = sprintf('%s/%d', $idPath, $categoryId);
+        }
+        $rewrite = $this->getUrlRewrite();
+        $rewrite->setStoreId($product->getStoreId())
+            ->loadByIdPath($idPath);
+        if ($rewrite->getId()) {
+            return $rewrite->getRequestPath();
+        }
+
+        return false;
     }
 }
 /**
@@ -14043,18 +14959,18 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -14352,18 +15268,18 @@ class Mage_Catalog_Model_Product_Visibility extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -15051,18 +15967,18 @@ abstract class Mage_Catalog_Model_Resource_Abstract extends Mage_Eav_Model_Entit
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -16071,8 +16987,6 @@ abstract class Mage_Eav_Model_Entity_Collection_Abstract extends Varien_Data_Col
      */
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
-        $entity = $this->getEntity();
-
         if ($this->_pageSize) {
             $this->getSelect()->limitPage($this->getCurPage(), $this->_pageSize);
         }
@@ -16553,18 +17467,18 @@ abstract class Mage_Eav_Model_Entity_Collection_Abstract extends Varien_Data_Col
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -16772,18 +17686,18 @@ class Mage_Catalog_Model_Resource_Collection_Abstract extends Mage_Eav_Model_Ent
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -16923,18 +17837,18 @@ class Mage_Catalog_Model_Resource_Config extends Mage_Core_Model_Resource_Db_Abs
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -17063,9 +17977,6 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
          */
         Mage::getSingleton('eav/config')->clear();
 
-        Mage::getSingleton('index/indexer')->processEntityAction(
-            $this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE
-        );
         return parent::_afterSave();
     }
 
@@ -17300,6 +18211,22 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
 
         return 'source';
     }
+
+    /**
+     * Callback function which called after transaction commit in resource model
+     *
+     * @return Mage_Catalog_Model_Resource_Eav_Attribute
+     */
+    public function afterCommitCallback()
+    {
+        parent::afterCommitCallback();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+        $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
+
+        return $this;
+    }
 }
 /**
  * Magento
@@ -17312,18 +18239,18 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -18016,18 +18943,18 @@ class Mage_Catalog_Model_Resource_Product extends Mage_Catalog_Model_Resource_Ab
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -18044,6 +18971,10 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media extends Mage_C
     const GALLERY_VALUE_TABLE = 'catalog/product_attribute_media_gallery_value';
     const GALLERY_IMAGE_TABLE = 'catalog/product_attribute_media_gallery_image';
 
+    protected $_eventPrefix = 'catalog_product_attribute_backend_media';
+
+    private $_attributeId = null;
+
     /**
      * Resource initialization
      */
@@ -18053,7 +18984,7 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media extends Mage_C
     }
 
     /**
-     * Load gallery images for product
+     * Load gallery images for product using reusable select method
      *
      * @param Mage_Catalog_Model_Product $product
      * @param Mage_Catalog_Model_Product_Attribute_Backend_Media $object
@@ -18061,34 +18992,26 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media extends Mage_C
      */
     public function loadGallery($product, $object)
     {
+        $eventObjectWrapper = new Varien_Object(
+            array(
+                'product' => $product,
+                'backend_attribute' => $object
+            )
+        );
+        Mage::dispatchEvent(
+            $this->_eventPrefix . '_load_gallery_before',
+            array('event_object_wrapper' => $eventObjectWrapper)
+        );
+
+        if ($eventObjectWrapper->hasProductIdsOverride()) {
+            $productIds = $eventObjectWrapper->getProductIdsOverride();
+        } else {
+            $productIds = array($product->getId());
+        }
+
+        $select = $this->_getLoadGallerySelect($productIds, $product->getStoreId(), $object->getAttribute()->getId());
+
         $adapter = $this->_getReadAdapter();
-
-        $positionCheckSql = $adapter->getCheckSql('value.position IS NULL', 'default_value.position', 'value.position');
-
-        // Select gallery images for product
-        $select = $adapter->select()
-            ->from(
-                array('main'=>$this->getMainTable()),
-                array('value_id', 'value AS file')
-            )
-            ->joinLeft(
-                array('value' => $this->getTable(self::GALLERY_VALUE_TABLE)),
-                $adapter->quoteInto('main.value_id = value.value_id AND value.store_id = ?', (int)$product->getStoreId()),
-                array('label','position','disabled')
-            )
-            ->joinLeft( // Joining default values
-                array('default_value' => $this->getTable(self::GALLERY_VALUE_TABLE)),
-                'main.value_id = default_value.value_id AND default_value.store_id = 0',
-                array(
-                    'label_default' => 'label',
-                    'position_default' => 'position',
-                    'disabled_default' => 'disabled'
-                )
-            )
-            ->where('main.attribute_id = ?', $object->getAttribute()->getId())
-            ->where('main.entity_id = ?', $product->getId())
-            ->order($positionCheckSql . ' ' . Varien_Db_Select::SQL_ASC);
-
         $result = $adapter->fetchAll($select);
         $this->_removeDuplicates($result);
         return $result;
@@ -18231,6 +19154,78 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media extends Mage_C
 
         return $this;
     }
+
+    /**
+     * Get select to retrieve media gallery images
+     * for given product IDs.
+     *
+     * @param array $productIds
+     * @param $storeId
+     * @param int $attributeId
+     * @return Varien_Db_Select
+     */
+    protected function _getLoadGallerySelect(array $productIds, $storeId, $attributeId) {
+        $adapter = $this->_getReadAdapter();
+
+        $positionCheckSql = $adapter->getCheckSql('value.position IS NULL', 'default_value.position', 'value.position');
+
+        // Select gallery images for product
+        $select = $adapter->select()
+            ->from(
+                array('main'=>$this->getMainTable()),
+                array('value_id', 'value AS file', 'product_id' => 'entity_id')
+            )
+            ->joinLeft(
+                array('value' => $this->getTable(self::GALLERY_VALUE_TABLE)),
+                $adapter->quoteInto('main.value_id = value.value_id AND value.store_id = ?', (int)$storeId),
+                array('label','position','disabled')
+            )
+            ->joinLeft( // Joining default values
+                array('default_value' => $this->getTable(self::GALLERY_VALUE_TABLE)),
+                'main.value_id = default_value.value_id AND default_value.store_id = 0',
+                array(
+                    'label_default' => 'label',
+                    'position_default' => 'position',
+                    'disabled_default' => 'disabled'
+                )
+            )
+            ->where('main.attribute_id = ?', $attributeId)
+            ->where('main.entity_id in (?)', $productIds)
+            ->order($positionCheckSql . ' ' . Varien_Db_Select::SQL_ASC);
+
+        return $select;
+    }
+
+    /**
+     * Get attribute ID
+     *
+     * @return int
+     */
+    protected function _getAttributeId() {
+        if(is_null($this->_attributeId)) {
+            $attribute = Mage::getModel('eav/entity_attribute')
+                ->loadByCode(Mage_Catalog_Model_Product::ENTITY, 'media_gallery');
+
+            $this->_attributeId = $attribute->getId();
+        }
+        return $this->_attributeId;
+    }
+
+    /**
+     * Get media gallery set for given product IDs
+     *
+     * @param array $productIds
+     * @param $storeId
+     * @return array
+     */
+    public function loadGallerySet(array $productIds, $storeId) {
+        $select = $this->_getLoadGallerySelect($productIds, $storeId, $this->_getAttributeId());
+
+        $adapter = $this->_getReadAdapter();
+        $result = $adapter->fetchAll($select);
+        $this->_removeDuplicates($result);
+        return $result;
+    }
 }
 /**
  * Magento
@@ -18243,18 +19238,18 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media extends Mage_C
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -18389,18 +19384,18 @@ abstract class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Groupprice_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -18521,18 +19516,18 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -18720,6 +19715,25 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
     protected $_catalogPreparePriceSelect = null;
 
     /**
+     * Catalog factory instance
+     *
+     * @var Mage_Catalog_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * Initialize factory
+     *
+     * @param Mage_Core_Model_Resource_Abstract $resource
+     * @param array $args
+     */
+    public function __construct($resource = null, array $args = array())
+    {
+        parent::__construct($resource);
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('catalog/factory');
+    }
+
+    /**
      * Get cloned Select after dispatching 'catalog_prepare_price_select' event
      *
      * @return Varien_Db_Select
@@ -18815,20 +19829,22 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
 
     /**
      * Retrieve is flat enabled flag
-     * Return alvays false if magento run admin
+     * Return always false if magento run admin
      *
      * @return bool
      */
     public function isEnabledFlat()
     {
+        // Flat Data can be used only on frontend
         if (Mage::app()->getStore()->isAdmin()) {
             return false;
         }
-        if (!isset($this->_flatEnabled[$this->getStoreId()])) {
-            $this->_flatEnabled[$this->getStoreId()] = $this->getFlatHelper()
-                ->isEnabled($this->getStoreId());
+        $storeId = $this->getStoreId();
+        if (!isset($this->_flatEnabled[$storeId])) {
+            $flatHelper = $this->getFlatHelper();
+            $this->_flatEnabled[$storeId] = $flatHelper->isAvailable() && $flatHelper->isBuilt($storeId);
         }
-        return $this->_flatEnabled[$this->getStoreId()];
+        return $this->_flatEnabled[$storeId];
     }
 
     /**
@@ -19031,8 +20047,6 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
            $this->_addUrlRewrite($this->_urlRewriteCategory);
         }
 
-        $this->_prepareUrlDataObject();
-
         if (count($this) > 0) {
             Mage::dispatchEvent('catalog_product_collection_load_after', array('collection' => $this));
         }
@@ -19050,6 +20064,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
      * Prepare Url Data object
      *
      * @return Mage_Catalog_Model_Resource_Product_Collection
+     * @deprecated after 1.7.0.2
      */
     protected function _prepareUrlDataObject()
     {
@@ -19164,7 +20179,6 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $store = Mage::app()->getStore($store);
 
         if (!$store->isAdmin()) {
-            $this->setStoreId($store);
             $this->_productLimitationFilters['store_id'] = $store->getId();
             $this->_applyProductLimitations();
         }
@@ -19398,6 +20412,8 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $countSelect = (is_null($select)) ?
             $this->_getClearSelect() :
             $this->_buildClearSelect($select);
+        // Clear GROUP condition for count method
+        $countSelect->reset(Zend_Db_Select::GROUP);
         $countSelect->columns('COUNT(DISTINCT e.entity_id)');
         if ($resetLeftJoins) {
             $countSelect->resetJoinLeft();
@@ -19416,9 +20432,11 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $priceExpression = $this->getPriceExpression($select) . ' ' . $this->getAdditionalPriceExpression($select);
         $sqlEndPart = ') * ' . $this->getCurrencyRate() . ', 2)';
         $select = $this->_getSelectCountSql($select, false);
-        $select->columns('ROUND(MAX(' . $priceExpression . $sqlEndPart);
-        $select->columns('ROUND(MIN(' . $priceExpression . $sqlEndPart);
-        $select->columns($this->getConnection()->getStandardDeviationSql('ROUND((' . $priceExpression . $sqlEndPart));
+        $select->columns(array(
+            'max' => 'ROUND(MAX(' . $priceExpression . $sqlEndPart,
+            'min' => 'ROUND(MIN(' . $priceExpression . $sqlEndPart,
+            'std' => $this->getConnection()->getStandardDeviationSql('ROUND((' . $priceExpression . $sqlEndPart)
+        ));
         $select->where($this->getPriceExpression($select) . ' IS NOT NULL');
         $row = $this->getConnection()->fetchRow($select, $this->_bindParams, Zend_Db::FETCH_NUM);
         $this->_pricesCount = (int)$row[0];
@@ -19602,6 +20620,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
     /**
      * Joins url rewrite rules to collection
      *
+     * @deprecated after 1.7.0.2. Method is not used anywhere in the code.
      * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     public function joinUrlRewrite()
@@ -19621,7 +20640,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
      * Add URL rewrites data to product
      * If collection loadded - run processing else set flag
      *
-     * @param int $categoryId
+     * @param int|string $categoryId
      * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     public function addUrlRewrite($categoryId = '')
@@ -19664,15 +20683,10 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
                 return;
             }
 
-            $select = $this->getConnection()->select()
-                ->from($this->getTable('core/url_rewrite'), array('product_id', 'request_path'))
-                ->where('store_id = ?', Mage::app()->getStore()->getId())
-                ->where('is_system = ?', 1)
-                ->where('category_id = ? OR category_id IS NULL', $this->_urlRewriteCategory)
-                ->where('product_id IN(?)', $productIds)
-                ->order('category_id ' . self::SORT_ORDER_DESC); // more priority is data with category id
-            $urlRewrites = array();
+            $select = $this->_factory->getProductUrlRewriteHelper()
+                ->getTableSelect($productIds, $this->_urlRewriteCategory, Mage::app()->getStore()->getId());
 
+            $urlRewrites = array();
             foreach ($this->getConnection()->fetchAll($select) as $row) {
                 if (!isset($urlRewrites[$row['product_id']])) {
                     $urlRewrites[$row['product_id']] = $row['request_path'];
@@ -19690,6 +20704,9 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         }
 
         foreach($this->getItems() as $item) {
+            if (empty($this->_urlRewriteCategory)) {
+                $item->setDoNotUseCategoryId(true);
+            }
             if (isset($urlRewrites[$item->getEntityId()])) {
                 $item->setData('request_path', $urlRewrites[$item->getEntityId()]);
             } else {
@@ -20327,6 +21344,12 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
      */
     protected function _applyProductLimitations()
     {
+        Mage::dispatchEvent('catalog_product_collection_apply_limitations_before', array(
+            'collection'  => $this,
+            'category_id' => isset($this->_productLimitationFilters['category_id'])
+                ? $this->_productLimitationFilters['category_id']
+                : null,
+        ));
         $this->_prepareProductLimitationFilters();
         $this->_productLimitationJoinWebsite();
         $this->_productLimitationJoinPrice();
@@ -20344,8 +21367,11 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
             $conditions[] = $this->getConnection()
                 ->quoteInto('cat_index.visibility IN(?)', $filters['visibility']);
         }
-        $conditions[] = $this->getConnection()
-            ->quoteInto('cat_index.category_id=?', $filters['category_id']);
+
+        if (!$this->getFlag('disable_root_category_filter')) {
+            $conditions[] = $this->getConnection()->quoteInto('cat_index.category_id = ?', $filters['category_id']);
+        }
+
         if (isset($filters['category_is_anchor'])) {
             $conditions[] = $this->getConnection()
                 ->quoteInto('cat_index.is_parent=?', $filters['category_is_anchor']);
@@ -20368,7 +21394,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $this->_productLimitationJoinStore();
 
         Mage::dispatchEvent('catalog_product_collection_apply_limitations_after', array(
-            'collection'    => $this
+            'collection' => $this
         ));
 
         return $this;
@@ -20666,18 +21692,18 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -20772,6 +21798,7 @@ class Mage_Catalog_Model_Resource_Product_Link_Product_Collection extends Mage_C
         $this->_product = $product;
         if ($product && $product->getId()) {
             $this->_hasLinkFilter = true;
+            $this->setStore($product->getStore());
         }
         return $this;
     }
@@ -20998,18 +22025,18 @@ class Mage_Catalog_Model_Resource_Product_Link_Product_Collection extends Mage_C
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -21508,18 +22535,18 @@ class Mage_Catalog_Model_Resource_Product_Option extends Mage_Core_Model_Resourc
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -21737,18 +22764,18 @@ class Mage_Catalog_Model_Resource_Product_Option_Collection extends Mage_Core_Mo
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -21767,11 +22794,12 @@ class Mage_Checkout_Block_Cart extends Mage_Checkout_Block_Cart_Abstract
     public function __construct()
     {
         parent::__construct();
-        $this->prepareItemUrls();
     }
 
     /**
-     * prepare cart items URLs
+     * Prepare cart items URLs
+     *
+     * @deprecated after 1.7.0.2
      */
     public function prepareItemUrls()
     {
@@ -21918,18 +22946,18 @@ class Mage_Checkout_Block_Cart extends Mage_Checkout_Block_Cart_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -21953,18 +22981,18 @@ class Mage_Checkout_Block_Cart_Coupon extends Mage_Checkout_Block_Cart_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -22135,18 +23163,18 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -22248,7 +23276,6 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
         if ($this->_ignoreProductUrl) {
             return false;
         }
-
         if ($this->_productUrl || $this->getItem()->getRedirectUrl()) {
             return true;
         }
@@ -22258,19 +23285,9 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
         if ($option) {
             $product = $option->getProduct();
         }
-
         if ($product->isVisibleInSiteVisibility()) {
             return true;
         }
-        else {
-            if ($product->hasUrlDataObject()) {
-                $data = $product->getUrlDataObject();
-                if (in_array($data->getVisibility(), $product->getVisibleInSiteVisibilities())) {
-                    return true;
-                }
-            }
-        }
-
         return false;
     }
 
@@ -22365,6 +23382,39 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
         );
     }
 
+    /**
+     * Get item ajax delete url
+     *
+     * @return string
+     */
+    public function getAjaxDeleteUrl()
+    {
+        return $this->getUrl(
+            'checkout/cart/ajaxDelete',
+            array(
+                'id'=>$this->getItem()->getId(),
+                Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->helper('core/url')->getEncodedUrl(),
+                '_secure' => $this->_getApp()->getStore()->isCurrentlySecure(),
+            )
+        );
+    }
+
+    /**
+     * Get item ajax update url
+     *
+     * @return string
+     */
+    public function getAjaxUpdateUrl()
+    {
+        return $this->getUrl(
+            'checkout/cart/ajaxUpdate',
+            array(
+                'id'=>$this->getItem()->getId(),
+                Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->helper('core/url')->getEncodedUrl(),
+                '_secure' => $this->_getApp()->getStore()->isCurrentlySecure(),
+            )
+        );
+    }
     /**
      * Get quote item qty
      *
@@ -22540,6 +23590,61 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
         $this->_ignoreProductUrl = $ignore;
         return $this;
     }
+
+    /**
+     * Common code to be called by product renders of gift registry to create a block, which is be used to
+     * generate html for mrsp price
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return Mage_Catalog_Block_Product_Price
+     */
+    protected function _preparePriceBlock($product)
+    {
+        return $this->getLayout()
+            ->createBlock('catalog/product_price')
+            ->setTemplate('catalog/product/price.phtml')
+            ->setIdSuffix($this->getIdSuffix())
+            ->setProduct($product);
+    }
+
+    /**
+     *  Common code to be called by product renders of gift registry to  generate final html block
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return string
+     */
+    protected function _getPriceContent($product)
+    {
+        return $this->getLayout()->createBlock('catalog/product_price')
+            ->setTemplate('catalog/product/price_msrp.phtml')
+            ->setProduct($product)
+            ->toHtml();
+    }
+
+    /**
+     * Retrieve block cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        $tags = $this->getProduct()->getCacheIdTags();
+        $tags = is_array($tags) ? $tags : array();
+
+        return array_merge(parent::getCacheTags(), $tags);
+    }
+
+    /**
+     * Returns true if user is going through checkout process now.
+     *
+     * @return bool
+     */
+    public function isOnCheckoutPage()
+    {
+        $module = $this->getRequest()->getModuleName();
+        $controller = $this->getRequest()->getControllerName();
+        return $module == 'checkout' && ($controller == 'onepage' || $controller == 'multishipping');
+    }
 }
 /**
  * Magento
@@ -22552,18 +23657,18 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -22817,18 +23922,18 @@ class Mage_Checkout_Block_Cart_Shipping extends Mage_Checkout_Block_Cart_Abstrac
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 class Mage_Checkout_Block_Cart_Totals extends Mage_Checkout_Block_Cart_Abstract
@@ -22960,18 +24065,18 @@ class Mage_Checkout_Block_Cart_Totals extends Mage_Checkout_Block_Cart_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -23013,18 +24118,18 @@ class Mage_Checkout_Block_Multishipping_Link extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -23062,18 +24167,18 @@ class Mage_Checkout_Block_Onepage_Link extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -23128,18 +24233,18 @@ class Mage_Checkout_Block_Total_Default extends Mage_Checkout_Block_Cart_Totals
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -23163,18 +24268,18 @@ class Mage_Checkout_Block_Total_Tax extends Mage_Checkout_Block_Total_Default
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -23227,18 +24332,18 @@ class Mage_Checkout_Model_Observer
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -23488,18 +24593,18 @@ class Mage_Core_Block_Html_Select extends Mage_Core_Block_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -23561,7 +24666,7 @@ class Mage_Core_Model_Date
         }
 
         if ($result === true) {
-            $offset = gmmktime(0, 0, 0, 1, 2, 1970) - mktime(0, 0, 0, 1, 2, 1970);
+            $offset = (int)date('Z');
         }
 
         if (!is_null($timezone)){
@@ -23775,18 +24880,18 @@ class Mage_Core_Model_Date
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -23931,18 +25036,18 @@ class Mage_Core_Model_Encryption
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -23973,6 +25078,13 @@ class Mage_Customer_Model_Address_Abstract extends Mage_Core_Model_Abstract
      * @var string
      */
     protected $_eventObject = 'customer_address';
+
+    /**
+     * List of errors
+     *
+     * @var array
+     */
+    protected $_errors = array();
 
     /**
      * Directory country models
@@ -24271,54 +25383,107 @@ class Mage_Customer_Model_Address_Abstract extends Mage_Core_Model_Abstract
     /**
      * Validate address attribute values
      *
-     * @return bool
+     * @return array | bool
      */
     public function validate()
     {
-        $errors = array();
+        $this->_resetErrors();
+
         $this->implodeStreetAddress();
+
+        $this->_basicCheck();
+
+        if (!$this->_getErrors()) {
+            Mage::dispatchEvent('customer_address_validation_after', array('address' => $this));
+        }
+
+        $errors = $this->_getErrors();
+
+        $this->_resetErrors();
+
+        if (empty($errors) || $this->getShouldIgnoreValidation()) {
+            return true;
+        }
+        return $errors;
+    }
+
+    /**
+     * Perform basic validation
+     *
+     * @return void
+     */
+    protected function _basicCheck()
+    {
         if (!Zend_Validate::is($this->getFirstname(), 'NotEmpty')) {
-            $errors[] = Mage::helper('customer')->__('Please enter the first name.');
+            $this->addError(Mage::helper('customer')->__('Please enter the first name.'));
         }
 
         if (!Zend_Validate::is($this->getLastname(), 'NotEmpty')) {
-            $errors[] = Mage::helper('customer')->__('Please enter the last name.');
+            $this->addError(Mage::helper('customer')->__('Please enter the last name.'));
         }
 
         if (!Zend_Validate::is($this->getStreet(1), 'NotEmpty')) {
-            $errors[] = Mage::helper('customer')->__('Please enter the street.');
+            $this->addError(Mage::helper('customer')->__('Please enter the street.'));
         }
 
         if (!Zend_Validate::is($this->getCity(), 'NotEmpty')) {
-            $errors[] = Mage::helper('customer')->__('Please enter the city.');
+            $this->addError(Mage::helper('customer')->__('Please enter the city.'));
         }
 
         if (!Zend_Validate::is($this->getTelephone(), 'NotEmpty')) {
-            $errors[] = Mage::helper('customer')->__('Please enter the telephone number.');
+            $this->addError(Mage::helper('customer')->__('Please enter the telephone number.'));
         }
 
         $_havingOptionalZip = Mage::helper('directory')->getCountriesWithOptionalZip();
         if (!in_array($this->getCountryId(), $_havingOptionalZip)
             && !Zend_Validate::is($this->getPostcode(), 'NotEmpty')
         ) {
-            $errors[] = Mage::helper('customer')->__('Please enter the zip/postal code.');
+            $this->addError(Mage::helper('customer')->__('Please enter the zip/postal code.'));
         }
 
         if (!Zend_Validate::is($this->getCountryId(), 'NotEmpty')) {
-            $errors[] = Mage::helper('customer')->__('Please enter the country.');
+            $this->addError(Mage::helper('customer')->__('Please enter the country.'));
         }
 
         if ($this->getCountryModel()->getRegionCollection()->getSize()
-               && !Zend_Validate::is($this->getRegionId(), 'NotEmpty')
-               && Mage::helper('directory')->isRegionRequired($this->getCountryId())
+            && !Zend_Validate::is($this->getRegionId(), 'NotEmpty')
+            && Mage::helper('directory')->isRegionRequired($this->getCountryId())
         ) {
-            $errors[] = Mage::helper('customer')->__('Please enter the state/province.');
+            $this->addError(Mage::helper('customer')->__('Please enter the state/province.'));
         }
+    }
 
-        if (empty($errors) || $this->getShouldIgnoreValidation()) {
-            return true;
-        }
-        return $errors;
+    /**
+     * Add error
+     *
+     * @param $error
+     * @return Mage_Customer_Model_Address_Abstract
+     */
+    public function addError($error)
+    {
+        $this->_errors[] = $error;
+        return $this;
+    }
+
+    /**
+     * Retreive errors
+     *
+     * @return array
+     */
+    protected function _getErrors()
+    {
+        return $this->_errors;
+    }
+
+    /**
+     * Reset errors array
+     *
+     * @return Mage_Customer_Model_Address_Abstract
+     */
+    protected function _resetErrors()
+    {
+        $this->_errors = array();
+        return $this;
     }
 }
 /**
@@ -24332,18 +25497,18 @@ class Mage_Customer_Model_Address_Abstract extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -24425,18 +25590,18 @@ class Mage_Customer_Model_Resource_Group extends Mage_Core_Model_Resource_Db_Abs
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -24461,18 +25626,18 @@ class Mage_Customer_Model_Entity_Group extends Mage_Customer_Model_Resource_Grou
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -24615,18 +25780,18 @@ class Mage_Directory_Block_Data extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -24687,6 +25852,30 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
     protected $_optionalZipCountries = null;
 
     /**
+     * Factory instance
+     *
+     * @var Mage_Core_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * Application instance
+     *
+     * @var Mage_Core_Model_App
+     */
+    protected $_app;
+
+    /**
+     * Constructor for Mage_Directory_Helper_Data
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('core/factory');
+        $this->_app = !empty($args['app']) ? $args['app'] : Mage::app();
+    }
+
+    /**
      * Retrieve region collection
      *
      * @return Mage_Directory_Model_Resource_Region_Collection
@@ -24709,8 +25898,7 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
     public function getCountryCollection()
     {
         if (!$this->_countryCollection) {
-            $this->_countryCollection = Mage::getModel('directory/country')->getResourceCollection()
-                ->loadByStore();
+            $this->_countryCollection = $this->_factory->getModel('directory/country')->getResourceCollection();
         }
         return $this->_countryCollection;
     }
@@ -24718,51 +25906,83 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Retrieve regions data json
      *
+     * @deprecated after 1.7.0.2
+     * @see Mage_Directory_Helper_Data::getRegionJsonByStore()
      * @return string
      */
     public function getRegionJson()
     {
+        return $this->getRegionJsonByStore();
+    }
 
+    /**
+     * Retrieve regions data json
+     *
+     * @param int|null $storeId
+     * @return array()
+     */
+    public function getRegionJsonByStore($storeId = null)
+    {
         Varien_Profiler::start('TEST: '.__METHOD__);
         if (!$this->_regionJson) {
-            $cacheKey = 'DIRECTORY_REGIONS_JSON_STORE'.Mage::app()->getStore()->getId();
-            if (Mage::app()->useCache('config')) {
-                $json = Mage::app()->loadCache($cacheKey);
+            $store = $this->_app->getStore($storeId);
+            $cacheKey = 'DIRECTORY_REGIONS_JSON_STORE' . (string)$store->getId();
+            if ($this->_app->useCache('config')) {
+                $json = $this->_app->loadCache($cacheKey);
             }
             if (empty($json)) {
-                $countryIds = array();
-                foreach ($this->getCountryCollection() as $country) {
-                    $countryIds[] = $country->getCountryId();
-                }
-                $collection = Mage::getModel('directory/region')->getResourceCollection()
-                    ->addCountryFilter($countryIds)
-                    ->load();
-                $regions = array(
-                    'config' => array(
-                        'show_all_regions' => $this->getShowNonRequiredState(),
-                        'regions_required' => $this->getCountriesWithStatesRequired()
-                    )
-                );
-                foreach ($collection as $region) {
-                    if (!$region->getRegionId()) {
-                        continue;
-                    }
-                    $regions[$region->getCountryId()][$region->getRegionId()] = array(
-                        'code' => $region->getCode(),
-                        'name' => $this->__($region->getName())
-                    );
-                }
-                $json = Mage::helper('core')->jsonEncode($regions);
+                $regions = $this->_getRegions($storeId);
+                $helper = $this->_factory->getHelper('core');
+                $json = $helper->jsonEncode($regions);
 
-                if (Mage::app()->useCache('config')) {
-                    Mage::app()->saveCache($json, $cacheKey, array('config'));
+                if ($this->_app->useCache('config')) {
+                    $this->_app->saveCache($json, $cacheKey, array('config'));
                 }
             }
             $this->_regionJson = $json;
         }
 
-        Varien_Profiler::stop('TEST: '.__METHOD__);
+        Varien_Profiler::stop('TEST: ' . __METHOD__);
         return $this->_regionJson;
+    }
+
+    /**
+     * Get Regions for specific Countries
+     * @param string $storeId
+     * @return array|null
+     */
+    protected function _getRegions($storeId)
+    {
+        $countryIds = array();
+
+        $countryCollection = $this->getCountryCollection()->loadByStore($storeId);
+        foreach ($countryCollection as $country) {
+            $countryIds[] = $country->getCountryId();
+        }
+
+        /** @var $regionModel Mage_Directory_Model_Region */
+        $regionModel = $this->_factory->getModel('directory/region');
+        /** @var $collection Mage_Directory_Model_Resource_Region_Collection */
+        $collection = $regionModel->getResourceCollection()
+            ->addCountryFilter($countryIds)
+            ->load();
+
+        $regions = array(
+            'config' => array(
+                'show_all_regions' => $this->getShowNonRequiredState(),
+                'regions_required' => $this->getCountriesWithStatesRequired()
+            )
+        );
+        foreach ($collection as $region) {
+            if (!$region->getRegionId()) {
+                continue;
+            }
+            $regions[$region->getCountryId()][$region->getRegionId()] = array(
+                'code' => $region->getCode(),
+                'name' => $this->__($region->getName())
+            );
+        }
+        return $regions;
     }
 
     /**
@@ -24849,7 +26069,7 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
     public function isRegionRequired($countryId)
     {
         $countyList = $this->getCountriesWithStatesRequired();
-        if(!is_array($countyList)) {
+        if (!is_array($countyList)) {
             return false;
         }
         return in_array($countryId, $countyList);
@@ -24866,18 +26086,18 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -24890,12 +26110,21 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
 class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
 {
     /**
-     * CONFIG path constants
+     * CONFIG path constant: ALLOW
     */
     const XML_PATH_CURRENCY_ALLOW   = 'currency/options/allow';
+    /**
+     * CONFIG path constant: DEFAULT
+     */
     const XML_PATH_CURRENCY_DEFAULT = 'currency/options/default';
+    /**
+     * CONFIG path constant: BASE
+     */
     const XML_PATH_CURRENCY_BASE    = 'currency/options/base';
 
+    /**
+     * @var Mage_Directory_Model_Currency_Filter - currency filter
+     */
     protected $_filter;
 
     /**
@@ -24906,6 +26135,9 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
     protected $_rates;
 
 
+    /**
+     * Class constructor
+     */
     protected function _construct()
     {
         $this->_init('directory/currency');
@@ -24921,6 +26153,11 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
         return $this->_getData('currency_code');
     }
 
+    /**
+     * Get currency code
+     *
+     * @return string
+     */
     public function getCurrencyCode()
     {
         return $this->_getData('currency_code');
@@ -24955,7 +26192,7 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
      * @param   string $field
      * @return  Mage_Directory_Model_Currency
      */
-    public function load($id, $field=null)
+    public function load($id, $field = null)
     {
         $this->unsRate();
         $this->setData('currency_code', $id);
@@ -24965,8 +26202,9 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
     /**
      * Get currency rate (only base=>allowed)
      *
-     * @param   string $toCurrency
-     * @return  double
+     * @param string|Mage_Directory_Model_Currency $toCurrency
+     * @return string
+     * @throws Mage_Core_Exception
      */
     public function getRate($toCurrency)
     {
@@ -24988,8 +26226,9 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
     /**
      * Get currency rate (base=>allowed or allowed=>base)
      *
-     * @param   string $toCurrency
-     * @return  double
+     * @param string|Mage_Directory_Model_Currency $toCurrency
+     * @return string
+     * @throws Mage_Core_Exception
      */
     public function getAnyRate($toCurrency)
     {
@@ -25011,20 +26250,24 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
     /**
      * Convert price to currency format
      *
-     * @param   double $price
-     * @param   string $toCurrency
-     * @return  double
+     * @param float $price
+     * @param null|string|Mage_Directory_Model_Currency $toCurrency
+     * @return float
+     * @throws Exception
      */
-    public function convert($price, $toCurrency=null)
+    public function convert($price, $toCurrency = null)
     {
         if (is_null($toCurrency)) {
             return $price;
-        }
-        elseif ($rate = $this->getRate($toCurrency)) {
-            return $price*$rate;
+        } else {
+            $rate = $this->getRate($toCurrency);
+            if ($rate) {
+                return $price * $rate;
+            }
         }
 
-        throw new Exception(Mage::helper('directory')->__('Undefined rate from "%s-%s".', $this->getCode(), $toCurrency->getCode()));
+        throw new Exception(Mage::helper('directory')->__('Undefined rate from "%s-%s".', $this->getCode(),
+            $toCurrency->getCode()));
     }
 
     /**
@@ -25044,11 +26287,13 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
     /**
      * Format price to currency format
      *
-     * @param   double $price
-     * @param   bool $includeContainer
-     * @return  string
+     * @param float $price
+     * @param array $options
+     * @param bool $includeContainer
+     * @param bool $addBrackets
+     * @return string
      */
-    public function format($price, $options=array(), $includeContainer = true, $addBrackets = false)
+    public function format($price, $options = array(), $includeContainer = true, $addBrackets = false)
     {
         return $this->formatPrecision($price, 2, $options, $includeContainer, $addBrackets);
     }
@@ -25063,18 +26308,27 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
      * @param   bool $addBrackets
      * @return  string
      */
-    public function formatPrecision($price, $precision, $options=array(), $includeContainer = true, $addBrackets = false)
+    public function formatPrecision($price, $precision, $options = array(), $includeContainer = true,
+                                    $addBrackets = false)
     {
         if (!isset($options['precision'])) {
             $options['precision'] = $precision;
         }
         if ($includeContainer) {
-            return '<span class="price">' . ($addBrackets ? '[' : '') . $this->formatTxt($price, $options) . ($addBrackets ? ']' : '') . '</span>';
+            return '<span class="price">' . ($addBrackets ? '[' : '') . $this->formatTxt($price, $options) .
+                ($addBrackets ? ']' : '') . '</span>';
         }
         return $this->formatTxt($price, $options);
     }
 
-    public function formatTxt($price, $options=array())
+    /**
+     * Returns the formatted price
+     *
+     * @param float $price
+     * @param null|array $options
+     * @return string
+     */
+    public function formatTxt($price, $options = array())
     {
         if (!is_numeric($price)) {
             $price = Mage::app()->getLocale()->getNumber($price);
@@ -25086,19 +26340,28 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
          * %F - the argument is treated as a float, and presented as a floating-point number (non-locale aware).
          */
         $price = sprintf("%F", $price);
+        if ($price == -0) {
+            $price = 0;
+        }
         return Mage::app()->getLocale()->currency($this->getCode())->toCurrency($price, $options);
     }
 
+    /**
+     * Returns the formatting template for numbers
+     *
+     * @return string
+     */
     public function getOutputFormat()
     {
         $formated = $this->formatTxt(0);
-        $number = $this->formatTxt(0, array('display'=>Zend_Currency::NO_SYMBOL));
+        $number = $this->formatTxt(0, array('display' => Zend_Currency::NO_SYMBOL));
         return str_replace($number, '%s', $formated);
     }
 
     /**
      * Retrieve allowed currencies according to config
      *
+     * @return array
      */
     public function getConfigAllowCurrencies()
     {
@@ -25120,6 +26383,7 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
     /**
      * Retrieve default currencies according to config
      *
+     * @return array
      */
     public function getConfigDefaultCurrencies()
     {
@@ -25128,6 +26392,11 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
     }
 
 
+    /**
+     * Retrieve base currencies according to config
+     *
+     * @return array
+     */
     public function getConfigBaseCurrencies()
     {
         $defaultCurrencies = $this->_getResource()->getConfigCurrencies($this, self::XML_PATH_CURRENCY_BASE);
@@ -25141,7 +26410,7 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
      * @param array $toCurrencies
      * @return array
      */
-    public function getCurrencyRates($currency, $toCurrencies=null)
+    public function getCurrencyRates($currency, $toCurrencies = null)
     {
         if ($currency instanceof Mage_Directory_Model_Currency) {
             $currency = $currency->getCode();
@@ -25173,18 +26442,18 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -25252,18 +26521,18 @@ class Mage_Directory_Model_Region extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -25500,18 +26769,18 @@ class Mage_Directory_Model_Resource_Currency extends Mage_Core_Model_Resource_Db
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -25653,18 +26922,18 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -25705,18 +26974,18 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Array extends Mage_Eav_Model_Entit
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_GiftMessage
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -25784,18 +27053,18 @@ class Mage_GiftMessage_Model_Entity_Attribute_Backend_Boolean_Config extends Mag
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_GiftMessage
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -26028,316 +27297,18 @@ class Mage_GiftMessage_Model_Observer extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    Mage
- * @package     Mage_GoogleCheckout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
-
-/**
- * Google Checkout shortcut link
- *
- * @category   Mage
- * @package    Mage_GoogleCheckout
- * @author      Magento Core Team <core@magentocommerce.com>
- */
-class Mage_GoogleCheckout_Block_Link extends Mage_Core_Block_Template
-{
-    public function getImageStyle()
-    {
-        $s = Mage::getStoreConfig('google/checkout/checkout_image');
-        if (!$s) {
-            $s = '180/46/trans';
-        }
-        return explode('/', $s);
-    }
-
-    public function getImageUrl()
-    {
-        $url = 'https://checkout.google.com/buttons/checkout.gif';
-        $url .= '?merchant_id='.Mage::getStoreConfig('google/checkout/merchant_id');
-        $v = $this->getImageStyle();
-        $url .= '&w='.$v[0].'&h='.$v[1].'&style='.$v[2];
-        $url .= '&variant='.($this->getIsDisabled() ? 'disabled' : 'text');
-        $url .= '&loc='.Mage::getStoreConfig('google/checkout/locale');
-        return $url;
-    }
-
-    public function getCheckoutUrl()
-    {
-        return $this->getUrl('googlecheckout/redirect/checkout');
-    }
-
-    /**
-     * @deprecated after 1.4.1.1
-     * @return bool
-     */
-    public function getIsActiveAanalytics()
-    {
-        return false;
-    }
-
-    public function getImageWidth()
-    {
-         $v = $this->getImageStyle();
-         return $v[0];
-    }
-
-    public function getImageHeight()
-    {
-         $v = $this->getImageStyle();
-         return $v[1];
-    }
-
-    /**
-     * Check whether method is available and render HTML
-     * @return string
-     */
-    public function _toHtml()
-    {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        if (Mage::getModel('googlecheckout/payment')->isAvailable($quote) && $quote->validateMinimumAmount()) {
-            Mage::dispatchEvent('googlecheckout_block_link_html_before', array('block' => $this));
-            return parent::_toHtml();
-        }
-        return '';
-    }
-
-    public function getIsDisabled()
-    {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        /* @var $quote Mage_Sales_Model_Quote */
-        foreach ($quote->getAllVisibleItems() as $item) {
-            /* @var $item Mage_Sales_Model_Quote_Item */
-            if (!$item->getProduct()->getEnableGooglecheckout()) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    Mage
- * @package     Mage_GoogleCheckout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
-
-/**
- * GoogleCheckout data helper
- */
-class Mage_GoogleCheckout_Helper_Data extends Mage_Core_Helper_Abstract
-{
-    /**
-     * Google Checkout settings
-     */
-    const XML_PATH_REQUEST_PHONE                     = 'google/checkout/request_phone';
-    const XML_PATH_DISABLE_DEFAULT_TAX_TABLES        = 'google/checkout/disable_default_tax_tables';
-
-    /**
-     * Google Checkout Shipping - Digital Delivery settings
-     */
-    const XML_PATH_SHIPPING_VIRTUAL_ACTIVE           = 'google/checkout_shipping_virtual/active';
-    const XML_PATH_SHIPPING_VIRTUAL_SCHEDULE         = 'google/checkout_shipping_virtual/schedule';
-    const XML_PATH_SHIPPING_VIRTUAL_METHOD           = 'google/checkout_shipping_virtual/method';
-
-    /**
-     * Google Checkout Shipping - Carrier Calculated settings
-     */
-    const XML_PATH_SHIPPING_CARRIER_ACTIVE           = 'google/checkout_shipping_carrier/active';
-    const XML_PATH_SHIPPING_CARRIER_METHODS          = 'google/checkout_shipping_carrier/methods';
-    const XML_PATH_SHIPPING_CARRIER_DEFAULT_PRICE    = 'google/checkout_shipping_carrier/default_price';
-    const XML_PATH_SHIPPING_CARRIER_DEFAULT_WIDTH    = 'google/checkout_shipping_carrier/default_width';
-    const XML_PATH_SHIPPING_CARRIER_DEFAULT_HEIGHT   = 'google/checkout_shipping_carrier/default_height';
-    const XML_PATH_SHIPPING_CARRIER_DEFAULT_LENGTH   = 'google/checkout_shipping_carrier/default_length';
-    const XML_PATH_SHIPPING_CARRIER_ADDRESS_CATEGORY = 'google/checkout_shipping_carrier/address_category';
-
-    /**
-     * Google Checkout Shipping - Flat Rate settings
-     */
-    const XML_PATH_SHIPPING_FLATRATE_ACTIVE          = 'google/checkout_shipping_flatrate/active';
-
-    /**
-     * Google Checkout Shipping - Merchant Calculated settings
-     */
-    const XML_PATH_SHIPPING_MERCHANT_ACTIVE          = 'google/checkout_shipping_merchant/active';
-    const XML_PATH_SHIPPING_MERCHANT_ALLOWED_METHODS = 'google/checkout_shipping_merchant/allowed_methods';
-
-    /**
-     * Google Checkout Shipping - Pickup settings
-     */
-    const XML_PATH_SHIPPING_PICKUP_ACTIVE            = 'google/checkout_shipping_pickup/active';
-    const XML_PATH_SHIPPING_PICKUP_TITLE             = 'google/checkout_shipping_pickup/title';
-    const XML_PATH_SHIPPING_PICKUP_PRICE             = 'google/checkout_shipping_pickup/price';
-
-    /**
-     * Check if option googlecheckout shipping carrier is enabled
-     *
-     * @param  $storeId
-     * @return bool
-     */
-    public function isShippingCarrierActive($storeId)
-    {
-        return (true == Mage::getStoreConfig(self::XML_PATH_SHIPPING_CARRIER_ACTIVE, $storeId));
-    }
-
-    /**
-     * Convert Magento zip range to array of Google Checkout zip-patterns
-     * (e.g., 12000-13999 -> [12*, 13*])
-     *
-     * @param  string $zipRange
-     * @return array
-     */
-    public function zipRangeToZipPattern($zipRange)
-    {
-        $zipLength = 5;
-        $zipPattern = array();
-
-        if (!preg_match("/^(.+)-(.+)$/", $zipRange, $zipParts)) {
-            return array($zipRange);
-        }
-
-        if ($zipParts[1] == $zipParts[2]) {
-            return array($zipParts[1]);
-        }
-
-        if ($zipParts[1] > $zipParts[2]) {
-            list($zipParts[2], $zipParts[1]) = array($zipParts[1], $zipParts[2]);
-        }
-
-        $from = str_split($zipParts[1]);
-        $to = str_split($zipParts[2]);
-
-        $startZip = '';
-        $diffPosition = null;
-        for ($pos = 0; $pos < $zipLength; $pos++) {
-            if ($from[$pos] == $to[$pos]) {
-                $startZip .= $from[$pos];
-            } else {
-                $diffPosition = $pos;
-                break;
-            }
-        }
-
-        /*
-         * calculate zip-patterns
-         */
-        if (min(array_slice($to, $diffPosition)) == 9 && max(array_slice($from, $diffPosition)) == 0) {
-            // particular case like 11000-11999 -> 11*
-            return array($startZip . '*');
-        } else {
-            // calculate approximate zip-patterns
-            $start = $from[$diffPosition];
-            $finish = $to[$diffPosition];
-            if ($diffPosition < $zipLength - 1) {
-                $start++;
-                $finish--;
-            }
-            $end = $diffPosition < $zipLength - 1 ? '*' : '';
-            for ($digit = $start; $digit <= $finish; $digit++) {
-                $zipPattern[] = $startZip . $digit . $end;
-            }
-        }
-
-        if ($diffPosition == $zipLength - 1) {
-            return $zipPattern;
-        }
-
-        $nextAsteriskFrom = true;
-        $nextAsteriskTo = true;
-        for ($pos = $zipLength - 1; $pos > $diffPosition; $pos--) {
-            // calculate zip-patterns based on $from value
-            if ($from[$pos] == 0 && $nextAsteriskFrom) {
-                $nextAsteriskFrom = true;
-            } else {
-                $subZip = '';
-                for ($k = $diffPosition; $k < $pos; $k++) {
-                    $subZip .= $from[$k];
-                }
-                $delta = $nextAsteriskFrom ? 0 : 1;
-                $end = $pos < $zipLength - 1 ? '*' : '';
-                for ($i = $from[$pos] + $delta; $i <= 9; $i++) {
-                    $zipPattern[] = $startZip . $subZip . $i . $end;
-                }
-                $nextAsteriskFrom = false;
-            }
-
-            // calculate zip-patterns based on $to value
-            if ($to[$pos] == 9 && $nextAsteriskTo) {
-                $nextAsteriskTo = true;
-            } else {
-                $subZip = '';
-                for ($k = $diffPosition; $k < $pos; $k++) {
-                    $subZip .= $to[$k];
-                }
-                $delta = $nextAsteriskTo ? 0 : 1;
-                $end = $pos < $zipLength - 1 ? '*' : '';
-                for ($i = 0; $i <= $to[$pos] - $delta; $i++) {
-                    $zipPattern[] = $startZip . $subZip . $i . $end;
-                }
-                $nextAsteriskTo = false;
-            }
-        }
-
-        if ($nextAsteriskFrom) {
-            $zipPattern[] = $startZip . $from[$diffPosition] . '*';
-        }
-        if ($nextAsteriskTo) {
-            $zipPattern[] = $startZip . $to[$diffPosition] . '*';
-        }
-
-        return $zipPattern;
-    }
-}
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -26585,18 +27556,18 @@ class Mage_Reports_Model_Event_Observer
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -26617,18 +27588,18 @@ class Mage_Rule_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -26688,6 +27659,20 @@ abstract class Mage_Rule_Model_Abstract extends Mage_Core_Model_Abstract
      * @return Mage_Rule_Model_Action_Collection
      */
     abstract public function getActionsInstance();
+
+    /**
+     * Prepare select for condition
+     *
+     * @param int $storeId
+     * @return Varien_Db_Select
+     */
+    public function getProductFlatSelect($storeId)
+    {
+        /** @var $resource Mage_Rule_Model_Resource_Abstract */
+        $resource = $this->getResource();
+
+        return $resource->getProductFlatSelect($storeId, $this->getConditions());
+    }
 
     /**
      * Prepare data before saving
@@ -27110,21 +28095,23 @@ abstract class Mage_Rule_Model_Abstract extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-
+/**
+ * @method string getAggregator()
+ */
 class Mage_Rule_Model_Condition_Combine extends Mage_Rule_Model_Condition_Abstract
 {
     /**
@@ -27134,9 +28121,25 @@ class Mage_Rule_Model_Condition_Combine extends Mage_Rule_Model_Condition_Abstra
      */
     static protected $_conditionModels = array();
 
+    /**
+     * Prepare sql where by condition
+     *
+     * @return string
+     */
+    public function prepareConditionSql()
+    {
+        $wheres = array();
+        foreach ($this->getConditions() as $condition) {
+            /** @var $condition Mage_Rule_Model_Condition_Abstract */
+            $wheres[] = $condition->prepareConditionSql();
+        }
 
-
-
+        if (empty($wheres)) {
+            return '';
+        }
+        $delimiter = $this->getAggregator() == "all" ? ' AND ' : ' OR ';
+        return ' (' . implode($delimiter, $wheres) . ') ';
+    }
 
     /**
      * Retrieve new object for each requested model.
@@ -27448,18 +28451,18 @@ class Mage_Rule_Model_Condition_Combine extends Mage_Rule_Model_Condition_Abstra
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -27612,9 +28615,7 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract
 
         $e = Mage::exception(
             'Mage_Core',
-            Mage::helper('rule')->__(
-                'There is no information about associated entity type "%s".', $entityType
-            )
+            Mage::helper('rule')->__('There is no information about associated entity type "%s".', $entityType)
         );
         throw $e;
     }
@@ -27684,18 +28685,18 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -27740,18 +28741,18 @@ class Mage_Rule_Model_Rule extends Mage_Rule_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -27806,23 +28807,35 @@ class Mage_SalesRule_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-
+/**
+ * SalesRule Model Observer
+ *
+ * @category    Mage
+ * @package     Mage_SalesRule
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 class Mage_SalesRule_Model_Observer
 {
+
+    /**
+     * Sales Rule Validator
+     *
+     * @var Mage_SalesRule_Model_Validator
+     */
     protected $_validator;
 
     /**
@@ -27853,6 +28866,11 @@ class Mage_SalesRule_Model_Observer
             ->process($observer->getEvent()->getItem());
     }
 
+    /**
+     * Registered callback: called after an order is placed
+     *
+     * @param Varien_Event_Observer $observer
+     */
     public function sales_order_afterPlace($observer)
     {
         $order = $observer->getEvent()->getOrder();
@@ -27869,43 +28887,44 @@ class Mage_SalesRule_Model_Observer
         $customerId = $order->getCustomerId();
 
         // use each rule (and apply to customer, if applicable)
-        foreach ($ruleIds as $ruleId) {
-            if (!$ruleId) {
-                continue;
-            }
-            $rule = Mage::getModel('salesrule/rule');
-            $rule->load($ruleId);
-            if ($rule->getId()) {
-                $rule->setTimesUsed($rule->getTimesUsed() + 1);
-                $rule->save();
+        if ($order->getDiscountAmount() != 0) {
+            foreach ($ruleIds as $ruleId) {
+                if (!$ruleId) {
+                    continue;
+                }
+                $rule = Mage::getModel('salesrule/rule');
+                $rule->load($ruleId);
+                if ($rule->getId()) {
+                    $rule->setTimesUsed($rule->getTimesUsed() + 1);
+                    $rule->save();
 
-                if ($customerId) {
-                    $ruleCustomer = Mage::getModel('salesrule/rule_customer');
-                    $ruleCustomer->loadByCustomerRule($customerId, $ruleId);
+                    if ($customerId) {
+                        $ruleCustomer = Mage::getModel('salesrule/rule_customer');
+                        $ruleCustomer->loadByCustomerRule($customerId, $ruleId);
 
-                    if ($ruleCustomer->getId()) {
-                        $ruleCustomer->setTimesUsed($ruleCustomer->getTimesUsed()+1);
+                        if ($ruleCustomer->getId()) {
+                            $ruleCustomer->setTimesUsed($ruleCustomer->getTimesUsed() + 1);
+                        }
+                        else {
+                            $ruleCustomer
+                            ->setCustomerId($customerId)
+                            ->setRuleId($ruleId)
+                            ->setTimesUsed(1);
+                        }
+                        $ruleCustomer->save();
                     }
-                    else {
-                        $ruleCustomer
-                        ->setCustomerId($customerId)
-                        ->setRuleId($ruleId)
-                        ->setTimesUsed(1);
-                    }
-                    $ruleCustomer->save();
                 }
             }
-        }
-
-        $coupon = Mage::getModel('salesrule/coupon');
-        /** @var Mage_SalesRule_Model_Coupon */
-        $coupon->load($order->getCouponCode(), 'code');
-        if ($coupon->getId()) {
-            $coupon->setTimesUsed($coupon->getTimesUsed() + 1);
-            $coupon->save();
-            if ($customerId) {
-                $couponUsage = Mage::getResourceModel('salesrule/coupon_usage');
-                $couponUsage->updateCustomerCouponTimesUsed($customerId, $coupon->getId());
+            $coupon = Mage::getModel('salesrule/coupon');
+            /** @var Mage_SalesRule_Model_Coupon */
+            $coupon->load($order->getCouponCode(), 'code');
+            if ($coupon->getId()) {
+                $coupon->setTimesUsed($coupon->getTimesUsed() + 1);
+                $coupon->save();
+                if ($customerId) {
+                    $couponUsage = Mage::getResourceModel('salesrule/coupon_usage');
+                    $couponUsage->updateCustomerCouponTimesUsed($customerId, $coupon->getId());
+                }
             }
         }
     }
@@ -28087,18 +29106,18 @@ class Mage_SalesRule_Model_Observer
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -28404,18 +29423,18 @@ class Mage_SalesRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstra
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -28479,20 +29498,40 @@ class Mage_SalesRule_Model_Resource_Rule_Collection extends Mage_Rule_Model_Reso
             $this->addWebsiteGroupDateFilter($websiteId, $customerGroupId, $now);
             $select = $this->getSelect();
 
+            $connection = $this->getConnection();
             if (strlen($couponCode)) {
                 $select->joinLeft(
                     array('rule_coupons' => $this->getTable('salesrule/coupon')),
-                    'main_table.rule_id = rule_coupons.rule_id ',
+                    $connection->quoteInto(
+                        'main_table.rule_id = rule_coupons.rule_id AND main_table.coupon_type != ?',
+                        Mage_SalesRule_Model_Rule::COUPON_TYPE_NO_COUPON
+                    ),
                     array('code')
                 );
-            $select->where('(main_table.coupon_type = ? ', Mage_SalesRule_Model_Rule::COUPON_TYPE_NO_COUPON)
-                ->orWhere('(main_table.coupon_type = ? AND rule_coupons.type = 0',
-                    Mage_SalesRule_Model_Rule::COUPON_TYPE_AUTO)
-                ->orWhere('main_table.coupon_type = ? AND main_table.use_auto_generation = 1 ' .
-                    'AND rule_coupons.type = 1', Mage_SalesRule_Model_Rule::COUPON_TYPE_SPECIFIC)
-                ->orWhere('main_table.coupon_type = ? AND main_table.use_auto_generation = 0 ' .
-                    'AND rule_coupons.type = 0)', Mage_SalesRule_Model_Rule::COUPON_TYPE_SPECIFIC)
-                ->where('rule_coupons.code = ?)', $couponCode);
+
+                $noCouponCondition = $connection->quoteInto(
+                    'main_table.coupon_type = ? ',
+                    Mage_SalesRule_Model_Rule::COUPON_TYPE_NO_COUPON
+                );
+
+                $orWhereConditions = array(
+                    $connection->quoteInto(
+                        '(main_table.coupon_type = ? AND rule_coupons.type = 0)',
+                        Mage_SalesRule_Model_Rule::COUPON_TYPE_AUTO
+                    ),
+                    $connection->quoteInto(
+                        '(main_table.coupon_type = ? AND main_table.use_auto_generation = 1 AND rule_coupons.type = 1)',
+                        Mage_SalesRule_Model_Rule::COUPON_TYPE_SPECIFIC
+                    ),
+                    $connection->quoteInto(
+                        '(main_table.coupon_type = ? AND main_table.use_auto_generation = 0 AND rule_coupons.type = 0)',
+                        Mage_SalesRule_Model_Rule::COUPON_TYPE_SPECIFIC
+                    ),
+                );
+                $orWhereCondition = implode(' OR ', $orWhereConditions);
+                $select->where(
+                    $noCouponCondition . ' OR ((' . $orWhereCondition . ') AND rule_coupons.code = ?)', $couponCode
+                );
             } else {
                 $this->addFieldToFilter('main_table.coupon_type', Mage_SalesRule_Model_Rule::COUPON_TYPE_NO_COUPON);
             }
@@ -28611,18 +29650,18 @@ class Mage_SalesRule_Model_Resource_Rule_Collection extends Mage_Rule_Model_Reso
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -29174,18 +30213,18 @@ class Mage_SalesRule_Model_Rule extends Mage_Rule_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -29234,18 +30273,18 @@ class Mage_SalesRule_Model_Rule_Condition_Combine extends Mage_Rule_Model_Condit
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -29280,12 +30319,10 @@ class Mage_SalesRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Condit
      */
     public function validate(Varien_Object $object)
     {
-        $product = false;
-        if ($object->getProduct() instanceof Mage_Catalog_Model_Product) {
-            $product = $object->getProduct();
-        } else {
-            $product = Mage::getModel('catalog/product')
-                ->load($object->getProductId());
+        /** @var Mage_Catalog_Model_Product $product */
+        $product = $object->getProduct();
+        if (!($product instanceof Mage_Catalog_Model_Product)) {
+            $product = Mage::getModel('catalog/product')->load($object->getProductId());
         }
 
         $product
@@ -29307,58 +30344,216 @@ class Mage_SalesRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Condit
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 class Mage_SalesRule_Model_Rule_Condition_Product_Combine extends Mage_Rule_Model_Condition_Combine
 {
+    /**
+     * Quote item conditions group
+     */
+    const PRODUCT_ATTRIBUTES_TYPE_QUOTE_ITEM = 'quote_item';
+
+    /**
+     * "Product attribute match a value" conditions group
+     */
+    const PRODUCT_ATTRIBUTES_TYPE_PRODUCT = 'product_attribute_match';
+
+    /**
+     * "Product attribute is set" conditions group
+     */
+    const PRODUCT_ATTRIBUTES_TYPE_ISSET = 'product_attribute_isset';
+
+    /**
+     * Products attributes info
+     * @var array
+     */
+    protected $_productAttributesInfo = null;
+
+    /**
+     * Initialize and retrieve a helper instance
+     * @return Mage_Catalog_Helper_Data
+     */
+    protected function _getHelper()
+    {
+        return Mage::helper('catalog');
+    }
+
+    /**
+     * Check whether the attribute is a quote item attribute
+     * @param $attributeCode
+     *
+     * @return bool
+     */
+    protected function _getIsQuoteItemAttribute($attributeCode)
+    {
+        return strpos($attributeCode, 'quote_item_') === 0;
+    }
+
+    /**
+     * Add an attribute condition to the conditions group
+     * @param $conditionType
+     * @param $conditionModel
+     * @param $attributeCode
+     * @param $attributeLabel
+     *
+     * @return $this
+     */
+    protected function _addAttributeToConditionGroup($conditionType, $conditionModel, $attributeCode, $attributeLabel)
+    {
+        if (!array_key_exists($conditionType, $this->_productAttributesInfo)) {
+            $this->_productAttributesInfo[$conditionType] = array();
+        }
+
+        $conditionKey = sprintf('%s|%s', $conditionModel, $attributeCode);
+
+        $this->_productAttributesInfo[$conditionType][$conditionKey] = array(
+            'label' => $attributeLabel,
+            'value' => $conditionKey
+        );
+
+        return $this;
+    }
+
+    /**
+     * Retrieve a conditions by group_id
+     * @param $conditionsGroup
+     *
+     * @return array
+     */
+    protected function _getAttributeConditions($conditionsGroup)
+    {
+        $this->_initializeProductAttributesInfo();
+        return array_key_exists($conditionsGroup, $this->_productAttributesInfo)
+            ? $this->_productAttributesInfo[$conditionsGroup]
+            : array();
+    }
+
+    /**
+     * CHeck whether the product attribute information exists and initialize it if missing
+     * @return $this
+     */
+    protected function _initializeProductAttributesInfo()
+    {
+        if (is_null($this->_productAttributesInfo)) {
+            $this->_productAttributesInfo = array();
+            $productAttributes = Mage::getModel('salesrule/rule_condition_product')
+                ->loadAttributeOptions()
+                ->getAttributeOption();
+            foreach ($productAttributes as $attributeCode => $attributeLabel) {
+                if ($this->_getIsQuoteItemAttribute($attributeCode)) {
+                    $this->_addAttributeToConditionGroup(
+                        self::PRODUCT_ATTRIBUTES_TYPE_QUOTE_ITEM,
+                        'salesrule/rule_condition_product',
+                        $attributeCode,
+                        $attributeLabel
+                    );
+                } else {
+                    $this->_addAttributeToConditionGroup(
+                        self::PRODUCT_ATTRIBUTES_TYPE_PRODUCT,
+                        'salesrule/rule_condition_product',
+                        $attributeCode,
+                        $attributeLabel
+                    )->_addAttributeToConditionGroup(
+                        self::PRODUCT_ATTRIBUTES_TYPE_ISSET,
+                        'salesrule/rule_condition_product_attribute_assigned',
+                        $attributeCode,
+                        $attributeLabel
+                    );
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Initialize a rule condition
+     */
     public function __construct()
     {
         parent::__construct();
         $this->setType('salesrule/rule_condition_product_combine');
     }
 
+    /**
+     * Generate a conditions data
+     * @return array
+     */
     public function getNewChildSelectOptions()
     {
-        $productCondition = Mage::getModel('salesrule/rule_condition_product');
-        $productAttributes = $productCondition->loadAttributeOptions()->getAttributeOption();
-        $pAttributes = array();
-        $iAttributes = array();
-        foreach ($productAttributes as $code=>$label) {
-            if (strpos($code, 'quote_item_')===0) {
-                $iAttributes[] = array('value'=>'salesrule/rule_condition_product|'.$code, 'label'=>$label);
-            } else {
-                $pAttributes[] = array('value'=>'salesrule/rule_condition_product|'.$code, 'label'=>$label);
-            }
-        }
-
         $conditions = parent::getNewChildSelectOptions();
-        $conditions = array_merge_recursive($conditions, array(
-            array('value'=>'salesrule/rule_condition_product_combine', 'label'=>Mage::helper('catalog')->__('Conditions Combination')),
-            array('label'=>Mage::helper('catalog')->__('Cart Item Attribute'), 'value'=>$iAttributes),
-            array('label'=>Mage::helper('catalog')->__('Product Attribute'), 'value'=>$pAttributes),
-        ));
+        $conditions = array_merge_recursive(
+            $conditions,
+            array(
+                array(
+                    'label' => Mage::helper('catalog')->__('Conditions Combination'),
+                    'value' => 'salesrule/rule_condition_product_combine'
+                ),
+                array(
+                    'label' => Mage::helper('catalog')->__('Cart Item Attribute'),
+                    'value' => $this->_getAttributeConditions(self::PRODUCT_ATTRIBUTES_TYPE_QUOTE_ITEM)
+                ),
+                array(
+                    'label' => Mage::helper('catalog')->__('Product Attribute'),
+                    'value' => $this->_getAttributeConditions(self::PRODUCT_ATTRIBUTES_TYPE_PRODUCT),
+                ),
+                array(
+                    'label' => $this->_getHelper()->__('Product Attribute Assigned'),
+                    'value' => $this->_getAttributeConditions(self::PRODUCT_ATTRIBUTES_TYPE_ISSET)
+                )
+            )
+        );
         return $conditions;
     }
 
+    /**
+     * Collect all validated attributes
+     * @param $productCollection
+     *
+     * @return $this
+     */
     public function collectValidatedAttributes($productCollection)
     {
         foreach ($this->getConditions() as $condition) {
             $condition->collectValidatedAttributes($productCollection);
         }
         return $this;
+    }
+
+    /**
+     * Validate a condition with the checking of the child value
+     * @param Varien_Object $object
+     *
+     * @return bool
+     */
+    public function validate(Varien_Object $object)
+    {
+        /** @var Mage_Catalog_Model_Product $product */
+        $product = $object->getProduct();
+        if (!($product instanceof Mage_Catalog_Model_Product)) {
+            $product = Mage::getModel('catalog/product')->load($object->getProductId());
+        }
+
+        $valid = parent::validate($object);
+        if (!$valid && $product->getTypeId() == Mage_Catalog_Model_Product_Type_Configurable::TYPE_CODE) {
+            $children = $object->getChildren();
+            $valid = $children && $this->validate($children[0]);
+        }
+
+        return $valid;
     }
 }
 /**
@@ -29372,18 +30567,18 @@ class Mage_SalesRule_Model_Rule_Condition_Product_Combine extends Mage_Rule_Mode
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -29428,18 +30623,18 @@ class Mage_SalesRule_Model_Rule_Customer extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -29461,9 +30656,26 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
      */
     protected $_rules;
 
+    /**
+     * Rounding deltas
+     *
+     * @var array
+     */
     protected $_roundingDeltas = array();
 
+    /**
+     * Base rounding deltas
+     *
+     * @var array
+     */
     protected $_baseRoundingDeltas = array();
+
+    /**
+     * Quote address
+     *
+     * @var null|Mage_Sales_Model_Quote_Address
+     */
+    protected $_address = null;
 
     /**
      * Defines if method Mage_SalesRule_Model_Validator::process() was already called
@@ -29494,6 +30706,13 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
      * @var array
      */
     protected $_cartFixedRuleUsedForAddress = array();
+
+    /**
+     * Defines if rule with stop further rules is already applied
+     *
+     * @var bool
+     */
+    protected $_stopFurtherRules = false;
 
     /**
      * Init validator
@@ -29541,6 +30760,8 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
     {
         if ($item instanceof Mage_Sales_Model_Quote_Address_Item) {
             $address = $item->getAddress();
+        } elseif ($this->_address) {
+            $address = $this->_address;
         } elseif ($item->getQuote()->getItemVirtualQty() > 0) {
             $address = $item->getQuote()->getBillingAddress();
         } else {
@@ -29675,6 +30896,7 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
             $address->getQuote()->setAppliedRuleIds('');
             $this->_isFirstTimeResetRun = false;
         }
+        $this->_address = $address;
 
         return $this;
     }
@@ -29703,7 +30925,9 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
         }
 
         $appliedRuleIds = array();
+        $this->_stopFurtherRules = false;
         foreach ($this->_getRules() as $rule) {
+
             /* @var $rule Mage_SalesRule_Model_Rule */
             if (!$this->_canProcessRule($rule, $address)) {
                 continue;
@@ -29732,11 +30956,12 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
                         $qty = floor($qty/$step)*$step;
                     }
                     $_rulePct = $rulePercent/100;
-                    $discountAmount    = ($qty*$itemPrice - $item->getDiscountAmount()) * $_rulePct;
-                    $baseDiscountAmount= ($qty*$baseItemPrice - $item->getBaseDiscountAmount()) * $_rulePct;
+                    $discountAmount    = ($qty * $itemPrice - $item->getDiscountAmount()) * $_rulePct;
+                    $baseDiscountAmount = ($qty * $baseItemPrice - $item->getBaseDiscountAmount()) * $_rulePct;
                     //get discount for original price
-                    $originalDiscountAmount    = ($qty*$itemOriginalPrice - $item->getDiscountAmount()) * $_rulePct;
-                    $baseOriginalDiscountAmount= ($qty*$baseItemOriginalPrice - $item->getDiscountAmount()) * $_rulePct;
+                    $originalDiscountAmount    = ($qty * $itemOriginalPrice - $item->getDiscountAmount()) * $_rulePct;
+                    $baseOriginalDiscountAmount =
+                        ($qty * $baseItemOriginalPrice - $item->getDiscountAmount()) * $_rulePct;
 
                     if (!$rule->getDiscountQty() || $rule->getDiscountQty()>$qty) {
                         $discountPercent = min(100, $item->getDiscountPercent()+$rulePercent);
@@ -29745,11 +30970,11 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
                     break;
                 case Mage_SalesRule_Model_Rule::TO_FIXED_ACTION:
                     $quoteAmount = $quote->getStore()->convertPrice($rule->getDiscountAmount());
-                    $discountAmount    = $qty*($itemPrice-$quoteAmount);
-                    $baseDiscountAmount= $qty*($baseItemPrice-$rule->getDiscountAmount());
+                    $discountAmount    = $qty * ($itemPrice-$quoteAmount);
+                    $baseDiscountAmount = $qty * ($baseItemPrice-$rule->getDiscountAmount());
                     //get discount for original price
-                    $originalDiscountAmount    = $qty*($itemOriginalPrice-$quoteAmount);
-                    $baseOriginalDiscountAmount= $qty*($baseItemOriginalPrice-$rule->getDiscountAmount());
+                    $originalDiscountAmount    = $qty * ($itemOriginalPrice-$quoteAmount);
+                    $baseOriginalDiscountAmount = $qty * ($baseItemOriginalPrice-$rule->getDiscountAmount());
                     break;
 
                 case Mage_SalesRule_Model_Rule::BY_FIXED_ACTION:
@@ -29758,8 +30983,8 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
                         $qty = floor($qty/$step)*$step;
                     }
                     $quoteAmount        = $quote->getStore()->convertPrice($rule->getDiscountAmount());
-                    $discountAmount     = $qty*$quoteAmount;
-                    $baseDiscountAmount = $qty*$rule->getDiscountAmount();
+                    $discountAmount     = $qty * $quoteAmount;
+                    $baseDiscountAmount = $qty * $rule->getDiscountAmount();
                     break;
 
                 case Mage_SalesRule_Model_Rule::CART_FIXED_ACTION:
@@ -29789,7 +31014,7 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
                             $baseDiscountAmount = min($baseItemPrice * $qty, $cartRules[$rule->getId()]);
                         } else {
                             $discountRate = $baseItemPrice * $qty /
-                                            $this->_rulesItemTotals[$rule->getId()]['base_items_price'];
+                                $this->_rulesItemTotals[$rule->getId()]['base_items_price'];
                             $maximumItemDiscount = $rule->getDiscountAmount() * $discountRate;
                             $quoteAmount = $quote->getStore()->convertPrice($maximumItemDiscount);
 
@@ -29803,7 +31028,6 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
 
                         //get discount for original price
                         $originalDiscountAmount = min($itemOriginalPrice * $qty, $quoteAmount);
-                        $baseOriginalDiscountAmount = $quote->getStore()->roundPrice($originalDiscountAmount);
                         $baseOriginalDiscountAmount = $quote->getStore()->roundPrice($baseItemOriginalPrice);
 
                         $cartRules[$rule->getId()] -= $baseDiscountAmount;
@@ -29829,10 +31053,10 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
                     }
 
                     $discountAmount    = $discountQty * $itemPrice;
-                    $baseDiscountAmount= $discountQty * $baseItemPrice;
+                    $baseDiscountAmount = $discountQty * $baseItemPrice;
                     //get discount for original price
                     $originalDiscountAmount    = $discountQty * $itemOriginalPrice;
-                    $baseOriginalDiscountAmount= $discountQty * $baseItemOriginalPrice;
+                    $baseOriginalDiscountAmount = $discountQty * $baseItemOriginalPrice;
                     break;
             }
 
@@ -29859,15 +31083,15 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
             if ($percentKey) {
                 $delta      = isset($this->_roundingDeltas[$percentKey]) ? $this->_roundingDeltas[$percentKey] : 0;
                 $baseDelta  = isset($this->_baseRoundingDeltas[$percentKey])
-                        ? $this->_baseRoundingDeltas[$percentKey]
-                        : 0;
-                $discountAmount+= $delta;
-                $baseDiscountAmount+=$baseDelta;
+                    ? $this->_baseRoundingDeltas[$percentKey]
+                    : 0;
+                $discountAmount += $delta;
+                $baseDiscountAmount += $baseDelta;
 
                 $this->_roundingDeltas[$percentKey]     = $discountAmount -
-                                                          $quote->getStore()->roundPrice($discountAmount);
+                    $quote->getStore()->roundPrice($discountAmount);
                 $this->_baseRoundingDeltas[$percentKey] = $baseDiscountAmount -
-                                                          $quote->getStore()->roundPrice($baseDiscountAmount);
+                    $quote->getStore()->roundPrice($baseDiscountAmount);
                 $discountAmount = $quote->getStore()->roundPrice($discountAmount);
                 $baseDiscountAmount = $quote->getStore()->roundPrice($baseDiscountAmount);
             } else {
@@ -29898,6 +31122,7 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
             $this->_addDiscountDescription($address, $rule);
 
             if ($rule->getStopRulesProcessing()) {
+                $this->_stopFurtherRules = true;
                 break;
             }
         }
@@ -29910,6 +31135,199 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Apply discount amount to FPT
+     *
+     * @param Mage_Sales_Model_Quote_Address $address
+     * @param array $items
+     * @return Mage_SalesRule_Model_Validator
+     */
+    public function processWeeeAmount(Mage_Sales_Model_Quote_Address $address, $items)
+    {
+        $quote = $address->getQuote();
+        $store = $quote->getStore();
+
+        if (!$this->_getHelper('weee')->isEnabled() || !$this->_getHelper('weee')->isDiscounted()) {
+            return $this;
+        }
+
+        /**
+         *   for calculating weee tax discount
+         */
+        $config = $this->_getSingleton('tax/config');
+        $calculator = $this->_getSingleton('tax/calculation');
+        $request = $calculator->getRateRequest(
+            $address,
+            $quote->getBillingAddress(),
+            $quote->getCustomerTaxClassId(),
+            $store
+        );
+
+        $applyTaxAfterDiscount = $config->applyTaxAfterDiscount();
+        $discountTax = $config->discountTax();
+        $includeInSubtotal = $this->_getHelper('weee')->includeInSubtotal();
+
+        foreach ($this->_getRules() as $rule) {
+            /* @var $rule Mage_SalesRule_Model_Rule */
+            $rulePercent = min(100, $rule->getDiscountAmount());
+            switch ($rule->getSimpleAction()) {
+                case Mage_SalesRule_Model_Rule::TO_PERCENT_ACTION:
+                    $rulePercent = max(0, 100 - $rule->getDiscountAmount());
+                case Mage_SalesRule_Model_Rule::BY_PERCENT_ACTION:
+                    foreach ($items as $item) {
+
+                        $weeeTaxAppliedAmounts = $this->_getHelper('weee')->getApplied($item);
+
+                        //Total weee discount for the item
+                        $totalWeeeDiscount = 0;
+                        $totalBaseWeeeDiscount = 0;
+
+                        foreach ($weeeTaxAppliedAmounts as $weeeTaxAppliedAmount) {
+
+                            /* we get the discount by row since we dont need to display the individual amounts */
+                            $weeeTaxAppliedRowAmount = $weeeTaxAppliedAmount['row_amount'];
+                            $baseWeeeTaxAppliedRowAmount = $weeeTaxAppliedAmount['base_row_amount'];
+                            $request->setProductClassId($item->getProduct()->getTaxClassId());
+                            $rate = $calculator->getRate($request);
+
+                            /*
+                             * calculate weee discount
+                             */
+                            $weeeDiscount = 0;
+                            $baseWeeeDiscount = 0;
+
+                            if ($this->_getHelper('weee')->isTaxable()) {
+                                if ($applyTaxAfterDiscount) {
+                                    if ($discountTax) {
+                                        $weeeTax = $weeeTaxAppliedRowAmount * $rate / 100;
+                                        $baseWeeeTax = $baseWeeeTaxAppliedRowAmount * $rate / 100;
+                                        $weeeDiscount = ($weeeTaxAppliedRowAmount + $weeeTax) * $rulePercent / 100;
+                                        $baseWeeeDiscount = ($baseWeeeTaxAppliedRowAmount + $baseWeeeTax)
+                                            * $rulePercent / 100;
+                                    } else {
+                                        $weeeDiscount = $weeeTaxAppliedRowAmount * $rulePercent / 100;
+                                        $baseWeeeDiscount = $baseWeeeTaxAppliedRowAmount * $rulePercent / 100;
+                                    }
+                                } else {
+                                    if ($discountTax) {
+                                        $weeeTax = $weeeTaxAppliedRowAmount * $rate / 100;
+                                        $baseWeeeTax = $baseWeeeTaxAppliedRowAmount * $rate / 100;
+                                        $weeeDiscount = ($weeeTaxAppliedRowAmount + $weeeTax) * $rulePercent / 100;
+                                        $baseWeeeDiscount = ($baseWeeeTaxAppliedRowAmount + $baseWeeeTax)
+                                            * $rulePercent / 100;
+                                    } else {
+                                        $weeeDiscount = $weeeTaxAppliedRowAmount * $rulePercent / 100;
+                                        $baseWeeeDiscount = $baseWeeeTaxAppliedRowAmount * $rulePercent / 100;
+                                    }
+                                }
+                            } else {
+                                // weee is not taxable
+                                $weeeDiscount = $weeeTaxAppliedRowAmount * $rulePercent / 100;
+                                $baseWeeeDiscount = $baseWeeeTaxAppliedRowAmount * $rulePercent / 100;
+                            }
+
+                            if (!$includeInSubtotal) {
+                                $this->_getHelper('weee')->setWeeeTaxesAppliedProperty(
+                                    $item, $weeeTaxAppliedAmount['title'], 'weee_discount', $weeeDiscount);
+                                $this->_getHelper('weee')->setWeeeTaxesAppliedProperty(
+                                    $item, $weeeTaxAppliedAmount['title'], 'base_weee_discount', $baseWeeeDiscount);
+                            }
+
+                            //Record the total weee discount
+                            $totalBaseWeeeDiscount += $baseWeeeDiscount;
+                            $totalWeeeDiscount += $weeeDiscount;
+                        }
+
+                        if (!$totalBaseWeeeDiscount && !$totalWeeeDiscount) {
+                            //skip further processing if there is no weee discount associated with the item
+                            continue;
+                        }
+
+                        $discountPercentage = $item->getDiscountPercent();
+
+                        $totalWeeeDiscount = $this->_roundWithDeltas($discountPercentage,
+                            $totalWeeeDiscount, $quote->getStore());
+                        $totalBaseWeeeDiscount = $this->_roundWithDeltasForBase($discountPercentage,
+                            $totalBaseWeeeDiscount, $quote->getStore());
+
+                        $item->setWeeeDiscount($totalWeeeDiscount);
+                        $item->setBaseWeeeDiscount($totalBaseWeeeDiscount);
+
+                        //Set the total discount replicated on all weee attributes.
+                        //we need to do this as the mage_sales_order_item does not store the weee discount
+                        //We need to store this as we want to keep the rounded amounts
+                        if (!$includeInSubtotal) {
+                            $this->_getHelper('weee')->setWeeeTaxesAppliedProperty(
+                                $item, null, 'total_base_weee_discount', $totalBaseWeeeDiscount);
+                            $this->_getHelper('weee')->setWeeeTaxesAppliedProperty(
+                                $item, null, 'total_weee_discount', $totalWeeeDiscount);
+                        }
+
+                        if ($includeInSubtotal) {
+                            $item->setDiscountAmount($item->getDiscountAmount() + $totalWeeeDiscount);
+                            $item->setBaseDiscountAmount($item->getBaseDiscountAmount() + $totalBaseWeeeDiscount);
+                            $address->addTotalAmount('discount', -$totalWeeeDiscount);
+                            $address->addBaseTotalAmount('discount', -$totalBaseWeeeDiscount);
+                        } else {
+                            if ($applyTaxAfterDiscount) {
+                                $address->setExtraTaxAmount($address->getExtraTaxAmount() - $totalWeeeDiscount);
+                                $address->setBaseExtraTaxAmount(
+                                    $address->getBaseExtraTaxAmount() - $totalBaseWeeeDiscount);
+                                $address->setWeeeDiscount($address->getWeeeDiscount() + $totalWeeeDiscount);
+                                $address->setBaseWeeeDiscount($address->getBaseWeeeDiscount() + $totalBaseWeeeDiscount);
+                            } else {
+                                //tax has already been calculated, we need to remove weeeDiscount from total tax
+                                $address->setExtraTaxAmount($address->getExtraTaxAmount() - $totalWeeeDiscount);
+                                $address->setBaseExtraTaxAmount(
+                                    $address->getBaseExtraTaxAmount() - $totalBaseWeeeDiscount);
+                                $address->addTotalAmount('tax', -$totalWeeeDiscount);
+                                $address->addBaseTotalAmount('tax', -$totalBaseWeeeDiscount);
+                                $address->setWeeeDiscount($address->getWeeeDiscount() + $totalWeeeDiscount);
+                                $address->setBaseWeeeDiscount($address->getBaseWeeeDiscount() + $totalBaseWeeeDiscount);
+                            }
+                        }
+
+                        break;
+                    }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Round the amount with deltas collected
+     *
+     * @param string $key
+     * @param float $amount
+     * @param Mage_Core_Model_Store $store
+     * @return float
+     */
+    protected function _roundWithDeltas($key, $amount, $store)
+    {
+        $delta = isset($this->_roundingDeltas[$key]) ?
+            $this->_roundingDeltas[$key] : 0;
+        $this->_roundingDeltas[$key] = $store->roundPrice($amount + $delta)
+            - $amount;
+        return $store->roundPrice($amount + $delta);
+    }
+
+    /**
+     * Round the amount with deltas collected
+     *
+     * @param string $key
+     * @param float $amount
+     * @param Mage_Core_Model_Store $store
+     * @return float
+     */
+    protected function _roundWithDeltasForBase($key, $amount, $store)
+    {
+        $delta = isset($this->_baseRoundingDeltas[$key]) ?
+            $this->_roundingDeltas[$key] : 0;
+        $this->_baseRoundingDeltas[$key] = $store->roundPrice($amount + $delta)
+            - $amount;
+        return $store->roundPrice($amount + $delta);
+    }
+
+    /**
      * Apply discounts to shipping amount
      *
      * @param   Mage_Sales_Model_Quote_Address $address
@@ -29917,8 +31335,8 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
      */
     public function processShippingAmount(Mage_Sales_Model_Quote_Address $address)
     {
-        $shippingAmount     = $address->getShippingAmountForDiscount();
-        if ($shippingAmount!==null) {
+        $shippingAmount = $address->getShippingAmountForDiscount();
+        if ($shippingAmount !== null) {
             $baseShippingAmount = $address->getBaseShippingAmountForDiscount();
         } else {
             $shippingAmount     = $address->getShippingAmount();
@@ -29940,15 +31358,15 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
                     $rulePercent = max(0, 100-$rule->getDiscountAmount());
                 case Mage_SalesRule_Model_Rule::BY_PERCENT_ACTION:
                     $discountAmount    = ($shippingAmount - $address->getShippingDiscountAmount()) * $rulePercent/100;
-                    $baseDiscountAmount= ($baseShippingAmount -
-                                          $address->getBaseShippingDiscountAmount()) * $rulePercent/100;
+                    $baseDiscountAmount = ($baseShippingAmount -
+                        $address->getBaseShippingDiscountAmount()) * $rulePercent/100;
                     $discountPercent = min(100, $address->getShippingDiscountPercent()+$rulePercent);
                     $address->setShippingDiscountPercent($discountPercent);
                     break;
                 case Mage_SalesRule_Model_Rule::TO_FIXED_ACTION:
                     $quoteAmount = $quote->getStore()->convertPrice($rule->getDiscountAmount());
                     $discountAmount    = $shippingAmount-$quoteAmount;
-                    $baseDiscountAmount= $baseShippingAmount-$rule->getDiscountAmount();
+                    $baseDiscountAmount = $baseShippingAmount-$rule->getDiscountAmount();
                     break;
                 case Mage_SalesRule_Model_Rule::BY_FIXED_ACTION:
                     $quoteAmount        = $quote->getStore()->convertPrice($rule->getDiscountAmount());
@@ -30017,7 +31435,7 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
         }
         $a = array_unique(array_merge($a1, $a2));
         if ($asString) {
-           $a = implode(',', $a);
+            $a = implode(',', $a);
         }
         return $a;
     }
@@ -30092,7 +31510,7 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
                 );
             }
         }
-
+        $this->_stopFurtherRules = false;
         return $this;
     }
 
@@ -30108,7 +31526,8 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
     {
         /*
         Rule is a part of rules collection, which includes only rules with 'No Coupon' type or with validated coupon.
-        As a result, if rule uses coupon code(s) ('Specific' or 'Auto' Coupon Type), it always contains validated coupon
+        As a result, if rule uses coupon code(s) ('Specific' or 'Auto' Coupon Type), it always contains validated
+        coupon
         */
         if ($rule->getCouponType() != Mage_SalesRule_Model_Rule::COUPON_TYPE_NO_COUPON) {
             $address->setCouponCode($this->getCouponCode());
@@ -30211,22 +31630,64 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
      * @param string $separator
      * @return Mage_SalesRule_Model_Validator
      */
-    public function prepareDescription($address, $separator=', ')
+    public function prepareDescription($address, $separator = ', ')
     {
-        $description = $address->getDiscountDescriptionArray();
-
-        if (is_array($description) && !empty($description)) {
-            $description = array_unique($description);
-            $description = implode($separator, $description);
-        } else {
-            $description = '';
+        $descriptionArray = $address->getDiscountDescriptionArray();
+        /** @see Mage_SalesRule_Model_Validator::_getAddress */
+        if (!$descriptionArray && $address->getQuote()->getItemVirtualQty() > 0) {
+            $descriptionArray = $address->getQuote()->getBillingAddress()->getDiscountDescriptionArray();
         }
+
+        $description = $descriptionArray && is_array($descriptionArray)
+            ? implode($separator, array_unique($descriptionArray))
+            :  '';
+
         $address->setDiscountDescription($description);
         return $this;
     }
 
+    /**
+     * wrap Mage::getSingleton
+     *
+     * @param string $name
+     * @return mixed
+     */
+    protected  function _getSingleton($name) {
+        return Mage::getSingleton($name);
+    }
 
+    /**
+     * wrap Mage::helper
+     *
+     * @param string $name
+     * @return Mage_Weee_Helper_Data
+     */
+    protected function _getHelper($name) {
+        return Mage::helper($name);
+    }
 
+    /**
+     * Return items list sorted by possibility to apply prioritized rules
+     *
+     * @param array $items
+     * @return array $items
+     */
+    public function sortItemsByPriority($items)
+    {
+        $itemsSorted = array();
+        foreach ($this->_getRules() as $rule) {
+            foreach ($items as $itemKey => $itemValue) {
+                if ($rule->getActions()->validate($itemValue)) {
+                    unset($items[$itemKey]);
+                    array_push($itemsSorted, $itemValue);
+                }
+            }
+        }
+        if (!empty($itemsSorted)) {
+            $items = array_merge($itemsSorted, $items);
+        }
+        return $items;
+    }
 }
 /**
  * Magento
@@ -30239,18 +31700,18 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -30410,18 +31871,18 @@ class Mage_Sales_Helper_Data extends Mage_Core_Helper_Data
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -30540,6 +32001,15 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
 {
     protected $_eventPrefix = 'sales_quote';
     protected $_eventObject = 'quote';
+
+    /**
+     * Model cache tag for clear cache in after save and after delete
+     *
+     * When you use true - all cache will be clean
+     *
+     * @var string || true
+     */
+    protected $_cacheTag = 'quote';
 
     /**
      * Quote customer model object
@@ -30948,7 +32418,7 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
     }
 
     /**
-     * retrieve quote shipping address
+     * Retrieve quote shipping address
      *
      * @return Mage_Sales_Model_Quote_Address
      */
@@ -31027,11 +32497,40 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
         return $this;
     }
 
+    /**
+     * Leave no more than one billing and one shipping address, fill them with default data
+     *
+     * @return Mage_Sales_Model_Quote
+     */
     public function removeAllAddresses()
     {
-        foreach ($this->getAddressesCollection() as $address) {
+        $addressByType = array();
+        $addressesCollection = $this->getAddressesCollection();
+
+        // mark all addresses as deleted
+        foreach ($addressesCollection as $address) {
+            $type = $address->getAddressType();
+            if (!isset($addressByType[$type]) || $addressByType[$type]->getId() > $address->getId()) {
+                $addressByType[$type] = $address;
+            }
             $address->isDeleted(true);
         }
+
+        // create new billing and shipping addresses filled with default values, set this data to existing records
+        foreach ($addressByType as $type => $address) {
+            $id = $address->getId();
+            $emptyAddress = $this->_getAddressByType($type);
+            $address->setData($emptyAddress->getData())->setId($id)->isDeleted(false);
+            $emptyAddress->setDeleteImmediately(true);
+        }
+
+        // remove newly created billing and shipping addresses from collection to avoid senseless delete queries
+        foreach ($addressesCollection as $key => $item) {
+            if ($item->getDeleteImmediately()) {
+                $addressesCollection->removeItemByKey($key);
+            }
+        }
+
         return $this;
     }
 
@@ -31193,6 +32692,36 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
     public function getItemById($itemId)
     {
         return $this->getItemsCollection()->getItemById($itemId);
+    }
+
+    /**
+     * Delete quote item. If it does not have identifier then it will be only removed from collection
+     *
+     * @param   Mage_Sales_Model_Quote_Item $item
+     * @return  Mage_Sales_Model_Quote
+     */
+    public function deleteItem(Mage_Sales_Model_Quote_Item $item)
+    {
+        if ($item->getId()) {
+            $this->removeItem($item->getId());
+        } else {
+            $quoteItems = $this->getItemsCollection();
+            $items = array($item);
+            if ($item->getHasChildren()) {
+                foreach ($item->getChildren() as $child) {
+                    $items[] = $child;
+                }
+            }
+            foreach ($quoteItems as $key => $quoteItem) {
+                foreach ($items as $item) {
+                    if ($quoteItem->compare($item)) {
+                        $quoteItems->removeItemByKey($key);
+                    }
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -32309,18 +33838,18 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -32409,6 +33938,8 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
  * @method Mage_Sales_Model_Quote_Address setCustomerNotes(string $value)
  * @method string getDiscountDescription()
  * @method Mage_Sales_Model_Quote_Address setDiscountDescription(string $value)
+ * @method null|array getDiscountDescriptionArray()
+ * @method Mage_Sales_Model_Quote_Address setDiscountDescriptionArray(array $value)
  * @method float getShippingDiscountAmount()
  * @method Mage_Sales_Model_Quote_Address setShippingDiscountAmount(float $value)
  * @method float getBaseShippingDiscountAmount()
@@ -32438,8 +33969,10 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
  */
 class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstract
 {
-    const RATES_FETCH = 1;
-    const RATES_RECALCULATE = 2;
+    /**
+     * Default value for Destination street
+     */
+    const DEFAULT_DEST_STREET = -1;
 
     /**
      * Prefix of model events
@@ -32479,7 +34012,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     /**
      * Total models collector
      *
-     * @var Mage_Sales_Model_Quote_Address_Totla_Collector
+     * @var Mage_Sales_Model_Quote_Address_Total_Collector
      */
     protected $_totalCollector = null;
 
@@ -32490,7 +34023,18 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
      */
     protected $_totals = array();
 
+    /**
+     * Total amounts
+     *
+     * @var array
+     */
     protected $_totalAmounts = array();
+
+    /**
+     * Total base amounts
+     *
+     * @var array
+     */
     protected $_baseTotalAmounts = array();
 
     /**
@@ -32520,34 +34064,79 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     }
 
     /**
-     * Initialize quote identifier before save
+     * Initialize Quote identifier before save
      *
      * @return Mage_Sales_Model_Quote_Address
      */
     protected function _beforeSave()
     {
         parent::_beforeSave();
+        $this->_populateBeforeSaveData();
+        return $this;
+    }
+
+    /**
+     * Set the required fields
+     */
+    protected function _populateBeforeSaveData()
+    {
         if ($this->getQuote()) {
-            $quoteId = $this->getQuote()->getId();
-            if ($quoteId) {
-                $this->setQuoteId($quoteId);
-            } else {
-                $this->_dataSaveAllowed = false;
+            $this->_dataSaveAllowed = (bool)$this->getQuote()->getId();
+
+            if ($this->getQuote()->getId()) {
+                $this->setQuoteId($this->getQuote()->getId());
             }
             $this->setCustomerId($this->getQuote()->getCustomerId());
+
             /**
              * Init customer address id if customer address is assigned
              */
             if ($this->getCustomerAddress()) {
                 $this->setCustomerAddressId($this->getCustomerAddress()->getId());
             }
+
+            /**
+             * Set same_as_billing to "1" when default shipping address is set as default
+             * and it is not equal billing address
+             */
+            if (!$this->getId()) {
+                $this->setSameAsBilling((int)$this->_isSameAsBilling());
+            }
         }
-        if ($this->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING
-            && $this->getSameAsBilling() === null
-        ) {
-            $this->setSameAsBilling(1);
-        }
-        return $this;
+    }
+
+    /**
+     * Returns true if the billing address is same as the shipping
+     *
+     * @return bool
+     */
+    protected function _isSameAsBilling()
+    {
+        return ($this->getAddressType() == Mage_Sales_Model_Quote_Address::TYPE_SHIPPING
+            && ($this->_isNotRegisteredCustomer() || $this->_isDefaultShippingNullOrSameAsBillingAddress()));
+    }
+
+    /**
+     * Checks if the user is a registered customer
+     *
+     * @return bool
+     */
+    protected function _isNotRegisteredCustomer()
+    {
+        return !$this->getQuote()->getCustomerId() || $this->getCustomerAddressId() === null;
+    }
+
+    /**
+     * Returns true if the def billing address is same as customer address
+     *
+     * @return bool
+     */
+    protected function _isDefaultShippingNullOrSameAsBillingAddress()
+    {
+        $customer = $this->getQuote()->getCustomer();
+        return !$customer->getDefaultShippingAddress()
+            || $customer->getDefaultBillingAddress() && $customer->getDefaultShippingAddress()
+                && $customer->getDefaultBillingAddress()->getId() == $customer->getDefaultShippingAddress()->getId();
     }
 
     /**
@@ -32601,9 +34190,8 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
         Mage::helper('core')->copyFieldset('customer_address', 'to_quote_address', $address, $this);
         $email = null;
         if ($address->hasEmail()) {
-            $email =  $address->getEmail();
-        }
-        elseif ($address->getCustomer()) {
+            $email = $address->getEmail();
+        } elseif ($address->getCustomer()) {
             $email = $address->getCustomer()->getEmail();
         }
         if ($email) {
@@ -32653,7 +34241,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
         $arr = parent::toArray($arrAttributes);
         $arr['rates'] = $this->getShippingRatesCollection()->toArray($arrAttributes);
         $arr['items'] = $this->getItemsCollection()->toArray($arrAttributes);
-        foreach ($this->getTotals() as $k=>$total) {
+        foreach ($this->getTotals() as $k => $total) {
             $arr['totals'][$k] = $total->toArray();
         }
         return $arr;
@@ -32862,7 +34450,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     public function getItemById($itemId)
     {
         foreach ($this->getItemsCollection() as $item) {
-            if ($item->getId()==$itemId) {
+            if ($item->getId() == $itemId) {
                 return $item;
             }
         }
@@ -32878,7 +34466,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     public function getValidItemById($itemId)
     {
         foreach ($this->getAllItems() as $item) {
-            if ($item->getId()==$itemId) {
+            if ($item->getId() == $itemId) {
                 return $item;
             }
         }
@@ -32894,7 +34482,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     public function getItemByQuoteItemId($itemId)
     {
         foreach ($this->getItemsCollection() as $item) {
-            if ($item->getQuoteItemId()==$itemId) {
+            if ($item->getQuoteItemId() == $itemId) {
                 return $item;
             }
         }
@@ -32923,7 +34511,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
      * @param   int $qty
      * @return  Mage_Sales_Model_Quote_Address
      */
-    public function addItem(Mage_Sales_Model_Quote_Item_Abstract $item, $qty=null)
+    public function addItem(Mage_Sales_Model_Quote_Item_Abstract $item, $qty = null)
     {
         if ($item instanceof Mage_Sales_Model_Quote_Item) {
             if ($item->getParentItemId()) {
@@ -32943,8 +34531,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
                     $this->getItemsCollection()->addItem($addressChildItem);
                 }
             }
-        }
-        else {
+        } else {
             $addressItem = $item;
             $addressItem->setAddress($this);
             if (!$addressItem->getId()) {
@@ -33029,11 +34616,9 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     {
         if ((int)$a[0]->carrier_sort_order < (int)$b[0]->carrier_sort_order) {
             return -1;
-        }
-        elseif ((int)$a[0]->carrier_sort_order > (int)$b[0]->carrier_sort_order) {
+        } elseif ((int)$a[0]->carrier_sort_order > (int)$b[0]->carrier_sort_order) {
             return 1;
-        }
-        else {
+        } else {
             return 0;
         }
     }
@@ -33047,7 +34632,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     public function getShippingRateById($rateId)
     {
         foreach ($this->getShippingRatesCollection() as $rate) {
-            if ($rate->getId()==$rateId) {
+            if ($rate->getId() == $rateId) {
                 return $rate;
             }
         }
@@ -33063,7 +34648,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
     public function getShippingRateByCode($code)
     {
         foreach ($this->getShippingRatesCollection() as $rate) {
-            if ($rate->getCode()==$code) {
+            if ($rate->getCode() == $code) {
                 return $rate;
             }
         }
@@ -33145,7 +34730,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
          * need to call getStreet with -1
          * to get data in string instead of array
          */
-        $request->setDestStreet($this->getStreet(-1));
+        $request->setDestStreet($this->getStreet(self::DEFAULT_DEST_STREET));
         $request->setDestCity($this->getCity());
         $request->setDestPostcode($this->getPostcode());
         $request->setPackageValue($item ? $item->getBaseRowTotal() : $this->getBaseSubtotal());
@@ -33182,7 +34767,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
         $request->setPackageCurrency($this->getQuote()->getStore()->getCurrentCurrency());
         $request->setLimitCarrier($this->getLimitCarrier());
 
-        $request->setBaseSubtotalInclTax($this->getBaseSubtotalInclTax());
+        $request->setBaseSubtotalInclTax($this->getBaseSubtotalInclTax() + $this->getBaseExtraTaxAmount());
 
         $result = Mage::getModel('shipping/shipping')->collectRates($request)->getResult();
 
@@ -33227,7 +34812,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
         if ($this->_totalCollector === null) {
             $this->_totalCollector = Mage::getSingleton(
                 'sales/quote_address_total_collector',
-                array('store'=>$this->getQuote()->getStore())
+                array('store' => $this->getQuote()->getStore())
             );
         }
         return $this->_totalCollector;
@@ -33315,8 +34900,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
 
         if ($this->getQuote()->getIsVirtual() && $this->getAddressType() == self::TYPE_SHIPPING) {
             return true;
-        }
-        elseif (!$this->getQuote()->getIsVirtual() && $this->getAddressType() != self::TYPE_SHIPPING) {
+        } elseif (!$this->getQuote()->getIsVirtual() && $this->getAddressType() != self::TYPE_SHIPPING) {
             return true;
         }
 
@@ -33513,18 +35097,18 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -33573,18 +35157,18 @@ interface Mage_Catalog_Model_Product_Configuration_Item_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -33604,8 +35188,24 @@ interface Mage_Catalog_Model_Product_Configuration_Item_Interface
 abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abstract
     implements Mage_Catalog_Model_Product_Configuration_Item_Interface
 {
+    /**
+     * Parent item for sub items for bundle product, configurable product, etc.
+     *
+     * @var Mage_Sales_Model_Quote_Item_Abstract
+     */
     protected $_parentItem  = null;
+
+    /**
+     * Children items in bundle product, configurable product, etc.
+     *
+     * @var array
+     */
     protected $_children    = array();
+
+    /**
+     *
+     * @var array
+     */
     protected $_messages    = array();
 
     /**
@@ -33623,7 +35223,7 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
     public function getProduct()
     {
         $product = $this->_getData('product');
-        if (($product === null) && $this->getProductId()) {
+        if ($product === null && $this->getProductId()) {
             $product = Mage::getModel('catalog/product')
                 ->setStoreId($this->getQuote()->getStoreId())
                 ->load($this->getProductId());
@@ -33813,10 +35413,10 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
 
         try {
             $this->setQty($qty);
-        } catch (Mage_Core_Exception $e){
+        } catch (Mage_Core_Exception $e) {
             $this->setHasError(true);
             $this->setMessage($e->getMessage());
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $this->setHasError(true);
             $this->setMessage(Mage::helper('sales')->__('Item qty declaration error.'));
         }
@@ -33824,17 +35424,30 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
         try {
             $this->getProduct()->getTypeInstance(true)->checkProductBuyState($this->getProduct());
         } catch (Mage_Core_Exception $e) {
-            $this->setHasError(true);
-            $this->setMessage($e->getMessage());
-            $this->getQuote()->setHasError(true);
-            $this->getQuote()->addMessage(
-                Mage::helper('sales')->__('Some of the products below do not have all the required options. Please edit them and configure all the required options.')
-            );
+            $this->setHasError(true)
+                ->setMessage($e->getMessage());
+            $this->getQuote()->setHasError(true)
+                ->addMessage(Mage::helper('sales')->__('Some of the products below do not have all the required options.'));
         } catch (Exception $e) {
-            $this->setHasError(true);
-            $this->setMessage(Mage::helper('sales')->__('Item options declaration error.'));
-            $this->getQuote()->setHasError(true);
-            $this->getQuote()->addMessage(Mage::helper('sales')->__('Items options declaration error.'));
+            $this->setHasError(true)
+                ->setMessage(Mage::helper('sales')->__('Item options declaration error.'));
+            $this->getQuote()->setHasError(true)
+                ->addMessage(Mage::helper('sales')->__('Items options declaration error.'));
+        }
+
+        if ($this->getProduct()->getHasError()) {
+            $this->setHasError(true)
+                ->setMessage(Mage::helper('sales')->__('Some of the selected options are not currently available.'));
+            $this->getQuote()->setHasError(true)
+                ->addMessage($this->getProduct()->getMessage(), 'options');
+        }
+
+        if ($this->getHasConfigurationUnavailableError()) {
+            $this->setHasError(true)
+                ->setMessage(Mage::helper('sales')->__('Selected option(s) or their combination is not currently available.'));
+            $this->getQuote()->setHasError(true)
+                ->addMessage(Mage::helper('sales')->__('Some item options or their combination are not currently available.'), 'unavailable-configuration');
+            $this->unsHasConfigurationUnavailableError();
         }
 
         return $this;
@@ -33873,7 +35486,7 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
         $qty        = $this->getTotalQty();
         // Round unit price before multiplying to prevent losing 1 cent on subtotal
         $total      = $this->getStore()->roundPrice($this->getCalculationPriceOriginal()) * $qty;
-        $baseTotal  = $this->getBaseCalculationPriceOriginal() * $qty;
+        $baseTotal  = $this->getStore()->roundPrice($this->getBaseCalculationPriceOriginal()) * $qty;
 
         $this->setRowTotal($this->getStore()->roundPrice($total));
         $this->setBaseRowTotal($this->getStore()->roundPrice($baseTotal));
@@ -34197,8 +35810,8 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
                 $totalTax = $this->getTaxAmount();
 
                 if ($totalTax && $totalBaseTax) {
-                    $totalTax -= $this->getDiscountAmount()*($this->getTaxPercent()/100);
-                    $totalBaseTax -= $this->getBaseDiscountAmount()*($this->getTaxPercent()/100);
+                    $totalTax -= $this->getDiscountAmount() * ($this->getTaxPercent() / 100);
+                    $totalBaseTax -= $this->getBaseDiscountAmount() * ($this->getTaxPercent() / 100);
 
                     $this->setBaseTaxAmount($store->roundPrice($totalBaseTax));
                     $this->setTaxAmount($store->roundPrice($totalTax));
@@ -34356,18 +35969,18 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -34511,7 +36124,12 @@ class Mage_Sales_Model_Quote_Address_Item extends Mage_Sales_Model_Quote_Item_Ab
         return $this->_quote;
     }
 
-
+    /**
+     * Import item to quote
+     *
+     * @param Mage_Sales_Model_Quote_Item $quoteItem
+     * @return Mage_Sales_Model_Quote_Address_Item
+     */
     public function importQuoteItem(Mage_Sales_Model_Quote_Item $quoteItem)
     {
         $this->_quote = $quoteItem->getQuote();
@@ -34524,6 +36142,7 @@ class Mage_Sales_Model_Quote_Address_Item extends Mage_Sales_Model_Quote_Item_Ab
             ->setDescription($quoteItem->getDescription())
             ->setWeight($quoteItem->getWeight())
             ->setPrice($quoteItem->getPrice())
+            ->setIsQtyDecimal($quoteItem->getIsQtyDecimal())
             ->setCost($quoteItem->getCost());
 
         if (!$this->hasQty()) {
@@ -34552,18 +36171,18 @@ class Mage_Sales_Model_Quote_Address_Item extends Mage_Sales_Model_Quote_Item_Ab
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Shipping
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -34591,18 +36210,18 @@ abstract class Mage_Shipping_Model_Rate_Abstract extends Mage_Core_Model_Abstrac
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -34701,18 +36320,18 @@ class Mage_Sales_Model_Quote_Address_Rate extends Mage_Shipping_Model_Rate_Abstr
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -34746,18 +36365,18 @@ class Mage_Sales_Model_Quote_Address_Total extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -35014,18 +36633,18 @@ abstract class Mage_Sales_Model_Quote_Address_Total_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -35168,21 +36787,27 @@ class Mage_Sales_Model_Quote_Address_Total_Discount extends Mage_Sales_Model_Quo
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-
+/**
+ * Model to calculate grand total or an order
+ *
+ * @category    Mage
+ * @package     Mage_Sales
+ * @author      Magento Core Team
+ */
 class Mage_Sales_Model_Quote_Address_Total_Grand extends Mage_Sales_Model_Quote_Address_Total_Abstract
 {
     /**
@@ -35196,8 +36821,11 @@ class Mage_Sales_Model_Quote_Address_Total_Grand extends Mage_Sales_Model_Quote_
         $grandTotal     = $address->getGrandTotal();
         $baseGrandTotal = $address->getBaseGrandTotal();
 
+        $store      = $address->getQuote()->getStore();
         $totals     = array_sum($address->getAllTotalAmounts());
+        $totals     = $store->roundPrice($totals);
         $baseTotals = array_sum($address->getAllBaseTotalAmounts());
+        $baseTotals = $store->roundPrice($baseTotals);
 
         $address->setGrandTotal($grandTotal+$totals);
         $address->setBaseGrandTotal($baseGrandTotal+$baseTotals);
@@ -35232,18 +36860,18 @@ class Mage_Sales_Model_Quote_Address_Total_Grand extends Mage_Sales_Model_Quote_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -35441,18 +37069,18 @@ class Mage_Sales_Model_Quote_Address_Total_Shipping extends Mage_Sales_Model_Quo
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -35617,18 +37245,18 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -35869,18 +37497,18 @@ class Mage_Sales_Model_Quote_Address_Total_Tax extends Mage_Sales_Model_Quote_Ad
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -35913,18 +37541,18 @@ class Mage_Sales_Model_Quote_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -36029,6 +37657,9 @@ class Mage_Sales_Model_Quote_Config
  * @method Mage_Sales_Model_Quote_Item setHiddenTaxAmount(float $value)
  * @method float getBaseHiddenTaxAmount()
  * @method Mage_Sales_Model_Quote_Item setBaseHiddenTaxAmount(float $value)
+ * @method null|bool getHasConfigurationUnavailableError()
+ * @method Mage_Sales_Model_Quote_Item setHasConfigurationUnavailableError(bool $value)
+ * @method Mage_Sales_Model_Quote_Item unsHasConfigurationUnavailableError()
  *
  * @category    Mage
  * @package     Mage_Sales
@@ -36064,14 +37695,14 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
      *
      * @var array
      */
-    protected $_options             = array();
+    protected $_options = array();
 
     /**
      * Item options by code cache
      *
      * @var array
      */
-    protected $_optionsByCode       = array();
+    protected $_optionsByCode = array();
 
     /**
      * Not Represent options
@@ -36167,6 +37798,16 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
     }
 
     /**
+     * Get Magento App instance
+     *
+     * @return Mage_Core_Model_App
+     */
+    protected function _getApp()
+    {
+        return Mage::app();
+    }
+
+    /**
      * Adding quantity to quote item
      *
      * @param float $qty
@@ -36183,7 +37824,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
          */
         if (!$this->getParentItem() || !$this->getId()) {
             $this->setQtyToAdd($qty);
-            $this->setQty($oldQty+$qty);
+            $this->setQty($oldQty + $qty);
         }
         return $this;
     }
@@ -36196,11 +37837,11 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
      */
     public function setQty($qty)
     {
-        $qty    = $this->_prepareQty($qty);
+        $qty = $this->_prepareQty($qty);
         $oldQty = $this->_getData('qty');
         $this->setData('qty', $qty);
 
-        Mage::dispatchEvent('sales_quote_item_qty_set_after', array('item'=>$this));
+        Mage::dispatchEvent('sales_quote_item_qty_set_after', array('item' => $this));
 
         if ($this->getQuote() && $this->getQuote()->getIgnoreOldQty()) {
             return $this;
@@ -36261,23 +37902,6 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
     }
 
     /**
-     * Checking item data
-     *
-     * @return Mage_Sales_Model_Quote_Item_Abstract
-     */
-    public function checkData()
-    {
-        $parent = parent::checkData();
-        if ($this->getProduct()->getHasError()) {
-            $this->setHasError(true);
-            $this->setMessage(Mage::helper('sales')->__('Item options declaration error.'));
-            $this->getQuote()->setHasError(true);
-            $this->getQuote()->addMessage($this->getProduct()->getMessage(), 'options');
-        }
-        return $parent;
-    }
-
-    /**
      * Setup product for quote item
      *
      * @param   Mage_Catalog_Model_Product $product
@@ -36297,8 +37921,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
             ->setWeight($this->getProduct()->getWeight())
             ->setTaxClassId($product->getTaxClassId())
             ->setBaseCost($product->getCost())
-            ->setIsRecurring($product->getIsRecurring())
-        ;
+            ->setIsRecurring($product->getIsRecurring());
 
         if ($product->getStockItem()) {
             $this->setIsQtyDecimal($product->getStockItem()->getIsQtyDecimal());
@@ -36306,7 +37929,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
 
         Mage::dispatchEvent('sales_quote_item_set_product', array(
             'product' => $product,
-            'quote_item'=>$this
+            'quote_item' => $this
         ));
 
 
@@ -36343,13 +37966,13 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
         }
 
         // Check options
-        $itemOptions    = $this->getOptionsByCode();
+        $itemOptions = $this->getOptionsByCode();
         $productOptions = $product->getCustomOptions();
 
-        if(!$this->compareOptions($itemOptions, $productOptions)){
+        if (!$this->compareOptions($itemOptions, $productOptions)) {
             return false;
         }
-        if(!$this->compareOptions($productOptions, $itemOptions)){
+        if (!$this->compareOptions($productOptions, $itemOptions)) {
             return false;
         }
         return true;
@@ -36368,12 +37991,13 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
     {
         foreach ($options1 as $option) {
             $code = $option->getCode();
-            if (in_array($code, $this->_notRepresentOptions )) {
+            if (in_array($code, $this->_notRepresentOptions)) {
                 continue;
             }
-            if ( !isset($options2[$code])
+            if (!isset($options2[$code])
                 || ($options2[$code]->getValue() === null)
-                || $options2[$code]->getValue() != $option->getValue()) {
+                || $options2[$code]->getValue() != $option->getValue()
+            ) {
                 return false;
             }
         }
@@ -36397,15 +38021,15 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
             }
             if ($itemOption = $item->getOptionByCode($option->getCode())) {
                 $itemOptionValue = $itemOption->getValue();
-                $optionValue     = $option->getValue();
+                $optionValue = $option->getValue();
 
                 // dispose of some options params, that can cramp comparing of arrays
                 if (is_string($itemOptionValue) && is_string($optionValue)) {
                     $_itemOptionValue = @unserialize($itemOptionValue);
-                    $_optionValue     = @unserialize($optionValue);
+                    $_optionValue = @unserialize($optionValue);
                     if (is_array($_itemOptionValue) && is_array($_optionValue)) {
                         $itemOptionValue = $_itemOptionValue;
-                        $optionValue     = $_optionValue;
+                        $optionValue = $_optionValue;
                         // looks like it does not break bundle selection qty
                         unset($itemOptionValue['qty'], $itemOptionValue['uenc']);
                         unset($optionValue['qty'], $optionValue['uenc']);
@@ -36415,8 +38039,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
                 if ($itemOptionValue != $optionValue) {
                     return false;
                 }
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -36455,7 +38078,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
      * @param array $arrAttributes
      * @return array
      */
-    public function toArray(array $arrAttributes=array())
+    public function toArray(array $arrAttributes = array())
     {
         $data = parent::toArray($arrAttributes);
 
@@ -36510,23 +38133,19 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
         if (is_array($option)) {
             $option = Mage::getModel('sales/quote_item_option')->setData($option)
                 ->setItem($this);
-        }
-        elseif (($option instanceof Varien_Object) && !($option instanceof Mage_Sales_Model_Quote_Item_Option)) {
+        } elseif (($option instanceof Varien_Object) && !($option instanceof Mage_Sales_Model_Quote_Item_Option)) {
             $option = Mage::getModel('sales/quote_item_option')->setData($option->getData())
-               ->setProduct($option->getProduct())
-               ->setItem($this);
-        }
-        elseif($option instanceof Mage_Sales_Model_Quote_Item_Option) {
+                ->setProduct($option->getProduct())
+                ->setItem($this);
+        } elseif ($option instanceof Mage_Sales_Model_Quote_Item_Option) {
             $option->setItem($this);
-        }
-        else {
+        } else {
             Mage::throwException(Mage::helper('sales')->__('Invalid item option format.'));
         }
 
         if ($exOption = $this->getOptionByCode($option->getCode())) {
             $exOption->addData($option->getData());
-        }
-        else {
+        } else {
             $this->_addOptionCode($option);
             $this->_options[] = $option;
         }
@@ -36538,16 +38157,14 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
      * Exemple: cataloginventory decimal qty validation may change qty to int,
      * so need to change quote item qty option value.
      *
-     * @param array         $options
      * @param Varien_Object $option
-     * @param mixed         $value
-     *
-     * @return object       Mage_Catalog_Model_Product_Type_Abstract
+     * @param int|float|null $value
+     * @return Mage_Sales_Model_Quote_Item
      */
     public function updateQtyOption(Varien_Object $option, $value)
     {
-        $optionProduct  = $option->getProduct();
-        $options        = $this->getQtyOptions();
+        $optionProduct = $option->getProduct();
+        $options = $this->getQtyOptions();
 
         if (isset($options[$optionProduct->getId()])) {
             $options[$optionProduct->getId()]->setValue($value);
@@ -36584,8 +38201,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
     {
         if (!isset($this->_optionsByCode[$option->getCode()])) {
             $this->_optionsByCode[$option->getCode()] = $option;
-        }
-        else {
+        } else {
             Mage::throwException(Mage::helper('sales')->__('An item option with code %s already exists.', $option->getCode()));
         }
         return $this;
@@ -36678,9 +38294,9 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
     {
         parent::__clone();
         $options = $this->getOptions();
-        $this->_quote           = null;
-        $this->_options         = array();
-        $this->_optionsByCode   = array();
+        $this->_quote = null;
+        $this->_options = array();
+        $this->_optionsByCode = array();
         foreach ($options as $option) {
             $this->addOption(clone $option);
         }
@@ -36815,18 +38431,18 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -36856,18 +38472,18 @@ interface Mage_Catalog_Model_Product_Configuration_Item_Option_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -37008,18 +38624,18 @@ class Mage_Sales_Model_Quote_Item_Option extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37060,18 +38676,18 @@ abstract class Mage_Sales_Model_Resource_Abstract extends Mage_Core_Model_Resour
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37231,23 +38847,21 @@ class Mage_Sales_Model_Resource_Quote extends Mage_Sales_Model_Resource_Abstract
      */
     public function markQuotesRecollectOnCatalogRules()
     {
-        $tableQuote = $this->getTable('sales/quote');
-        $subSelect = $this->_getReadAdapter()
-            ->select()
-            ->from(array('t2' => $this->getTable('sales/quote_item')), array('entity_id' => 'quote_id'))
-            ->from(array('t3' => $this->getTable('catalogrule/rule_product_price')), array())
-            ->where('t2.product_id = t3.product_id')
-            ->group('quote_id');
+        $quoteItemTable = $this->getTable('sales/quote_item');
+        $productPriceTable = $this->getTable('catalogrule/rule_product_price');
 
-        $select = $this->_getReadAdapter()->select()->join(
-            array('t2' => $subSelect),
-            't1.entity_id = t2.entity_id',
-            array('trigger_recollect' => new Zend_Db_Expr('1'))
-        );
+        $select = $this->_getReadAdapter()
+          ->select()
+          ->distinct()
+          ->from(array('t2' => $quoteItemTable), array('entity_id' => 'quote_id'))
+          ->join(array('t3' => $productPriceTable), 't2.product_id = t3.product_id', array());
 
-        $updateQuery = $select->crossUpdateFromSelect(array('t1' => $tableQuote));
+        $entityIds = $this->_getReadAdapter()->fetchCol($select);
 
-        $this->_getWriteAdapter()->query($updateQuery);
+        if (count($entityIds) > 0) {
+            $where = $this->_getWriteAdapter()->quoteInto('entity_id IN (?)', $entityIds);
+            $this->_getWriteAdapter()->update($this->getTable('sales/quote'), array('trigger_recollect' => 1), $where);
+        }
 
         return $this;
     }
@@ -37327,18 +38941,18 @@ class Mage_Sales_Model_Resource_Quote extends Mage_Sales_Model_Resource_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37371,18 +38985,18 @@ class Mage_Sales_Model_Resource_Quote_Address extends Mage_Sales_Model_Resource_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37458,18 +39072,18 @@ class Mage_Sales_Model_Resource_Quote_Address_Collection extends Mage_Core_Model
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37502,18 +39116,18 @@ class Mage_Sales_Model_Resource_Quote_Address_Item extends Mage_Sales_Model_Reso
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37584,18 +39198,18 @@ class Mage_Sales_Model_Resource_Quote_Address_Item_Collection extends Mage_Core_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37628,18 +39242,18 @@ class Mage_Sales_Model_Resource_Quote_Address_Rate extends Mage_Sales_Model_Reso
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37722,18 +39336,18 @@ class Mage_Sales_Model_Resource_Quote_Address_Rate_Collection extends Mage_Core_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37766,18 +39380,18 @@ class Mage_Sales_Model_Resource_Quote_Item extends Mage_Sales_Model_Resource_Abs
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37957,13 +39571,13 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
                 $optionProductIds   = array();
                 foreach ($item->getOptions() as $option) {
                     /**
-                     * Call type specified logic for product associated with quote item
+                     * Call type-specific logic for product associated with quote item
                      */
                     $product->getTypeInstance(true)->assignProductToOption(
-                            $productCollection->getItemById($option->getProductId()),
-                            $option,
-                            $product
-                        );
+                        $productCollection->getItemById($option->getProductId()),
+                        $option,
+                        $product
+                    );
 
                     if (is_object($option->getProduct()) && $option->getProduct()->getId() != $product->getId()) {
                         $optionProductIds[$option->getProduct()->getId()] = $option->getProduct()->getId();
@@ -37978,9 +39592,8 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
                         }
                     }
                 }
-                $item->setQtyOptions($qtyOptions);
 
-                $item->setProduct($product);
+                $item->setQtyOptions($qtyOptions)->setProduct($product);
             } else {
                 $item->isDeleted(true);
                 $recollectQuote = true;
@@ -38007,18 +39620,18 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -38051,18 +39664,18 @@ class Mage_Sales_Model_Resource_Quote_Item_Option extends Mage_Core_Model_Resour
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -38224,18 +39837,18 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -38243,7 +39856,14 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
  */
 class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * Price conversion constant for positive
+     */
     const PRICE_CONVERSION_PLUS = 1;
+
+    /**
+     * Price conversion constat for negative
+     */
     const PRICE_CONVERSION_MINUS = 2;
 
     /**
@@ -38251,14 +39871,62 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @var Mage_Tax_Model_Config
      */
-    protected $_config      = null;
-    protected $_calculator  = null;
+    protected $_config = null;
+
+    /**
+     * Tax calculator
+     *
+     * @var Mage_Tac_Model_Calculation
+     */
+    protected $_calculator = null;
+
+    /**
+     * Display tax column
+     *
+     * @var bool
+     */
     protected $_displayTaxColumn;
+
+    /**
+     * Tax data
+     *
+     * @var mixed
+     */
     protected $_taxData;
+
+    /**
+     * Price includes tax
+     *
+     * @var bool
+     */
     protected $_priceIncludesTax;
+
+    /**
+     * Shipping price includes tax
+     *
+     * @var bool
+     */
     protected $_shippingPriceIncludesTax;
+
+    /**
+     * Apply tax after discount
+     *
+     * @var bool
+     */
     protected $_applyTaxAfterDiscount;
+
+    /**
+     * Price display type
+     *
+     * @var int
+     */
     protected $_priceDisplayType;
+
+    /**
+     * Shipping price display type
+     *
+     * @var int
+     */
     protected $_shippingPriceDisplayType;
 
     /**
@@ -38268,9 +39936,22 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      */
     protected $_postCodeSubStringLength = 10;
 
-    public function  __construct()
+    /**
+     * Application instance
+     *
+     * @var Mage_Core_Model_App
+     */
+    protected $_app;
+
+    /**
+     * Initialize helper instance
+     *
+     * @param array $args
+     */
+    public function  __construct(array $args = array())
     {
         $this->_config = Mage::getSingleton('tax/config');
+        $this->_app = !empty($args['app']) ? $args['app'] : Mage::app();
     }
 
     /**
@@ -38311,30 +39992,30 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Get product price including store convertion rate
+     * Get product price including store conversion rate
      *
      * @param   Mage_Catalog_Model_Product $product
      * @param   null|string $format
      * @return  float|string
      */
-    public function getProductPrice($product, $format=null)
+    public function getProductPrice($product, $format = null)
     {
         try {
             $value = $product->getPrice();
-            $value = Mage::app()->getStore()->convertPrice($value, $format);
-        } catch (Exception $e){
+            $value = $this->_app->getStore()->convertPrice($value, $format);
+        } catch (Exception $e) {
             $value = $e->getMessage();
         }
         return $value;
     }
 
     /**
-     * Check if product prices inputed include tax
+     * Check if product prices inputted include tax
      *
      * @param   mix $store
      * @return  bool
      */
-    public function priceIncludesTax($store=null)
+    public function priceIncludesTax($store = null)
     {
         return $this->_config->priceIncludesTax($store) || $this->_config->getNeedUseShippingExcludeTax();
     }
@@ -38345,7 +40026,7 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      * @param   mixed $store
      * @return  bool
      */
-    public function applyTaxAfterDiscount($store=null)
+    public function applyTaxAfterDiscount($store = null)
     {
         return $this->_config->applyTaxAfterDiscount($store);
     }
@@ -38353,9 +40034,11 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Output
      *
-     * @param boolean $includes
+     * @param bool $flag
+     * @param mixed $store
+     * @return string
      */
-    public function getIncExcText($flag, $store=null)
+    public function getIncExcText($flag, $store = null)
     {
         if ($flag) {
             $s = $this->__('Incl. Tax');
@@ -38554,11 +40237,11 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getPriceFormat($store = null)
     {
-        Mage::app()->getLocale()->emulate($store);
-        $priceFormat = Mage::app()->getLocale()->getJsPriceFormat();
-        Mage::app()->getLocale()->revert();
+        $this->_app->getLocale()->emulate($store);
+        $priceFormat = $this->_app->getLocale()->getJsPriceFormat();
+        $this->_app->getLocale()->revert();
         if ($store) {
-            $priceFormat['pattern'] = Mage::app()->getStore($store)->getCurrentCurrency()->getOutputFormat();
+            $priceFormat['pattern'] = $this->_app->getStore($store)->getCurrentCurrency()->getOutputFormat();
         }
         return Mage::helper('core')->jsonEncode($priceFormat);
     }
@@ -38583,9 +40266,11 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      * array(
      *      value_{$productTaxVlassId} => $rate
      * )
+     *
+     * @param mixed $store
      * @return string
      */
-    public function getAllRatesByProductClass($store=null)
+    public function getAllRatesByProductClass($store = null)
     {
         return $this->_getAllRatesByProductClass($store);
     }
@@ -38597,15 +40282,17 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      * array(
      *      value_{$productTaxVlassId} => $rate
      * )
+     *
+     * @param mixed $store
      * @return string
      */
-    protected function _getAllRatesByProductClass($store=null)
+    protected function _getAllRatesByProductClass($store = null)
     {
         $result = array();
         $calc = Mage::getSingleton('tax/calculation');
-        $rates = $calc->getRatesForAllProductTaxClasses($calc->getRateOriginRequest($store));
+        $rates = $calc->getRatesForAllProductTaxClasses($calc->getDefaultRateRequest($store));
 
-        foreach ($rates as $class=>$rate) {
+        foreach ($rates as $class => $rate) {
             $result["value_{$class}"] = $rate;
         }
 
@@ -38621,17 +40308,17 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      * @param   null|Mage_Customer_Model_Address $shippingAddress
      * @param   null|Mage_Customer_Model_Address $billingAddress
      * @param   null|int $ctc customer tax class
-     * @param   mixed $store
+     * @param   null|Mage_Core_Model_Store $store
      * @param   bool $priceIncludesTax flag what price parameter contain tax
      * @return  float
      */
     public function getPrice($product, $price, $includingTax = null, $shippingAddress = null, $billingAddress = null,
-        $ctc = null, $store = null, $priceIncludesTax = null
-    ) {
+                             $ctc = null, $store = null, $priceIncludesTax = null, $roundPrice = true)
+    {
         if (!$price) {
             return $price;
         }
-        $store = Mage::app()->getStore($store);
+        $store = $this->_app->getStore($store);
         if (!$this->needPriceConversion($store)) {
             return $store->roundPrice($price);
         }
@@ -38652,9 +40339,13 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
         if ($taxClassId && $priceIncludesTax) {
-            $request = Mage::getSingleton('tax/calculation')->getRateRequest(false, false, false, $store);
-            $includingPercent = Mage::getSingleton('tax/calculation')
-                ->getRate($request->setProductClassId($taxClassId));
+            if ($this->isCrossBorderTradeEnabled($store)) {
+                $includingPercent = $percent;
+            } else {
+                $request = Mage::getSingleton('tax/calculation')->getRateOriginRequest($store);
+                $includingPercent = Mage::getSingleton('tax/calculation')
+                    ->getRate($request->setProductClassId($taxClassId));
+            }
         }
 
         if ($percent === false || is_null($percent)) {
@@ -38664,39 +40355,35 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $product->setTaxPercent($percent);
+        if ($product->getAppliedRates() == null) {
+            $request = Mage::getSingleton('tax/calculation')
+                    ->getRateRequest($shippingAddress, $billingAddress, $ctc, $store);
+            $request->setProductClassId($taxClassId);
+            $appliedRates =  Mage::getSingleton('tax/calculation')->getAppliedRates($request);
+            $product->setAppliedRates($appliedRates);
+        }
 
         if (!is_null($includingTax)) {
             if ($priceIncludesTax) {
                 if ($includingTax) {
                     /**
-                     * Recalculate price include tax in case of different rates
+                     * Recalculate price include tax in case of different rates.  Otherwise price remains the same.
                      */
                     if ($includingPercent != $percent) {
-                        $price = $this->_calculatePrice($price, $includingPercent, false);
-                        /**
-                         * Using regular rounding. Ex:
-                         * price incl tax   = 52.76
-                         * store tax rate   = 19.6%
-                         * customer tax rate= 19%
-                         *
-                         * price excl tax = 52.76 / 1.196 = 44.11371237 ~ 44.11
-                         * tax = 44.11371237 * 0.19 = 8.381605351 ~ 8.38
-                         * price incl tax = 52.49531773 ~ 52.50 != 52.49
-                         *
-                         * that why we need round prices excluding tax before applying tax
-                         * this calculation is used for showing prices on catalog pages
-                         */
-                        if ($percent != 0) {
-                            $price = $this->getCalculator()->round($price);
-                            $price = $this->_calculatePrice($price, $percent, true);
-                        }
+                        // determine the customer's price that includes tax
+                        $price = $this->_calculatePriceInclTax($price, $includingPercent, $percent, $store);
                     }
                 } else {
                     $price = $this->_calculatePrice($price, $includingPercent, false);
                 }
             } else {
                 if ($includingTax) {
-                    $price = $this->_calculatePrice($price, $percent, true);
+                    $appliedRates = $product->getAppliedRates();
+                    if (count($appliedRates) > 1) {
+                        $price = $this->_calculatePriceInclTaxWithMultipleRates($price, $appliedRates);
+                    } else {
+                        $price = $this->_calculatePrice($price, $percent, true);
+                    }
                 }
             }
         } else {
@@ -38704,7 +40391,18 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
                 switch ($this->getPriceDisplayType($store)) {
                     case Mage_Tax_Model_Config::DISPLAY_TYPE_EXCLUDING_TAX:
                     case Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH:
-                        $price = $this->_calculatePrice($price, $includingPercent, false);
+                        if ($includingPercent != $percent) {
+                            // determine the customer's price that includes tax
+                            $taxablePrice = $this->_calculatePriceInclTax($price, $includingPercent, $percent, $store);
+                            // determine the customer's tax amount,
+                            // round tax unless $roundPrice is set explicitly to false
+                            $tax = $this->getCalculator()->calcTaxAmount($taxablePrice, $percent, true, $roundPrice);
+                            // determine the customer's price without taxes
+                            $price = $taxablePrice - $tax;
+                        } else {
+                            //round tax first unless $roundPrice is set to false explicitly
+                            $price = $this->_calculatePrice($price, $includingPercent, false, $roundPrice);
+                        }
                         break;
 
                     case Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX:
@@ -38715,7 +40413,12 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
             } else {
                 switch ($this->getPriceDisplayType($store)) {
                     case Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX:
-                        $price = $this->_calculatePrice($price, $percent, true);
+                        $appliedRates = $product->getAppliedRates();
+                        if (count($appliedRates) > 1) {
+                            $price = $this->_calculatePriceInclTaxWithMultipleRates($price, $appliedRates);
+                        } else {
+                            $price = $this->_calculatePrice($price, $percent, true);
+                        }
                         break;
 
                     case Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH:
@@ -38724,7 +40427,29 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
                 }
             }
         }
-        return $store->roundPrice($price);
+        if ($roundPrice) {
+            return $store->roundPrice($price);
+        } else {
+            return $price;
+        }
+    }
+
+    /**
+     * Given a store price that includes tax at the store rate, this function will back out the store's tax, and add in
+     * the customer's tax.  Returns this new price which is the customer's price including tax.
+     *
+     * @param float $storePriceInclTax
+     * @param float $storePercent
+     * @param float $customerPercent
+     * @param Mage_Core_Model_Store $store
+     * @return float
+     */
+    protected function _calculatePriceInclTax($storePriceInclTax, $storePercent, $customerPercent, $store)
+    {
+        $priceExclTax         = $this->_calculatePrice($storePriceInclTax, $storePercent, false, false);
+        $customerTax          = $this->getCalculator()->calcTaxAmount($priceExclTax, $customerPercent, false, false);
+        $customerPriceInclTax = $store->roundPrice($priceExclTax + $customerTax);
+        return $customerPriceInclTax;
     }
 
     /**
@@ -38750,11 +40475,12 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Check if we have display in catalog prices including and excluding tax
      *
+     * @param int $store
      * @return bool
      */
-    public function displayBothPrices()
+    public function displayBothPrices($store = null)
     {
-        return $this->getPriceDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH;
+        return $this->getPriceDisplayType($store) == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH;
     }
 
     /**
@@ -38762,60 +40488,124 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @param   float $price
      * @param   float $percent
-     * @param   bool $type true - for calculate price including tax and false if price excluding tax
+     * @param   bool $type true - to calculate the price including tax and false if calculating price to exclude tax
+     * @param   bool $roundTaxFirst
      * @return  float
      */
-    protected function _calculatePrice($price, $percent, $type)
+    protected function _calculatePrice($price, $percent, $type, $roundTaxFirst = false)
     {
-        $calculator = Mage::getSingleton('tax/calculation');
+        $calculator = $this->getCalculator();
         if ($type) {
-            $taxAmount = $calculator->calcTaxAmount($price, $percent, false, false);
+            $taxAmount = $calculator->calcTaxAmount($price, $percent, false, $roundTaxFirst);
             return $price + $taxAmount;
         } else {
-            $taxAmount = $calculator->calcTaxAmount($price, $percent, true, false);
+            $taxAmount = $calculator->calcTaxAmount($price, $percent, true, $roundTaxFirst);
             return $price - $taxAmount;
         }
     }
 
+    /**
+     * Calculate price including tax when multiple taxes is applied and rounded
+     * independently.
+     *
+     * @param foat $price
+     * @param array $appliedRates
+     * @return float
+     */
+    protected function _calculatePriceInclTaxWithMultipleRates($price, $appliedRates)
+    {
+        $calculator = $this->getCalculator();
+        $tax = 0;
+        foreach ($appliedRates as $appliedRate) {
+            $taxRate = $appliedRate['percent'];
+            $tax += $calculator->round($price * $taxRate / 100);
+        }
+        return $tax + $price;
+    }
+
+    /**
+     * Returns the include / exclude tax label
+     *
+     * @param bool $flag
+     * @return string
+     */
     public function getIncExcTaxLabel($flag)
     {
         $text = $this->getIncExcText($flag);
-        return $text ? ' <span class="tax-flag">('.$text.')</span>' : '';
+        return $text ? ' <span class="tax-flag">(' . $text . ')</span>' : '';
     }
 
+    /**
+     * Check if shipping prices include tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function shippingPriceIncludesTax($store = null)
     {
         return $this->_config->shippingPriceIncludesTax($store);
     }
 
+    /**
+     * Get shipping methods prices display type
+     *
+     * @param mixed $store
+     * @return int
+     */
     public function getShippingPriceDisplayType($store = null)
     {
         return $this->_config->getShippingPriceDisplayType($store);
     }
 
+    /**
+     * Returns whether the shipping price should display with taxes included
+     *
+     * @return bool
+     */
     public function displayShippingPriceIncludingTax()
     {
         return $this->getShippingPriceDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Returns whether the shipping price should display without taxes
+     *
+     * @return bool
+     */
     public function displayShippingPriceExcludingTax()
     {
         return $this->getShippingPriceDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Returns whether the shipping price should display both with and without taxes
+     *
+     * @return bool
+     */
     public function displayShippingBothPrices()
     {
         return $this->getShippingPriceDisplayType() == Mage_Tax_Model_Config::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Get tax class id specified for shipping tax estimation
+     *
+     * @param mixed $store
+     * @return int
+     */
     public function getShippingTaxClass($store)
     {
         return $this->_config->getShippingTaxClass($store);
     }
 
     /**
-     * Get shipping price
+     * Get Shipping Price
      *
+     * @param float $price
+     * @param null|bool $includingTax
+     * @param mixed $shippingAddress
+     * @param mixed $ctc
+     * @param mixed $store
      * @return float
      */
     public function getShippingPrice($price, $includingTax = null, $shippingAddress = null, $ctc = null, $store = null)
@@ -38841,13 +40631,20 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
         return $price;
     }
 
+    /**
+     * Returns the SQL for the price tax
+     *
+     * @param string $priceField
+     * @param string $taxClassField
+     * @return string
+     */
     public function getPriceTaxSql($priceField, $taxClassField)
     {
         if (!$this->priceIncludesTax() && $this->displayPriceExcludingTax()) {
             return '';
         }
 
-        $request = Mage::getSingleton('tax/calculation')->getRateRequest(false, false, false);
+        $request = Mage::getSingleton('tax/calculation')->getDefaultRateRequest();
         $defaultTaxes = Mage::getSingleton('tax/calculation')->getRatesForAllProductTaxClasses($request);
 
         $request = Mage::getSingleton('tax/calculation')->getRateRequest();
@@ -38856,15 +40653,15 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
         $defaultTaxString = $currentTaxString = '';
 
         $rateToVariable = array(
-                            'defaultTaxString'=>'defaultTaxes',
-                            'currentTaxString'=>'currentTaxes',
-                            );
-        foreach ($rateToVariable as $rateVariable=>$rateArray) {
+            'defaultTaxString' => 'defaultTaxes',
+            'currentTaxString' => 'currentTaxes',
+        );
+        foreach ($rateToVariable as $rateVariable => $rateArray) {
             if ($$rateArray && is_array($$rateArray)) {
                 $$rateVariable = '';
-                foreach ($$rateArray as $classId=>$rate) {
+                foreach ($$rateArray as $classId => $rate) {
                     if ($rate) {
-                        $$rateVariable .= sprintf("WHEN %d THEN %12.4f ", $classId, $rate/100);
+                        $$rateVariable .= sprintf("WHEN %d THEN %12.4f ", $classId, $rate / 100);
                     }
                 }
                 if ($$rateVariable) {
@@ -38877,7 +40674,7 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($this->priceIncludesTax()) {
             if ($defaultTaxString) {
-                $result  = "-({$priceField}/(1+({$defaultTaxString}))*{$defaultTaxString})";
+                $result = "-({$priceField}/(1+({$defaultTaxString}))*{$defaultTaxString})";
             }
             if (!$this->displayPriceExcludingTax() && $currentTaxString) {
                 $result .= "+(({$priceField}{$result})*{$currentTaxString})";
@@ -38903,12 +40700,12 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $taxClassAttribute = Mage::getModel('eav/entity_attribute')
             ->loadByCode(Mage_Catalog_Model_Product::ENTITY, 'tax_class_id');
-        $joinConditionD = implode(' AND ',array(
+        $joinConditionD = implode(' AND ', array(
             "tax_class_d.entity_id = {$priceTable}.entity_id",
             $select->getAdapter()->quoteInto('tax_class_d.attribute_id = ?', (int)$taxClassAttribute->getId()),
             'tax_class_d.store_id = 0'
         ));
-        $joinConditionC = implode(' AND ',array(
+        $joinConditionC = implode(' AND ', array(
             "tax_class_c.entity_id = {$priceTable}.entity_id",
             $select->getAdapter()->quoteInto('tax_class_c.attribute_id = ?', (int)$taxClassAttribute->getId()),
             $select->getAdapter()->quoteInto('tax_class_c.store_id = ?', (int)$storeId)
@@ -38932,16 +40729,17 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      * @param   null|int $store
      * @return  0|1
      */
-    public function discountTax($store=null)
+    public function discountTax($store = null)
     {
         return $this->_config->discountTax($store);
     }
 
     /**
-     * Get value of "Apply Tax On" custom/original price configuration settings
+     * Get value of "Apply Tax On" custom/original price configuration settings.
+     * Result is 0 or 1
      *
-     * @param $store
-     * @return 0|1
+     * @param mixed $store
+     * @return mixed
      */
     public function getTaxBasedOn($store = null)
     {
@@ -38956,7 +40754,7 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function applyTaxOnCustomPrice($store = null)
     {
-        return ((int) Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_APPLY_ON, $store) == 0);
+        return ((int)Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_APPLY_ON, $store) == 0);
     }
 
     /**
@@ -38967,7 +40765,7 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function applyTaxOnOriginalPrice($store = null)
     {
-        return ((int) Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_APPLY_ON, $store) == 1);
+        return ((int)Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_APPLY_ON, $store) == 1);
     }
 
     /**
@@ -38978,18 +40776,18 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      * @param   null|int|string|Mage_Core_Model_Store $store
      * @return  string
      */
-    public function getCalculationSequence($store=null)
+    public function getCalculationSequence($store = null)
     {
         return $this->_config->getCalculationSequence($store);
     }
 
     /**
-     * Get tax caclulation algorithm code
+     * Get tax calculation algorithm code
      *
      * @param   null|int $store
      * @return  string
      */
-    public function getCalculationAgorithm($store=null)
+    public function getCalculationAgorithm($store = null)
     {
         return $this->_config->getAlgorithm($store);
     }
@@ -39002,8 +40800,8 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      *  $index => array(
      *      'tax_amount'        => $taxAmount,
      *      'base_tax_amount'   => $baseTaxAmount,
-     *      'hidden_tax_amount' => $hiddenTaxAmount
-     *      'title'             => $title
+     *      'hidden_tax_amount' => $hiddenTaxAmount,
+     *      'title'             => $title,
      *      'percent'           => $percent
      *  )
      * )
@@ -39013,55 +40811,99 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getCalculatedTaxes($source)
     {
-        if (Mage::registry('current_invoice')) {
-            $current = Mage::registry('current_invoice');
-        } elseif (Mage::registry('current_creditmemo')) {
-            $current = Mage::registry('current_creditmemo');
+        if ($this->_getFromRegistry('current_invoice')) {
+            $current = $this->_getFromRegistry('current_invoice');
+        } elseif ($this->_getFromRegistry('current_creditmemo')) {
+            $current = $this->_getFromRegistry('current_creditmemo');
         } else {
             $current = $source;
         }
 
         $taxClassAmount = array();
         if ($current && $source) {
-            foreach($current->getItemsCollection() as $item) {
-                $taxCollection = Mage::getResourceModel('tax/sales_order_tax_item')
-                    ->getTaxItemsByItemId(
-                        $item->getOrderItemId() ? $item->getOrderItemId() : $item->getItemId()
-                    );
+            if ($current == $source) {
+                // use the actuals
+                $rates = $this->_getTaxRateSubtotals($source);
+                foreach ($rates['items'] as $rate) {
+                    $taxClassId = $rate['tax_id'];
+                    $taxClassAmount[$taxClassId]['tax_amount'] = $rate['amount'];
+                    $taxClassAmount[$taxClassId]['base_tax_amount'] = $rate['base_amount'];
+                    $taxClassAmount[$taxClassId]['title'] = $rate['title'];
+                    $taxClassAmount[$taxClassId]['percent'] = $rate['percent'];
+                }
+            } else {
+                // regenerate tax subtotals
+                // Calculate taxes for shipping
+                $shippingTaxAmount = $current->getShippingTaxAmount();
+                if ($shippingTaxAmount) {
+                    $shippingTax    = Mage::helper('tax')->getShippingTax($current);
+                    $taxClassAmount = array_merge($taxClassAmount, $shippingTax);
+                }
 
-                foreach ($taxCollection as $tax) {
-                    $taxClassId = $tax['tax_id'];
-                    $percent    = $tax['tax_percent'];
+                foreach ($current->getItemsCollection() as $item) {
+                    $taxCollection = Mage::getResourceModel('tax/sales_order_tax_item')
+                        ->getTaxItemsByItemId(
+                            $item->getOrderItemId() ? $item->getOrderItemId() : $item->getItemId()
+                        );
 
-                    $price     = $item->getRowTotal();
-                    $basePrice = $item->getBaseRowTotal();
-                    if ($this->applyTaxAfterDiscount($item->getStoreId())) {
-                        $price     = $price - $item->getDiscountAmount() + $item->getHiddenTaxAmount();
-                        $basePrice = $basePrice - $item->getBaseDiscountAmount() + $item->getBaseHiddenTaxAmount();
-                    }
+                    foreach ($taxCollection as $tax) {
+                        $taxClassId = $tax['tax_id'];
+                        $percent = $tax['tax_percent'];
 
-                    if (isset($taxClassAmount[$taxClassId])) {
-                        $taxClassAmount[$taxClassId]['tax_amount']      += $price * $percent / 100;
-                        $taxClassAmount[$taxClassId]['base_tax_amount'] += $basePrice * $percent / 100;
-                    } else {
-                        $taxClassAmount[$taxClassId]['tax_amount']      = $price * $percent / 100;
-                        $taxClassAmount[$taxClassId]['base_tax_amount'] = $basePrice * $percent / 100;
-                        $taxClassAmount[$taxClassId]['title']           = $tax['title'];
-                        $taxClassAmount[$taxClassId]['percent']         = $tax['percent'];
+                        $price = $item->getRowTotal();
+                        $basePrice = $item->getBaseRowTotal();
+                        if ($this->applyTaxAfterDiscount($item->getStoreId())) {
+                            $price = $price - $item->getDiscountAmount() + $item->getHiddenTaxAmount();
+                            $basePrice = $basePrice - $item->getBaseDiscountAmount() + $item->getBaseHiddenTaxAmount();
+                        }
+                        $tax_amount = $price * $percent / 100;
+                        $base_tax_amount = $basePrice * $percent / 100;
+
+                        if (isset($taxClassAmount[$taxClassId])) {
+                            $taxClassAmount[$taxClassId]['tax_amount'] += $tax_amount;
+                            $taxClassAmount[$taxClassId]['base_tax_amount'] += $base_tax_amount;
+                        } else {
+                            $taxClassAmount[$taxClassId]['tax_amount'] = $tax_amount;
+                            $taxClassAmount[$taxClassId]['base_tax_amount'] = $base_tax_amount;
+                            $taxClassAmount[$taxClassId]['title'] = $tax['title'];
+                            $taxClassAmount[$taxClassId]['percent'] = $tax['percent'];
+                        }
                     }
                 }
             }
 
-            foreach ($taxClassAmount as $key=>$tax) {
-                 if ($tax['tax_amount'] == 0 && $tax['base_tax_amount'] == 0) {
-                     unset($taxClassAmount[$key]);
-                 }
+            foreach ($taxClassAmount as $key => $tax) {
+                if ($tax['tax_amount'] == 0 && $tax['base_tax_amount'] == 0) {
+                    unset($taxClassAmount[$key]);
+                }
             }
 
             $taxClassAmount = array_values($taxClassAmount);
         }
 
         return $taxClassAmount;
+    }
+
+    /**
+     * Returns the array of tax rates for the order
+     *
+     * @param Mage_Sales_Model_Order $order
+     * @return array
+     */
+    protected function _getTaxRateSubtotals($order)
+    {
+        return Mage::getModel('tax/sales_order_tax')->getCollection()->loadByOrder($order)->toArray();
+    }
+
+    /**
+     * Retrieve a value from registry by a key
+     *
+     * @param string $key
+     * @return mixed
+     */
+    protected function _getFromRegistry($key)
+    {
+        return Mage::registry($key);
     }
 
     /**
@@ -39094,17 +40936,100 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
         $taxClassAmount = array();
         if ($current && $source) {
             if ($current->getShippingTaxAmount() != 0 && $current->getBaseShippingTaxAmount() != 0) {
-                $taxClassAmount[0]['tax_amount']        = $current->getShippingTaxAmount();
-                $taxClassAmount[0]['base_tax_amount']   = $current->getBaseShippingTaxAmount();
+                $taxClassAmount[0]['tax_amount'] = $current->getShippingTaxAmount();
+                $taxClassAmount[0]['base_tax_amount'] = $current->getBaseShippingTaxAmount();
                 if ($current->getShippingHiddenTaxAmount() > 0) {
                     $taxClassAmount[0]['hidden_tax_amount'] = $current->getShippingHiddenTaxAmount();
                 }
-                $taxClassAmount[0]['title']             = $this->__('Shipping & Handling Tax');
-                $taxClassAmount[0]['percent']           = NULL;
+                $taxClassAmount[0]['title'] = $this->__('Shipping & Handling Tax');
+                $taxClassAmount[0]['percent'] = NULL;
             }
         }
 
         return $taxClassAmount;
+    }
+
+    /**
+     * Get all FPTs
+     *
+     * @return array
+     */
+    public function getAllWeee($source = null)
+    {
+        $allWeee = array();
+        $store = $this->_app->getStore();
+
+        if (Mage::registry('current_invoice')) {
+            $source = Mage::registry('current_invoice');
+        } elseif (Mage::registry('current_creditmemo')) {
+            $source = Mage::registry('current_creditmemo');
+        } elseif ($source == null) {
+            $source = $this->_app->getOrder();
+        }
+
+        $helper = Mage::helper('weee');
+        if (!$helper->includeInSubtotal($store)) {
+            foreach ($source->getAllItems() as $item) {
+                foreach ($helper->getApplied($item) as $tax) {
+                    $weeeDiscount = isset($tax['weee_discount']) ? $tax['weee_discount'] : 0;
+                    $title = $tax['title'];
+
+                    $rowAmount = isset($tax['row_amount']) ? $tax['row_amount'] : 0;
+                    $rowAmountInclTax = isset($tax['row_amount_incl_tax']) ? $tax['row_amount_incl_tax'] : 0;
+                    $amountDisplayed = ($helper->isTaxIncluded()) ? $rowAmountInclTax : $rowAmount;
+
+                    if (array_key_exists($title, $allWeee)) {
+                        $allWeee[$title] = $allWeee[$title] + $amountDisplayed - $weeeDiscount;
+                    } else {
+                        $allWeee[$title] = $amountDisplayed - $weeeDiscount;
+                    }
+                }
+            }
+        }
+
+        return $allWeee;
+    }
+
+    /**
+     * Check if do not show notification about wrong display settings
+     *
+     * @return bool
+     */
+    public function isWrongDisplaySettingsIgnored()
+    {
+        return (bool)$this->_app->getStore()->getConfig(Mage_Tax_Model_Config::XML_PATH_TAX_NOTIFICATION_PRICE_DISPLAY);
+    }
+
+    /**
+     * Check if do not show notification about wrong discount settings
+     *
+     * @return bool
+     */
+    public function isWrongDiscountSettingsIgnored()
+    {
+        return (bool)$this->_app->getStore()->getConfig(Mage_Tax_Model_Config::XML_PATH_TAX_NOTIFICATION_DISCOUNT);
+    }
+
+    /**
+     * Check if warning about conflicting FPT configuration should be shown
+     *
+     * @return bool
+     */
+    public function isConflictingFptTaxConfigurationSettingsIgnored()
+    {
+        return (bool) $this->_app->getStore()
+            ->getConfig(Mage_Tax_Model_Config::XML_PATH_TAX_NOTIFICATION_FPT_CONFIGURATION);
+    }
+
+    /**
+     * Return whether cross border trade is enabled or not
+     *
+     * @param   null|int $store
+     * @return boolean
+     */
+    public function isCrossBorderTradeEnabled($store = null)
+    {
+        return (bool)$this->_config->crossBorderTradeEnabled($store);
     }
 }
 /**
@@ -39118,18 +41043,18 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -39139,28 +41064,109 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
  */
 class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
 {
+    /*
+     * Identifier constant for Tax calculation before discount excluding TAX
+     */
     const CALC_TAX_BEFORE_DISCOUNT_ON_EXCL      = '0_0';
+    /***/
+
+    /**
+     * Identifier constant for Tax calculation before discount including TAX
+     */
     const CALC_TAX_BEFORE_DISCOUNT_ON_INCL      = '0_1';
+
+
+    /**
+     * Identifier constant for Tax calculation after discount excluding TAX
+     */
     const CALC_TAX_AFTER_DISCOUNT_ON_EXCL       = '1_0';
+
+    /**
+     * Identifier constant for Tax calculation after discount including TAX
+     */
     const CALC_TAX_AFTER_DISCOUNT_ON_INCL       = '1_1';
 
-    const CALC_UNIT_BASE                        = 'UNIT_BASE_CALCULATION';
-    const CALC_ROW_BASE                         = 'ROW_BASE_CALCULATION';
-    const CALC_TOTAL_BASE                       = 'TOTAL_BASE_CALCULATION';
 
+    /**
+     * Identifier constant for unit based calculation
+     */
     protected $_rates                           = array();
+    /**
+     * Identifier constant for row based calculation
+     */
     protected $_ctc                             = array();
+    /**
+     * Identifier constant for total based calculation
+     */
     protected $_ptc                             = array();
 
-    protected $_rateCache                       = array();
-    protected $_rateCalculationProcess          = array();
+    /**
+     * CALC_UNIT_BASE
+     */
+    const CALC_UNIT_BASE = 'UNIT_BASE_CALCULATION';
 
-    protected $_customer                        = null;
-    protected $_defaultCustomerTaxClass         = null;
+    /**
+     * CALC_ROW_BASE
+     */
+    const CALC_ROW_BASE = 'ROW_BASE_CALCULATION';
 
+    /**
+     * CALC_TOTAL_BASE
+     */
+    const CALC_TOTAL_BASE = 'TOTAL_BASE_CALCULATION';
+
+    /**
+     * Cache to hold the rates
+     *
+     * @var array
+     */
+    protected $_rateCache = array();
+
+    /**
+     * Store the rate calculation process
+     *
+     * @var array
+     */
+    protected $_rateCalculationProcess = array();
+
+    /**
+     * Hold the customer
+     *
+     * @var Mage_Customer_Model_Customer
+     */
+    protected $_customer = null;
+
+    /**
+     * Customer group
+     *
+     * @var string
+     */
+    protected $_defaultCustomerTaxClass = null;
+
+    /**
+     * Tax helper
+     *
+     * @var Mage_Tax_Helper_Data
+     */
+    protected $_taxHelper;
+
+    /**
+     * Constructor
+     */
     protected function _construct()
     {
         $this->_init('tax/calculation');
+    }
+
+    /**
+     * Initialize tax helper
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        parent::__construct();
+        $this->_taxHelper = !empty($args['helper']) ? $args['helper'] : Mage::helper('tax');
     }
 
     /**
@@ -39175,6 +41181,12 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
         return $this;
     }
 
+    /**
+     * Get the customer default customer class
+     *
+     * @param null|Mage_Core_Model_Store $store
+     * @return string
+     */
     public function getDefaultCustomerTaxClass($store = null)
     {
         if ($this->_defaultCustomerTaxClass === null) {
@@ -39269,7 +41281,8 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
         $value = $this->getRateValue();
         $id = $this->getRateId();
 
-        $rate = array('code'=>$title, 'title'=>$title, 'percent'=>$value, 'position'=>1, 'priority'=>1);
+        $rate = array(
+            'code' => $title, 'title' => $title, 'percent' => $value, 'position' => 1, 'priority' => 1);
 
         $process = array();
         $process['percent'] = $value;
@@ -39296,7 +41309,8 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
             $this->unsRateValue();
             $this->unsCalculationProcess();
             $this->unsEventModuleId();
-            Mage::dispatchEvent('tax_rate_data_fetch', array('request'=>$request));
+            Mage::dispatchEvent('tax_rate_data_fetch', array(
+                'request' => $request));
             if (!$this->hasRateValue()) {
                 $rateInfo = $this->_getResource()->getRateInfo($request);
                 $this->setCalculationProcess($rateInfo['process']);
@@ -39319,8 +41333,8 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
     protected function _getRequestCacheKey($request)
     {
         $key = $request->getStore() ? $request->getStore()->getId() . '|' : '';
-        $key.= $request->getProductClassId() . '|' . $request->getCustomerClassId() . '|'
-            . $request->getCountryId() . '|'. $request->getRegionId() . '|' . $request->getPostcode();
+        $key .= $request->getProductClassId() . '|' . $request->getCustomerClassId() . '|'
+            . $request->getCountryId() . '|' . $request->getRegionId() . '|' . $request->getPostcode();
         return $key;
     }
 
@@ -39332,10 +41346,26 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
      * @param   Varien_Object $request
      * @return  float
      */
-    public function getStoreRate($request, $store=null)
+    public function getStoreRate($request, $store = null)
     {
         $storeRequest = $this->getRateOriginRequest($store)
             ->setProductClassId($request->getProductClassId());
+        return $this->getRate($storeRequest);
+    }
+
+    /**
+     * Get tax rate based on store shipping origin address settings
+     * This rate can be used for conversion store price including tax to
+     * store price excluding tax
+     *
+     * @param Mage_Sales_Model_Quote_Item_Abstract $item
+     * @param null|Mage_Core_Model_Store $store
+     * @return float
+     */
+    public function getStoreRateForItem($item, $store = null)
+    {
+        $storeRequest = $this->getRateOriginRequest($store)
+            ->setProductClassId($item->getProduct()->getTaxClassId());
         return $this->getRate($storeRequest);
     }
 
@@ -39354,6 +41384,22 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
             ->setCustomerClassId($this->getDefaultCustomerTaxClass($store))
             ->setStore($store);
         return $request;
+    }
+
+    /**
+     * Return the default rate request. It can be either based on store address or customer address
+     *
+     * @param type $store
+     * @return \Varien_Object
+     */
+    public function getDefaultRateRequest($store =null)
+    {
+        if ($this->_taxHelper->isCrossBorderTradeEnabled($store)) {
+            //If cross border trade is enabled, we will use customer tax rate as store tax rate
+            return $this->getRateRequest(null, null, null, $store);
+        } else {
+            return $this->getRateOriginRequest($store);
+        }
     }
 
     /**
@@ -39380,19 +41426,20 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
         if ($shippingAddress === false && $billingAddress === false && $customerTaxClass === false) {
             return $this->getRateOriginRequest($store);
         }
-        $address    = new Varien_Object();
-        $customer   = $this->getCustomer();
-        $basedOn    = Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_BASED_ON, $store);
+        $address = new Varien_Object();
+        $customer = $this->getCustomer();
+        $basedOn = Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_BASED_ON, $store);
 
         if (($shippingAddress === false && $basedOn == 'shipping')
-            || ($billingAddress === false && $basedOn == 'billing')) {
+            || ($billingAddress === false && $basedOn == 'billing')
+        ) {
             $basedOn = 'default';
         } else {
             if ((($billingAddress === false || is_null($billingAddress) || !$billingAddress->getCountryId())
                 && $basedOn == 'billing')
                 || (($shippingAddress === false || is_null($shippingAddress) || !$shippingAddress->getCountryId())
-                && $basedOn == 'shipping')
-            ){
+                    && $basedOn == 'shipping')
+            ) {
                 if ($customer) {
                     $defBilling = $customer->getDefaultBillingAddress();
                     $defShipping = $customer->getDefaultShippingAddress();
@@ -39423,19 +41470,20 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
             case 'default':
                 $address
                     ->setCountryId(Mage::getStoreConfig(
-                        Mage_Tax_Model_Config::CONFIG_XML_PATH_DEFAULT_COUNTRY,
-                        $store))
+                    Mage_Tax_Model_Config::CONFIG_XML_PATH_DEFAULT_COUNTRY,
+                    $store))
                     ->setRegionId(Mage::getStoreConfig(Mage_Tax_Model_Config::CONFIG_XML_PATH_DEFAULT_REGION, $store))
                     ->setPostcode(Mage::getStoreConfig(
-                        Mage_Tax_Model_Config::CONFIG_XML_PATH_DEFAULT_POSTCODE,
-                        $store));
+                    Mage_Tax_Model_Config::CONFIG_XML_PATH_DEFAULT_POSTCODE,
+                    $store));
                 break;
         }
 
         if (is_null($customerTaxClass) && $customer) {
             $customerTaxClass = $customer->getTaxClassId();
         } elseif (($customerTaxClass === false) || !$customer) {
-            $customerTaxClass = $this->getDefaultCustomerTaxClass($store);
+            $customerTaxClass = Mage::getModel('customer/group')
+                    ->getTaxClassId(Mage_Customer_Model_Group::NOT_LOGGED_IN_ID);
         }
 
         $request = new Varien_Object();
@@ -39465,8 +41513,8 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
         $country = $first->getCountryId() == $second->getCountryId();
         // "0" support for admin dropdown with --please select--
         $region  = (int)$first->getRegionId() == (int)$second->getRegionId();
-        $postcode= $first->getPostcode() == $second->getPostcode();
-        $taxClass= $first->getCustomerClassId() == $second->getCustomerClassId();
+        $postcode = $first-> getPostcode() == $second-> getPostcode();
+        $taxClass = $first-> getCustomerClassId() == $second-> getCustomerClassId();
 
         if ($country && $region && $postcode && $taxClass) {
             return true;
@@ -39509,6 +41557,14 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
         return $identical;
     }
 
+    /**
+     * Gets the tax rates by type
+     *
+     * @param Varien_Object $request
+     * @param string $fieldName
+     * @param string $type
+     * @return array
+     */
     protected function _getRates($request, $fieldName, $type)
     {
         $result = array();
@@ -39523,10 +41579,23 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
         return $result;
     }
 
+    /**
+     * Gets rates for all the product tax classes
+     *
+     * @param Varien_Object $request
+     * @return array
+     */
     public function getRatesForAllProductTaxClasses($request)
     {
         return $this->_getRates($request, 'product_class_id', Mage_Tax_Model_Class::TAX_CLASS_TYPE_PRODUCT);
     }
+
+    /**
+     * Gets rates for all the customer tax classes
+     *
+     * @param Varien_Object $request
+     * @return array
+     */
     public function getRatesForAllCustomerTaxClasses($request)
     {
         return $this->_getRates($request, 'customer_class_id', Mage_Tax_Model_Class::TAX_CLASS_TYPE_CUSTOMER);
@@ -39540,6 +41609,10 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
      */
     public function getAppliedRates($request)
     {
+        if (!$request->getCountryId() || !$request->getCustomerClassId() || !$request->getProductClassId()) {
+            return array();
+        }
+
         $cacheKey = $this->_getRequestCacheKey($request);
         if (!isset($this->_rateCalculationProcess[$cacheKey])) {
             $this->_rateCalculationProcess[$cacheKey] = $this->_getResource()->getCalculationProcess($request);
@@ -39547,16 +41620,46 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
         return $this->_rateCalculationProcess[$cacheKey];
     }
 
+    /**
+     * Get rate ids applicable for some address
+     *
+     * @param Varien_Object $request
+     * @return array
+     */
+    public function getApplicableRateIds($request)
+    {
+        return $this->_getResource()->getApplicableRateIds($request);
+    }
+
+    /**
+     * Get the calculation process
+     *
+     * @param array $rates
+     * @return mixed
+     */
     public function reproduceProcess($rates)
     {
         return $this->getResource()->getCalculationProcess(null, $rates);
     }
 
+    /**
+     * Get rates by customer tax class
+     *
+     * @param int $customerTaxClass
+     * @return mixed
+     */
     public function getRatesByCustomerTaxClass($customerTaxClass)
     {
         return $this->getResource()->getRatesByCustomerTaxClass($customerTaxClass);
     }
 
+    /**
+     * Get rates by customer and product classes
+     *
+     * @param int $customerTaxClass
+     * @param int $productTaxClass
+     * @return mixed
+     */
     public function getRatesByCustomerAndProductTaxClasses($customerTaxClass, $productTaxClass)
     {
         return $this->getResource()->getRatesByCustomerTaxClass($customerTaxClass, $productTaxClass);
@@ -39569,16 +41672,17 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
      * @param   float $price
      * @param   float $taxRate
      * @param   boolean $priceIncludeTax
+     * @param   boolean $round
      * @return  float
      */
-    public function calcTaxAmount($price, $taxRate, $priceIncludeTax=false, $round=true)
+    public function calcTaxAmount($price, $taxRate, $priceIncludeTax = false, $round = true)
     {
-        $taxRate = $taxRate/100;
+        $taxRate = $taxRate / 100;
 
         if ($priceIncludeTax) {
-            $amount = $price*(1-1/(1+$taxRate));
+            $amount = $price * (1 - 1 / (1 + $taxRate));
         } else {
-            $amount = $price*$taxRate;
+            $amount = $price * $taxRate;
         }
 
         if ($round) {
@@ -39595,10 +41699,10 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
      * @param   int $precision
      * @return  float
      */
-    public function truncate($price, $precision=4)
+    public function truncate($price, $precision = 4)
     {
-        $exp = pow(10,$precision);
-        $price = floor($price*$exp)/$exp;
+        $exp = pow(10, $precision);
+        $price = floor($price * $exp) / $exp;
         return $price;
     }
 
@@ -39621,7 +41725,18 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
      */
     public function roundUp($price)
     {
-        return ceil($price*100)/100;
+        return ceil($price * 100) / 100;
+    }
+
+    /**
+     * Round price down
+     *
+     * @param   float $price
+     * @return  float
+     */
+    public function roundDown($price)
+    {
+        return floor($price * 100) / 100;
     }
 }
 /**
@@ -39635,22 +41750,22 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * Configuration pathes storage
+ * Configuration paths storage
  *
  * @category   Mage
  * @package    Mage_Tax
@@ -39658,10 +41773,23 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
  */
 class Mage_Tax_Model_Config
 {
-    // tax classes
+    /**#@+
+     * Paths to tax notification configs
+     */
+    const XML_PATH_TAX_NOTIFICATION_DISCOUNT = 'tax/ignore_notification/discount';
+    const XML_PATH_TAX_NOTIFICATION_PRICE_DISPLAY = 'tax/ignore_notification/price_display';
+    const XML_PATH_TAX_NOTIFICATION_FPT_CONFIGURATION = 'tax/ignore_notification/fpt_configuration';
+    const XML_PATH_TAX_NOTIFICATION_URL = 'tax/notification/url';
+    /**#@-*/
+
+    /**
+     * Tax classes
+     */
     const CONFIG_XML_PATH_SHIPPING_TAX_CLASS = 'tax/classes/shipping_tax_class';
 
-    // tax calculation
+    /**#@+
+     * Paths to tax calculation configs
+     */
     const CONFIG_XML_PATH_PRICE_INCLUDES_TAX = 'tax/calculation/price_includes_tax';
     const CONFIG_XML_PATH_SHIPPING_INCLUDES_TAX = 'tax/calculation/shipping_includes_tax';
     const CONFIG_XML_PATH_BASED_ON = 'tax/calculation/based_on';
@@ -39669,54 +41797,78 @@ class Mage_Tax_Model_Config
     const CONFIG_XML_PATH_APPLY_AFTER_DISCOUNT = 'tax/calculation/apply_after_discount';
     const CONFIG_XML_PATH_DISCOUNT_TAX = 'tax/calculation/discount_tax';
     const XML_PATH_ALGORITHM = 'tax/calculation/algorithm';
+    const CONFIG_XML_PATH_CROSS_BORDER_TRADE_ENABLED = 'tax/calculation/cross_border_trade_enabled';
+    /**#@-*/
 
-    // tax defaults
+    /**#@+
+     * Paths to tax defaults configs
+     */
     const CONFIG_XML_PATH_DEFAULT_COUNTRY = 'tax/defaults/country';
     const CONFIG_XML_PATH_DEFAULT_REGION = 'tax/defaults/region';
     const CONFIG_XML_PATH_DEFAULT_POSTCODE = 'tax/defaults/postcode';
+    /**#@-*/
 
-    /**
+    /**#@+
      * Prices display settings
      */
-    const CONFIG_XML_PATH_PRICE_DISPLAY_TYPE    = 'tax/display/type';
-    const CONFIG_XML_PATH_DISPLAY_SHIPPING      = 'tax/display/shipping';
+    const CONFIG_XML_PATH_PRICE_DISPLAY_TYPE = 'tax/display/type';
+    const CONFIG_XML_PATH_DISPLAY_SHIPPING = 'tax/display/shipping';
+    /**#@-*/
 
-    /**
+    /**#@+
      * Shopping cart display settings
      */
-    const XML_PATH_DISPLAY_CART_PRICE       = 'tax/cart_display/price';
-    const XML_PATH_DISPLAY_CART_SUBTOTAL    = 'tax/cart_display/subtotal';
-    const XML_PATH_DISPLAY_CART_SHIPPING    = 'tax/cart_display/shipping';
-    const XML_PATH_DISPLAY_CART_DISCOUNT    = 'tax/cart_display/discount';
-    const XML_PATH_DISPLAY_CART_GRANDTOTAL  = 'tax/cart_display/grandtotal';
-    const XML_PATH_DISPLAY_CART_FULL_SUMMARY= 'tax/cart_display/full_summary';
-    const XML_PATH_DISPLAY_CART_ZERO_TAX    = 'tax/cart_display/zero_tax';
+    const XML_PATH_DISPLAY_CART_PRICE = 'tax/cart_display/price';
+    const XML_PATH_DISPLAY_CART_SUBTOTAL = 'tax/cart_display/subtotal';
+    const XML_PATH_DISPLAY_CART_SHIPPING = 'tax/cart_display/shipping';
+    const XML_PATH_DISPLAY_CART_DISCOUNT = 'tax/cart_display/discount';
+    const XML_PATH_DISPLAY_CART_GRANDTOTAL = 'tax/cart_display/grandtotal';
+    const XML_PATH_DISPLAY_CART_FULL_SUMMARY = 'tax/cart_display/full_summary';
+    const XML_PATH_DISPLAY_CART_ZERO_TAX = 'tax/cart_display/zero_tax';
+    /**#@-*/
 
-    /**
+    /**#@+
      * Shopping cart display settings
      */
-    const XML_PATH_DISPLAY_SALES_PRICE       = 'tax/sales_display/price';
-    const XML_PATH_DISPLAY_SALES_SUBTOTAL    = 'tax/sales_display/subtotal';
-    const XML_PATH_DISPLAY_SALES_SHIPPING    = 'tax/sales_display/shipping';
-    const XML_PATH_DISPLAY_SALES_DISCOUNT    = 'tax/sales_display/discount';
-    const XML_PATH_DISPLAY_SALES_GRANDTOTAL  = 'tax/sales_display/grandtotal';
-    const XML_PATH_DISPLAY_SALES_FULL_SUMMARY= 'tax/sales_display/full_summary';
-    const XML_PATH_DISPLAY_SALES_ZERO_TAX    = 'tax/sales_display/zero_tax';
+    const XML_PATH_DISPLAY_SALES_PRICE = 'tax/sales_display/price';
+    const XML_PATH_DISPLAY_SALES_SUBTOTAL = 'tax/sales_display/subtotal';
+    const XML_PATH_DISPLAY_SALES_SHIPPING = 'tax/sales_display/shipping';
+    const XML_PATH_DISPLAY_SALES_DISCOUNT = 'tax/sales_display/discount';
+    const XML_PATH_DISPLAY_SALES_GRANDTOTAL = 'tax/sales_display/grandtotal';
+    const XML_PATH_DISPLAY_SALES_FULL_SUMMARY = 'tax/sales_display/full_summary';
+    const XML_PATH_DISPLAY_SALES_ZERO_TAX = 'tax/sales_display/zero_tax';
+    /**#@-*/
 
+    /**
+     * String separator
+     */
     const CALCULATION_STRING_SEPARATOR = '|';
 
+    /**#@+
+     * Indexes for tax display types
+     */
     const DISPLAY_TYPE_EXCLUDING_TAX = 1;
     const DISPLAY_TYPE_INCLUDING_TAX = 2;
     const DISPLAY_TYPE_BOTH = 3;
+    /**#@-*/
 
-    /**
+    /**#@+
+     * Indexes for FPT Configuration Types
+     */
+    const FPT_NOT_TAXED = 0;
+    const FPT_TAXED = 1;
+    const FPT_LOADED_DISPLAY_WITH_TAX = 2;
+    /**#@-*/
+
+    /**#@+
      * @deprecated
      */
     const CONFIG_XML_PATH_SHOW_IN_CATALOG = 'tax/display/show_in_catalog';
     const CONFIG_XML_PATH_DEFAULT_PRODUCT_TAX_GROUP = 'catalog/product/default_tax_group';
-    const CONFIG_XML_PATH_DISPLAY_TAX_COLUMN    = 'tax/display/column_in_summary';
-    const CONFIG_XML_PATH_DISPLAY_FULL_SUMMARY  = 'tax/display/full_summary';
-    const CONFIG_XML_PATH_DISPLAY_ZERO_TAX      = 'tax/display/zero_tax';
+    const CONFIG_XML_PATH_DISPLAY_TAX_COLUMN = 'tax/display/column_in_summary';
+    const CONFIG_XML_PATH_DISPLAY_FULL_SUMMARY = 'tax/display/full_summary';
+    const CONFIG_XML_PATH_DISPLAY_ZERO_TAX = 'tax/display/zero_tax';
+    /**#@-*/
 
     /**
      * Flag which notify what we need use prices exclude tax for calculations
@@ -39738,17 +41890,29 @@ class Mage_Tax_Model_Config
     protected $_shippingPriceIncludeTax = null;
 
     /**
+     * Retrieve config value for store by path
+     *
+     * @param string $path
+     * @param mixed $store
+     * @return mixed
+     */
+    protected function _getStoreConfig($path, $store)
+    {
+        return Mage::getStoreConfig($path, $store);
+    }
+
+    /**
      * Check if product prices inputed include tax
      *
      * @param   mix $store
      * @return  bool
      */
-    public function priceIncludesTax($store=null)
+    public function priceIncludesTax($store = null)
     {
         if ($this->_needUsePriceExcludeTax) {
             return false;
         }
-        return (bool)Mage::getStoreConfig(self::CONFIG_XML_PATH_PRICE_INCLUDES_TAX, $store);
+        return (bool)$this->_getStoreConfig(self::CONFIG_XML_PATH_PRICE_INCLUDES_TAX, $store);
     }
 
     /**
@@ -39757,9 +41921,9 @@ class Mage_Tax_Model_Config
      * @param   mixed $store
      * @return  bool
      */
-    public function applyTaxAfterDiscount($store=null)
+    public function applyTaxAfterDiscount($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::CONFIG_XML_PATH_APPLY_AFTER_DISCOUNT, $store);
+        return (bool)$this->_getStoreConfig(self::CONFIG_XML_PATH_APPLY_AFTER_DISCOUNT, $store);
     }
 
     /**
@@ -39773,7 +41937,7 @@ class Mage_Tax_Model_Config
      */
     public function getPriceDisplayType($store = null)
     {
-        return (int)Mage::getStoreConfig(self::CONFIG_XML_PATH_PRICE_DISPLAY_TYPE, $store);
+        return (int)$this->_getStoreConfig(self::CONFIG_XML_PATH_PRICE_DISPLAY_TYPE, $store);
     }
 
     /**
@@ -39782,9 +41946,9 @@ class Mage_Tax_Model_Config
      * @param   null|int $store
      * @return  0|1
      */
-    public function discountTax($store=null)
+    public function discountTax($store = null)
     {
-        return ((int)Mage::getStoreConfig(self::CONFIG_XML_PATH_DISCOUNT_TAX, $store) == 1);
+        return ((int)$this->_getStoreConfig(self::CONFIG_XML_PATH_DISCOUNT_TAX, $store) == 1);
     }
 
     /**
@@ -39794,7 +41958,7 @@ class Mage_Tax_Model_Config
      * @param   null|int|string|Mage_Core_Model_Store $store
      * @return  string
      */
-    public function getCalculationSequence($store=null)
+    public function getCalculationSequence($store = null)
     {
         if ($this->applyTaxAfterDiscount($store)) {
             if ($this->discountTax($store)) {
@@ -39863,9 +42027,9 @@ class Mage_Tax_Model_Config
      * @param   store $store
      * @return  string
      */
-    public function getAlgorithm($store=null)
+    public function getAlgorithm($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_ALGORITHM, $store);
+        return $this->_getStoreConfig(self::XML_PATH_ALGORITHM, $store);
     }
 
     /**
@@ -39874,9 +42038,9 @@ class Mage_Tax_Model_Config
      * @param   store $store
      * @return  int
      */
-    public function getShippingTaxClass($store=null)
+    public function getShippingTaxClass($store = null)
     {
-        return (int)Mage::getStoreConfig(self::CONFIG_XML_PATH_SHIPPING_TAX_CLASS, $store);
+        return (int)$this->_getStoreConfig(self::CONFIG_XML_PATH_SHIPPING_TAX_CLASS, $store);
     }
 
     /**
@@ -39887,11 +42051,11 @@ class Mage_Tax_Model_Config
      */
     public function getShippingPriceDisplayType($store = null)
     {
-        return (int)Mage::getStoreConfig(self::CONFIG_XML_PATH_DISPLAY_SHIPPING, $store);
+        return (int)$this->_getStoreConfig(self::CONFIG_XML_PATH_DISPLAY_SHIPPING, $store);
     }
 
     /**
-     * Check if shiping prices include tax
+     * Check if shipping prices include tax
      *
      * @param   store $store
      * @return  bool
@@ -39899,7 +42063,7 @@ class Mage_Tax_Model_Config
     public function shippingPriceIncludesTax($store = null)
     {
         if ($this->_shippingPriceIncludeTax === null) {
-            $this->_shippingPriceIncludeTax = (bool)Mage::getStoreConfig(
+            $this->_shippingPriceIncludeTax = (bool)$this->_getStoreConfig(
                 self::CONFIG_XML_PATH_SHIPPING_INCLUDES_TAX,
                 $store
             );
@@ -39910,6 +42074,7 @@ class Mage_Tax_Model_Config
     /**
      * Declare shipping prices type
      * @param bool $flag
+     * @return Mage_Tax_Model_Config
      */
     public function setShippingPriceIncludeTax($flag)
     {
@@ -39951,161 +42116,394 @@ class Mage_Tax_Model_Config
      */
     public function displayTaxColumn($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::CONFIG_XML_PATH_DISPLAY_TAX_COLUMN, $store);
+        return (bool)$this->_getStoreConfig(self::CONFIG_XML_PATH_DISPLAY_TAX_COLUMN, $store);
     }
 
-
-
-
+    /**
+     * Check if display cart prices included tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartPricesInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_PRICE, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_PRICE, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart prices excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartPricesExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_PRICE, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_PRICE, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart prices included and excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartPricesBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_PRICE, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_PRICE, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Check if display cart subtotal included tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartSubtotalInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_SUBTOTAL, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_SUBTOTAL, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart subtotal excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartSubtotalExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_SUBTOTAL, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_SUBTOTAL, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart subtotal included and excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartSubtotalBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_SUBTOTAL, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_SUBTOTAL, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Check if display cart shipping included tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartShippingInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_SHIPPING, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_SHIPPING, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart shipping excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartShippingExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_SHIPPING, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_SHIPPING, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart shipping included and excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartShippingBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_SHIPPING, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_SHIPPING, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Check if display cart discount included tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartDiscountInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_DISCOUNT, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_DISCOUNT, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart discount excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartDiscountExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_DISCOUNT, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_DISCOUNT, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display cart discount included and excluded tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartDiscountBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_DISCOUNT, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_DISCOUNT, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Get display cart tax with grand total
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartTaxWithGrandTotal($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_GRANDTOTAL, $store);
+        return (bool)$this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_GRANDTOTAL, $store);
     }
 
+    /**
+     * Get display cart full summary
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartFullSummary($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_FULL_SUMMARY, $store);
+        return (bool)$this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_FULL_SUMMARY, $store);
     }
 
+    /**
+     * Get display cart zero tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displayCartZeroTax($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_DISPLAY_CART_ZERO_TAX, $store);
+        return (bool)$this->_getStoreConfig(self::XML_PATH_DISPLAY_CART_ZERO_TAX, $store);
     }
 
-
+    /**
+     * Check if display sales prices include tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesPricesInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_PRICE, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_PRICE, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales prices exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesPricesExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_PRICE, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_PRICE, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales prices include and exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesPricesBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_PRICE, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_PRICE, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Check if display sales subtotal include tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesSubtotalInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_SUBTOTAL, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_SUBTOTAL, $store)
+            == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales subtotal exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesSubtotalExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_SUBTOTAL, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_SUBTOTAL, $store)
+            == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales subtotal include and exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesSubtotalBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_SUBTOTAL, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_SUBTOTAL, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Check if display sales shipping include tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesShippingInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_SHIPPING, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_SHIPPING, $store)
+            == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales shipping exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesShippingExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_SHIPPING, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_SHIPPING, $store)
+            == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales shipping include and exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesShippingBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_SHIPPING, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_SHIPPING, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Check if display sales discount include tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesDiscountInclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_DISCOUNT, $store) == self::DISPLAY_TYPE_INCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_DISCOUNT, $store)
+            == self::DISPLAY_TYPE_INCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales discount exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalestDiscountExclTax($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_DISCOUNT, $store) == self::DISPLAY_TYPE_EXCLUDING_TAX;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_DISCOUNT, $store)
+            == self::DISPLAY_TYPE_EXCLUDING_TAX;
     }
 
+    /**
+     * Check if display sales discount include and exclude tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesDiscountBoth($store = null)
     {
-        return Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_DISCOUNT, $store) == self::DISPLAY_TYPE_BOTH;
+        return $this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_DISCOUNT, $store) == self::DISPLAY_TYPE_BOTH;
     }
 
+    /**
+     * Get display sales tax with grand total
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesTaxWithGrandTotal($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_GRANDTOTAL, $store);
+        return (bool)$this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_GRANDTOTAL, $store);
     }
 
+    /**
+     * Get display sales full summary
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesFullSummary($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_FULL_SUMMARY, $store);
+        return (bool)$this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_FULL_SUMMARY, $store);
     }
 
+    /**
+     * Get display sales zero tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
     public function displaySalesZeroTax($store = null)
     {
-        return (bool)Mage::getStoreConfig(self::XML_PATH_DISPLAY_SALES_ZERO_TAX, $store);
+        return (bool)$this->_getStoreConfig(self::XML_PATH_DISPLAY_SALES_ZERO_TAX, $store);
+    }
+
+    /**
+     * Check if tax calculation type and price display settings are compatible
+     *
+     * invalid settings if
+     *      Tax Calculation Method Based On 'Total' or 'Row'
+     *      and at least one Price Display Settings has 'Including and Excluding Tax' value
+     *
+     * @param mixed $store
+     * @return bool
+     */
+    public function checkDisplaySettings($store = null)
+    {
+        if ($this->getAlgorithm($store) == Mage_Tax_Model_Calculation::CALC_UNIT_BASE) {
+            return true;
+        }
+        return $this->getPriceDisplayType($store) != self::DISPLAY_TYPE_BOTH
+            && $this->getShippingPriceDisplayType($store) != self::DISPLAY_TYPE_BOTH
+            && !$this->displayCartPricesBoth($store)
+            && !$this->displayCartSubtotalBoth($store)
+            && !$this->displayCartShippingBoth($store)
+            && !$this->displaySalesPricesBoth($store)
+            && !$this->displaySalesSubtotalBoth($store)
+            && !$this->displaySalesShippingBoth($store);
+    }
+
+    /**
+     * Check if tax discount settings are compatible
+     *
+     * Matrix for invalid discount settings is as follows:
+     *      Before Discount / Excluding Tax
+     *      Before Discount / Including Tax
+     *
+     * @param mixed $store
+     * @return bool
+     */
+    public function checkDiscountSettings($store = null)
+    {
+        return $this->applyTaxAfterDiscount($store);
+    }
+
+    /**
+     * Return the config value for self::CONFIG_XML_PATH_CROSS_BORDER_TRADE_ENABLED
+     *
+     * @param int|null $store
+     * @return int
+     */
+    public function crossBorderTradeEnabled($store = null)
+    {
+        return $this->_getStoreConfig(self::CONFIG_XML_PATH_CROSS_BORDER_TRADE_ENABLED, $store);
     }
 }
 /**
@@ -40119,18 +42517,18 @@ class Mage_Tax_Model_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -40367,18 +42765,18 @@ class Mage_Tax_Model_Observer
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -40492,14 +42890,14 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
         $countedRates = count($rates);
         for ($i = 0; $i < $countedRates; $i++) {
             $rate = $rates[$i];
-            $value = (isset($rate['value']) ? $rate['value'] : $rate['percent'])*1;
+            $value = (isset($rate['value']) ? $rate['value'] : $rate['percent']) * 1;
 
             $oneRate = array(
-                'code'=>$rate['code'],
-                'title'=>$rate['title'],
-                'percent'=>$value,
-                'position'=>$rate['position'],
-                'priority'=>$rate['priority'],
+                'code' => $rate['code'],
+                'title' => $rate['title'],
+                'percent' => $value,
+                'position' => $rate['position'],
+                'priority' => $rate['priority'],
             );
             if (isset($rate['tax_calculation_rule_id'])) {
                 $oneRate['rule_id'] = $rate['tax_calculation_rule_id'];
@@ -40521,35 +42919,52 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
             }
             $row['rates'][] = $oneRate;
 
-            if (isset($rates[$i+1]['tax_calculation_rule_id'])) {
+            if (isset($rates[$i + 1]['tax_calculation_rule_id'])) {
                 $rule = $rate['tax_calculation_rule_id'];
             }
             $priority = $rate['priority'];
             $ids[] = $rate['code'];
 
-            if (isset($rates[$i+1]['tax_calculation_rule_id'])) {
-                while(isset($rates[$i+1]) && $rates[$i+1]['tax_calculation_rule_id'] == $rule) {
+            if (isset($rates[$i + 1]['tax_calculation_rule_id'])) {
+                while (isset($rates[$i + 1]) && $rates[$i + 1]['tax_calculation_rule_id'] == $rule) {
                     $i++;
                 }
             }
 
             $currentRate += $value;
 
-            if (!isset($rates[$i+1]) || $rates[$i+1]['priority'] != $priority
-                || (isset($rates[$i+1]['process']) && $rates[$i+1]['process'] != $rate['process'])
+            if (!isset($rates[$i + 1]) || $rates[$i + 1]['priority'] != $priority
+                || (isset($rates[$i + 1]['process']) && $rates[$i + 1]['process'] != $rate['process'])
             ) {
-                $row['percent'] = (100+$totalPercent)*($currentRate/100);
+                if (!empty($rates[$i]['calculate_subtotal'])) {
+                    $row['percent'] = $currentRate;
+                    $totalPercent += $currentRate;
+                } else {
+                    $row['percent'] = $this->_collectPercent($totalPercent, $currentRate);
+                    $totalPercent += $row['percent'];
+                }
                 $row['id'] = implode($ids);
                 $result[] = $row;
                 $row = array();
                 $ids = array();
 
-                $totalPercent += (100+$totalPercent)*($currentRate/100);
                 $currentRate = 0;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Return combined percent value
+     *
+     * @param float|int $percent
+     * @param float|int $rate
+     * @return int
+     */
+    protected function _collectPercent($percent, $rate)
+    {
+        return (100 + $percent) * ($rate / 100);
     }
 
     /**
@@ -40567,7 +42982,7 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
             $strlen = $len;
         }
 
-        $strArr = array($postcode, $postcode . '*');
+        $strArr = array((string)$postcode, $postcode . '*');
         if ($strlen > 1) {
             for ($i = 1; $i < $strlen; $i++) {
                 $strArr[] = sprintf('%s*', substr($postcode, 0, - $i));
@@ -40611,10 +43026,10 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
             $select = $this->_getReadAdapter()->select();
             $select
                 ->from(array('main_table' => $this->getMainTable()),
-                array(  'tax_calculation_rate_id',
-                        'tax_calculation_rule_id',
-                        'customer_tax_class_id',
-                        'product_tax_class_id'
+                array('tax_calculation_rate_id',
+                      'tax_calculation_rule_id',
+                      'customer_tax_class_id',
+                      'product_tax_class_id'
                     )
                 )
                 ->where('customer_tax_class_id = ?', (int)$customerClassId);
@@ -40631,9 +43046,9 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
                 ->join(
                     array('rule' => $this->getTable('tax/tax_calculation_rule')),
                     $ruleTableAliasName . ' = main_table.tax_calculation_rule_id',
-                    array('rule.priority', 'rule.position'))
+                    array('rule.priority', 'rule.position', 'rule.calculate_subtotal'))
                 ->join(
-                    array('rate'=>$this->getTable('tax/tax_calculation_rate')),
+                    array('rate' => $this->getTable('tax/tax_calculation_rate')),
                     'rate.tax_calculation_rate_id = main_table.tax_calculation_rate_id',
                     array(
                         'value' => 'rate.rate',
@@ -40702,6 +43117,36 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
     }
 
     /**
+     * Get rate ids applicable for some address
+     *
+     * @param Varien_Object $request
+     * @return array
+     */
+    function getApplicableRateIds($request)
+    {
+        $countryId = $request->getCountryId();
+        $regionId = $request->getRegionId();
+        $postcode = $request->getPostcode();
+
+        $select = $this->_getReadAdapter()->select()
+            ->from(array('rate' => $this->getTable('tax/tax_calculation_rate')), array('tax_calculation_rate_id'))
+            ->where('rate.tax_country_id = ?', $countryId)
+            ->where("rate.tax_region_id IN(?)", array(0, (int)$regionId));
+
+        $expr = $this->_getWriteAdapter()->getCheckSql(
+            'zip_is_range is NULL',
+            $this->_getWriteAdapter()->quoteInto(
+                "rate.tax_postcode IS NULL OR rate.tax_postcode IN('*', '', ?)",
+                $this->_createSearchPostCodeTemplates($postcode)
+            ),
+            $this->_getWriteAdapter()->quoteInto('? BETWEEN rate.zip_from AND rate.zip_to', $postcode)
+        );
+        $select->where($expr);
+        $select->order('tax_calculation_rate_id');
+        return $this->_getReadAdapter()->fetchCol($select);
+    }
+
+    /**
      * Calculate rate
      *
      * @param array $rates
@@ -40718,14 +43163,18 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
             $value      = $rate['value'];
             $priority   = $rate['priority'];
 
-            while(isset($rates[$i+1]) && $rates[$i+1]['tax_calculation_rule_id'] == $rule) {
+            while (isset($rates[$i + 1]) && $rates[$i + 1]['tax_calculation_rule_id'] == $rule) {
                 $i++;
             }
 
             $currentRate += $value;
 
-            if (!isset($rates[$i+1]) || $rates[$i+1]['priority'] != $priority) {
-                $result += (100+$result)*($currentRate/100);
+            if (!isset($rates[$i + 1]) || $rates[$i + 1]['priority'] != $priority) {
+                if (!empty($rates[$i]['calculate_subtotal'])) {
+                    $result += $currentRate;
+                } else {
+                    $result += $this->_collectPercent($result, $currentRate);
+                }
                 $currentRate = 0;
             }
         }
@@ -40748,7 +43197,7 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
             $rate = $rates[$i];
             $rule = $rate['tax_calculation_rule_id'];
             $result[] = $rate['tax_calculation_rate_id'];
-            while(isset($rates[$i+1]) && $rates[$i+1]['tax_calculation_rule_id'] == $rule) {
+            while (isset($rates[$i + 1]) && $rates[$i + 1]['tax_calculation_rule_id'] == $rule) {
                 $i++;
             }
         }
@@ -41057,9 +43506,9 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
  *
  * @category  Zend
  * @package   Zend_Currency
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
- * @version   $Id: Currency.php 22708 2010-07-28 07:25:16Z thomas $
+ * @version   $Id$
  */
 
 /**
@@ -41074,7 +43523,7 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
  *
  * @category  Zend
  * @package   Zend_Currency
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Currency
@@ -41134,6 +43583,11 @@ class Zend_Currency
      */
     public function __construct($options = null, $locale = null)
     {
+        $calloptions = $options;
+        if (is_array($options) && isset($options['display'])) {
+            $this->_options['display'] = $options['display'];
+        }
+
         if (is_array($options)) {
             $this->setLocale($locale);
             $this->setFormat($options);
@@ -41163,10 +43617,13 @@ class Zend_Currency
         }
 
         // Get the format
-        if (!empty($this->_options['symbol'])) {
-            $this->_options['display'] = self::USE_SYMBOL;
-        } else if (!empty($this->_options['currency'])) {
-            $this->_options['display'] = self::USE_SHORTNAME;
+        if ((is_array($calloptions) && !isset($calloptions['display']))
+                || (!is_array($calloptions) && $this->_options['display'] == self::NO_SYMBOL)) {
+            if (!empty($this->_options['symbol'])) {
+                $this->_options['display'] = self::USE_SYMBOL;
+            } else if (!empty($this->_options['currency'])) {
+                $this->_options['display'] = self::USE_SHORTNAME;
+            }
         }
     }
 
@@ -41837,7 +44294,7 @@ class Zend_Currency
             if (!class_exists($service)) {
                 $file = str_replace('_', DIRECTORY_SEPARATOR, $service) . '.php';
                 if (Zend_Loader::isReadable($file)) {
-                    Zend_Loader::loadClass($class);
+                    Zend_Loader::loadClass($service);
                 }
             }
 
@@ -41950,8 +44407,8 @@ class Zend_Currency
  *
  * @category   Zend
  * @package    Zend_Date
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
- * @version    $Id: DateObject.php 22712 2010-07-29 08:24:28Z thomas $
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @version    $Id$
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -41959,7 +44416,7 @@ class Zend_Currency
  * @category   Zend
  * @package    Zend_Date
  * @subpackage Zend_Date_DateObject
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Date_DateObject {
@@ -42248,6 +44705,13 @@ abstract class Zend_Date_DateObject {
         }
 
         if (abs($timestamp) <= 0x7FFFFFFF) {
+            // See ZF-11992
+            // "o" will sometimes resolve to the previous year (see 
+            // http://php.net/date ; it's part of the ISO 8601 
+            // standard). However, this is not desired, so replacing 
+            // all occurrences of "o" not preceded by a backslash 
+            // with "Y"
+            $format = preg_replace('/(?<!\\\\)o\b/', 'Y', $format);
             $result = ($gmt) ? @gmdate($format, $timestamp) : @date($format, $timestamp);
             date_default_timezone_set($oldzone);
             return $result;
@@ -48045,9 +50509,9 @@ class Zend_Date extends Zend_Date_DateObject
  *
  * @category  Zend
  * @package   Zend_Locale
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
- * @version   $Id: Locale.php 22712 2010-07-29 08:24:28Z thomas $
+ * @version   $Id$
  */
 
 /**
@@ -48055,98 +50519,718 @@ class Zend_Date extends Zend_Date_DateObject
  *
  * @category  Zend
  * @package   Zend_Locale
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Locale
 {
+    /**
+     * List of locales that are no longer part of CLDR along with a
+     * mapping to an appropriate alternative.
+     *
+     * @var array
+     */
+    private static $_localeAliases = array(
+        'az_AZ'  => 'az_Latn_AZ',
+        'bs_BA'  => 'bs_Latn_BA',
+        'ha_GH'  => 'ha_Latn_GH',
+        'ha_NE'  => 'ha_Latn_NE',
+        'ha_NG'  => 'ha_Latn_NG',
+        'kk_KZ'  => 'kk_Cyrl_KZ',
+        'ks_IN'  => 'ks_Arab_IN',
+        'mn_MN'  => 'mn_Cyrl_MN',
+        'ms_BN'  => 'ms_Latn_BN',
+        'ms_MY'  => 'ms_Latn_MY',
+        'ms_SG'  => 'ms_Latn_SG',
+        'pa_IN'  => 'pa_Guru_IN',
+        'pa_PK'  => 'pa_Arab_PK',
+        'shi_MA' => 'shi_Latn_MA',
+        'sr_BA'  => 'sr_Latn_BA',
+        'sr_ME'  => 'sr_Latn_ME',
+        'sr_RS'  => 'sr_Latn_RS',
+        'sr_XK'  => 'sr_Latn_XK',
+        'tg_TJ'  => 'tg_Cyrl_TJ',
+        'tzm_MA' => 'tzm_Latn_MA',
+        'uz_AF'  => 'uz_Arab_AF',
+        'uz_UZ'  => 'uz_Latn_UZ',
+        'vai_LR' => 'vai_Latn_LR',
+        'zh_CN' => 'zh_Hans_CN',
+        'zh_HK' => 'zh_Hans_HK',
+        'zh_MO' => 'zh_Hans_MO',
+        'zh_SG' => 'zh_Hans_SG',
+        'zh_TW' => 'zh_Hant_TW',
+    );
+
     /**
      * Class wide Locale Constants
      *
      * @var array $_localeData
      */
     private static $_localeData = array(
-        'root'  => true, 'aa_DJ' => true, 'aa_ER' => true, 'aa_ET' => true, 'aa'    => true,
-        'af_NA' => true, 'af_ZA' => true, 'af'    => true, 'ak_GH' => true, 'ak'    => true,
-        'am_ET' => true, 'am'    => true, 'ar_AE' => true, 'ar_BH' => true, 'ar_DZ' => true,
-        'ar_EG' => true, 'ar_IQ' => true, 'ar_JO' => true, 'ar_KW' => true, 'ar_LB' => true,
-        'ar_LY' => true, 'ar_MA' => true, 'ar_OM' => true, 'ar_QA' => true, 'ar_SA' => true,
-        'ar_SD' => true, 'ar_SY' => true, 'ar_TN' => true, 'ar_YE' => true, 'ar'    => true,
-        'as_IN' => true, 'as'    => true, 'az_AZ' => true, 'az'    => true, 'be_BY' => true,
-        'be'    => true, 'bg_BG' => true, 'bg'    => true, 'bn_BD' => true, 'bn_IN' => true,
-        'bn'    => true, 'bo_CN' => true, 'bo_IN' => true, 'bo'    => true, 'bs_BA' => true,
-        'bs'    => true, 'byn_ER'=> true, 'byn'   => true, 'ca_ES' => true, 'ca'    => true,
-        'cch_NG'=> true, 'cch'   => true, 'cop'   => true, 'cs_CZ' => true, 'cs'    => true,
-        'cy_GB' => true, 'cy'    => true, 'da_DK' => true, 'da'    => true, 'de_AT' => true,
-        'de_BE' => true, 'de_CH' => true, 'de_DE' => true, 'de_LI' => true, 'de_LU' => true,
-        'de'    => true, 'dv_MV' => true, 'dv'    => true, 'dz_BT' => true, 'dz'    => true,
-        'ee_GH' => true, 'ee_TG' => true, 'ee'    => true, 'el_CY' => true, 'el_GR' => true,
-        'el'    => true, 'en_AS' => true, 'en_AU' => true, 'en_BE' => true, 'en_BW' => true,
-        'en_BZ' => true, 'en_CA' => true, 'en_GB' => true, 'en_GU' => true, 'en_HK' => true,
-        'en_IE' => true, 'en_IN' => true, 'en_JM' => true, 'en_MH' => true, 'en_MP' => true,
-        'en_MT' => true, 'en_NA' => true, 'en_NZ' => true, 'en_PH' => true, 'en_PK' => true,
-        'en_SG' => true, 'en_TT' => true, 'en_UM' => true, 'en_US' => true, 'en_VI' => true,
-        'en_ZA' => true, 'en_ZW' => true, 'en'    => true, 'eo'    => true, 'es_AR' => true,
-        'es_BO' => true, 'es_CL' => true, 'es_CO' => true, 'es_CR' => true, 'es_DO' => true,
-        'es_EC' => true, 'es_ES' => true, 'es_GT' => true, 'es_HN' => true, 'es_MX' => true,
-        'es_NI' => true, 'es_PA' => true, 'es_PE' => true, 'es_PR' => true, 'es_PY' => true,
-        'es_SV' => true, 'es_US' => true, 'es_UY' => true, 'es_VE' => true, 'es'    => true,
-        'et_EE' => true, 'et'    => true, 'eu_ES' => true, 'eu'    => true, 'fa_AF' => true,
-        'fa_IR' => true, 'fa'    => true, 'fi_FI' => true, 'fi'    => true, 'fil_PH'=> true,
-        'fil'   => true, 'fo_FO' => true, 'fo'    => true, 'fr_BE' => true, 'fr_CA' => true,
-        'fr_CH' => true, 'fr_FR' => true, 'fr_LU' => true, 'fr_MC' => true, 'fr_SN' => true,
-        'fr'    => true, 'fur_IT'=> true, 'fur'   => true, 'ga_IE' => true, 'ga'    => true,
-        'gaa_GH'=> true, 'gaa'   => true, 'gez_ER'=> true, 'gez_ET'=> true, 'gez'   => true,
-        'gl_ES' => true, 'gl'    => true, 'gsw_CH'=> true, 'gsw'   => true, 'gu_IN' => true,
-        'gu'    => true, 'gv_GB' => true, 'gv'    => true, 'ha_GH' => true, 'ha_NE' => true,
-        'ha_NG' => true, 'ha_SD' => true, 'ha'    => true, 'haw_US'=> true, 'haw'   => true,
-        'he_IL' => true, 'he'    => true, 'hi_IN' => true, 'hi'    => true, 'hr_HR' => true,
-        'hr'    => true, 'hu_HU' => true, 'hu'    => true, 'hy_AM' => true, 'hy'    => true,
-        'ia'    => true, 'id_ID' => true, 'id'    => true, 'ig_NG' => true, 'ig'    => true,
-        'ii_CN' => true, 'ii'    => true, 'in'    => true, 'is_IS' => true, 'is'    => true,
-        'it_CH' => true, 'it_IT' => true, 'it'    => true, 'iu'    => true, 'iw'    => true,
-        'ja_JP' => true, 'ja'    => true, 'ka_GE' => true, 'ka'    => true, 'kaj_NG'=> true,
-        'kaj'   => true, 'kam_KE'=> true, 'kam'   => true, 'kcg_NG'=> true, 'kcg'   => true,
-        'kfo_CI'=> true, 'kfo'   => true, 'kk_KZ' => true, 'kk'    => true, 'kl_GL' => true,
-        'kl'    => true, 'km_KH' => true, 'km'    => true, 'kn_IN' => true, 'kn'    => true,
-        'ko_KR' => true, 'ko'    => true, 'kok_IN'=> true, 'kok'   => true, 'kpe_GN'=> true,
-        'kpe_LR'=> true, 'kpe'   => true, 'ku_IQ' => true, 'ku_IR' => true, 'ku_SY' => true,
-        'ku_TR' => true, 'ku'    => true, 'kw_GB' => true, 'kw'    => true, 'ky_KG' => true,
-        'ky'    => true, 'ln_CD' => true, 'ln_CG' => true, 'ln'    => true, 'lo_LA' => true,
-        'lo'    => true, 'lt_LT' => true, 'lt'    => true, 'lv_LV' => true, 'lv'    => true,
-        'mk_MK' => true, 'mk'    => true, 'ml_IN' => true, 'ml'    => true, 'mn_CN' => true,
-        'mn_MN' => true, 'mn'    => true, 'mo'    => true, 'mr_IN' => true, 'mr'    => true,
-        'ms_BN' => true, 'ms_MY' => true, 'ms'    => true, 'mt_MT' => true, 'mt'    => true,
-        'my_MM' => true, 'my'    => true, 'nb_NO' => true, 'nb'    => true, 'nds_DE'=> true,
-        'nds'   => true, 'ne_IN' => true, 'ne_NP' => true, 'ne'    => true, 'nl_BE' => true,
-        'nl_NL' => true, 'nl'    => true, 'nn_NO' => true, 'nn'    => true, 'no'    => true,
-        'nr_ZA' => true, 'nr'    => true, 'nso_ZA'=> true, 'nso'   => true, 'ny_MW' => true,
-        'ny'    => true, 'oc_FR' => true, 'oc'    => true, 'om_ET' => true, 'om_KE' => true,
-        'om'    => true, 'or_IN' => true, 'or'    => true, 'pa_IN' => true, 'pa_PK' => true,
-        'pa'    => true, 'pl_PL' => true, 'pl'    => true, 'ps_AF' => true, 'ps'    => true,
-        'pt_BR' => true, 'pt_PT' => true, 'pt'    => true, 'ro_MD' => true, 'ro_RO' => true,
-        'ro'    => true, 'ru_RU' => true, 'ru_UA' => true, 'ru'    => true, 'rw_RW' => true,
-        'rw'    => true, 'sa_IN' => true, 'sa'    => true, 'se_FI' => true, 'se_NO' => true,
-        'se'    => true, 'sh_BA' => true, 'sh_CS' => true, 'sh_YU' => true, 'sh'    => true,
-        'si_LK' => true, 'si'    => true, 'sid_ET'=> true, 'sid'   => true, 'sk_SK' => true,
-        'sk'    => true, 'sl_SI' => true, 'sl'    => true, 'so_DJ' => true, 'so_ET' => true,
-        'so_KE' => true, 'so_SO' => true, 'so'    => true, 'sq_AL' => true, 'sq'    => true,
-        'sr_BA' => true, 'sr_CS' => true, 'sr_ME' => true, 'sr_RS' => true, 'sr_YU' => true,
-        'sr'    => true, 'ss_SZ' => true, 'ss_ZA' => true, 'ss'    => true, 'st_LS' => true,
-        'st_ZA' => true, 'st'    => true, 'sv_FI' => true, 'sv_SE' => true, 'sv'    => true,
-        'sw_KE' => true, 'sw_TZ' => true, 'sw'    => true, 'syr_SY'=> true, 'syr'   => true,
-        'ta_IN' => true, 'ta'    => true, 'te_IN' => true, 'te'    => true, 'tg_TJ' => true,
-        'tg'    => true, 'th_TH' => true, 'th'    => true, 'ti_ER' => true, 'ti_ET' => true,
-        'ti'    => true, 'tig_ER'=> true, 'tig'   => true, 'tl'    => true, 'tn_ZA' => true,
-        'tn'    => true, 'to_TO' => true, 'to'    => true, 'tr_TR' => true, 'tr'    => true,
-        'trv_TW'=> true, 'trv'   => true, 'ts_ZA' => true, 'ts'    => true, 'tt_RU' => true,
-        'tt'    => true, 'ug_CN' => true, 'ug'    => true, 'uk_UA' => true, 'uk'    => true,
-        'ur_IN' => true, 'ur_PK' => true, 'ur'    => true, 'uz_AF' => true, 'uz_UZ' => true,
-        'uz'    => true, 've_ZA' => true, 've'    => true, 'vi_VN' => true, 'vi'    => true,
-        'wal_ET'=> true, 'wal'   => true, 'wo_SN' => true, 'wo'    => true, 'xh_ZA' => true,
-        'xh'    => true, 'yo_NG' => true, 'yo'    => true, 'zh_CN' => true, 'zh_HK' => true,
-        'zh_MO' => true, 'zh_SG' => true, 'zh_TW' => true, 'zh'    => true, 'zu_ZA' => true,
-        'zu'    => true
+        'root'        => true,
+        'aa'          => true,
+        'aa_DJ'       => true,
+        'aa_ER'       => true,
+        'aa_ET'       => true,
+        'af'          => true,
+        'af_NA'       => true,
+        'af_ZA'       => true,
+        'agq'         => true,
+        'agq_CM'      => true,
+        'ak'          => true,
+        'ak_GH'       => true,
+        'am'          => true,
+        'am_ET'       => true,
+        'ar'          => true,
+        'ar_001'      => true,
+        'ar_AE'       => true,
+        'ar_BH'       => true,
+        'ar_DJ'       => true,
+        'ar_DZ'       => true,
+        'ar_EG'       => true,
+        'ar_EH'       => true,
+        'ar_ER'       => true,
+        'ar_IL'       => true,
+        'ar_IQ'       => true,
+        'ar_JO'       => true,
+        'ar_KM'       => true,
+        'ar_KW'       => true,
+        'ar_LB'       => true,
+        'ar_LY'       => true,
+        'ar_MA'       => true,
+        'ar_MR'       => true,
+        'ar_OM'       => true,
+        'ar_PS'       => true,
+        'ar_QA'       => true,
+        'ar_SA'       => true,
+        'ar_SD'       => true,
+        'ar_SO'       => true,
+        'ar_SY'       => true,
+        'ar_TD'       => true,
+        'ar_TN'       => true,
+        'ar_YE'       => true,
+        'as'          => true,
+        'as_IN'       => true,
+        'asa'         => true,
+        'asa_TZ'      => true,
+        'ast'         => true,
+        'ast_ES'      => true,
+        'az'          => true,
+        'az_Cyrl'     => true,
+        'az_Cyrl_AZ'  => true,
+        'az_Latn'     => true,
+        'az_Latn_AZ'  => true,
+        'bas'         => true,
+        'bas_CM'      => true,
+        'be'          => true,
+        'be_BY'       => true,
+        'bem'         => true,
+        'bem_ZM'      => true,
+        'bez'         => true,
+        'bez_TZ'      => true,
+        'bg'          => true,
+        'bg_BG'       => true,
+        'bm'          => true,
+        'bm_ML'       => true,
+        'bn'          => true,
+        'bn_BD'       => true,
+        'bn_IN'       => true,
+        'bo'          => true,
+        'bo_CN'       => true,
+        'bo_IN'       => true,
+        'br'          => true,
+        'br_FR'       => true,
+        'brx'         => true,
+        'brx_IN'      => true,
+        'bs'          => true,
+        'bs_Cyrl'     => true,
+        'bs_Cyrl_BA'  => true,
+        'bs_Latn'     => true,
+        'bs_Latn_BA'  => true,
+        'byn'         => true,
+        'byn_ER'      => true,
+        'ca'          => true,
+        'ca_AD'       => true,
+        'ca_ES'       => true,
+        'cgg'         => true,
+        'cgg_UG'      => true,
+        'chr'         => true,
+        'chr_US'      => true,
+        'cs'          => true,
+        'cs_CZ'       => true,
+        'cy'          => true,
+        'cy_GB'       => true,
+        'da'          => true,
+        'da_DK'       => true,
+        'dav'         => true,
+        'dav_KE'      => true,
+        'de'          => true,
+        'de_AT'       => true,
+        'de_BE'       => true,
+        'de_CH'       => true,
+        'de_DE'       => true,
+        'de_LI'       => true,
+        'de_LU'       => true,
+        'dje'         => true,
+        'dje_NE'      => true,
+        'dua'         => true,
+        'dua_CM'      => true,
+        'dyo'         => true,
+        'dyo_SN'      => true,
+        'dz'          => true,
+        'dz_BT'       => true,
+        'ebu'         => true,
+        'ebu_KE'      => true,
+        'ee'          => true,
+        'ee_GH'       => true,
+        'ee_TG'       => true,
+        'el'          => true,
+        'el_CY'       => true,
+        'el_GR'       => true,
+        'en'          => true,
+        'en_150'      => true,
+        'en_AG'       => true,
+        'en_AS'       => true,
+        'en_AU'       => true,
+        'en_BB'       => true,
+        'en_BE'       => true,
+        'en_BM'       => true,
+        'en_BS'       => true,
+        'en_BW'       => true,
+        'en_BZ'       => true,
+        'en_CA'       => true,
+        'en_CM'       => true,
+        'en_DM'       => true,
+        'en_Dsrt'     => true,
+        'en_Dsrt_US'  => true,
+        'en_FJ'       => true,
+        'en_FM'       => true,
+        'en_GB'       => true,
+        'en_GD'       => true,
+        'en_GG'       => true,
+        'en_GH'       => true,
+        'en_GI'       => true,
+        'en_GM'       => true,
+        'en_GU'       => true,
+        'en_GY'       => true,
+        'en_HK'       => true,
+        'en_IE'       => true,
+        'en_IM'       => true,
+        'en_IN'       => true,
+        'en_JE'       => true,
+        'en_JM'       => true,
+        'en_KE'       => true,
+        'en_KI'       => true,
+        'en_KN'       => true,
+        'en_KY'       => true,
+        'en_LC'       => true,
+        'en_LR'       => true,
+        'en_LS'       => true,
+        'en_MG'       => true,
+        'en_MH'       => true,
+        'en_MP'       => true,
+        'en_MT'       => true,
+        'en_MU'       => true,
+        'en_MW'       => true,
+        'en_NA'       => true,
+        'en_NG'       => true,
+        'en_NZ'       => true,
+        'en_PG'       => true,
+        'en_PH'       => true,
+        'en_PK'       => true,
+        'en_PR'       => true,
+        'en_PW'       => true,
+        'en_SB'       => true,
+        'en_SC'       => true,
+        'en_SG'       => true,
+        'en_SL'       => true,
+        'en_SS'       => true,
+        'en_SZ'       => true,
+        'en_TC'       => true,
+        'en_TO'       => true,
+        'en_TT'       => true,
+        'en_TZ'       => true,
+        'en_UG'       => true,
+        'en_UM'       => true,
+        'en_US'       => true,
+        'en_US_POSIX' => true,
+        'en_VC'       => true,
+        'en_VG'       => true,
+        'en_VI'       => true,
+        'en_VU'       => true,
+        'en_WS'       => true,
+        'en_ZA'       => true,
+        'en_ZM'       => true,
+        'en_ZW'       => true,
+        'eo'          => true,
+        'es'          => true,
+        'es_419'      => true,
+        'es_AR'       => true,
+        'es_BO'       => true,
+        'es_CL'       => true,
+        'es_CO'       => true,
+        'es_CR'       => true,
+        'es_CU'       => true,
+        'es_DO'       => true,
+        'es_EA'       => true,
+        'es_EC'       => true,
+        'es_ES'       => true,
+        'es_GQ'       => true,
+        'es_GT'       => true,
+        'es_HN'       => true,
+        'es_IC'       => true,
+        'es_MX'       => true,
+        'es_NI'       => true,
+        'es_PA'       => true,
+        'es_PE'       => true,
+        'es_PH'       => true,
+        'es_PR'       => true,
+        'es_PY'       => true,
+        'es_SV'       => true,
+        'es_US'       => true,
+        'es_UY'       => true,
+        'es_VE'       => true,
+        'et'          => true,
+        'et_EE'       => true,
+        'eu'          => true,
+        'eu_ES'       => true,
+        'ewo'         => true,
+        'ewo_CM'      => true,
+        'fa'          => true,
+        'fa_AF'       => true,
+        'fa_IR'       => true,
+        'ff'          => true,
+        'ff_SN'       => true,
+        'fi'          => true,
+        'fi_FI'       => true,
+        'fil'         => true,
+        'fil_PH'      => true,
+        'fo'          => true,
+        'fo_FO'       => true,
+        'fr'          => true,
+        'fr_BE'       => true,
+        'fr_BF'       => true,
+        'fr_BI'       => true,
+        'fr_BJ'       => true,
+        'fr_BL'       => true,
+        'fr_CA'       => true,
+        'fr_CD'       => true,
+        'fr_CF'       => true,
+        'fr_CG'       => true,
+        'fr_CH'       => true,
+        'fr_CI'       => true,
+        'fr_CM'       => true,
+        'fr_DJ'       => true,
+        'fr_DZ'       => true,
+        'fr_FR'       => true,
+        'fr_GA'       => true,
+        'fr_GF'       => true,
+        'fr_GN'       => true,
+        'fr_GP'       => true,
+        'fr_GQ'       => true,
+        'fr_HT'       => true,
+        'fr_KM'       => true,
+        'fr_LU'       => true,
+        'fr_MA'       => true,
+        'fr_MC'       => true,
+        'fr_MF'       => true,
+        'fr_MG'       => true,
+        'fr_ML'       => true,
+        'fr_MQ'       => true,
+        'fr_MR'       => true,
+        'fr_MU'       => true,
+        'fr_NC'       => true,
+        'fr_NE'       => true,
+        'fr_PF'       => true,
+        'fr_RE'       => true,
+        'fr_RW'       => true,
+        'fr_SC'       => true,
+        'fr_SN'       => true,
+        'fr_SY'       => true,
+        'fr_TD'       => true,
+        'fr_TG'       => true,
+        'fr_TN'       => true,
+        'fr_VU'       => true,
+        'fr_YT'       => true,
+        'fur'         => true,
+        'fur_IT'      => true,
+        'ga'          => true,
+        'ga_IE'       => true,
+        'gd'          => true,
+        'gd_GB'       => true,
+        'gl'          => true,
+        'gl_ES'       => true,
+        'gsw'         => true,
+        'gsw_CH'      => true,
+        'gu'          => true,
+        'gu_IN'       => true,
+        'guz'         => true,
+        'guz_KE'      => true,
+        'gv'          => true,
+        'ha'          => true,
+        'ha_Latn'     => true,
+        'ha_Latn_GH'  => true,
+        'ha_Latn_NE'  => true,
+        'ha_Latn_NG'  => true,
+        'haw'         => true,
+        'haw_US'      => true,
+        'he'          => true,
+        'he_IL'       => true,
+        'hi'          => true,
+        'hi_IN'       => true,
+        'hr'          => true,
+        'hr_BA'       => true,
+        'hr_HR'       => true,
+        'hu'          => true,
+        'hu_HU'       => true,
+        'hy'          => true,
+        'hy_AM'       => true,
+        'ia'          => true,
+        'ia_FR'       => true,
+        'id'          => true,
+        'id_ID'       => true,
+        'ig'          => true,
+        'ig_NG'       => true,
+        'ii'          => true,
+        'ii_CN'       => true,
+        'is'          => true,
+        'is_IS'       => true,
+        'it'          => true,
+        'it_CH'       => true,
+        'it_IT'       => true,
+        'it_SM'       => true,
+        'ja'          => true,
+        'ja_JP'       => true,
+        'jgo'         => true,
+        'jgo_CM'      => true,
+        'jmc'         => true,
+        'jmc_TZ'      => true,
+        'ka'          => true,
+        'ka_GE'       => true,
+        'kab'         => true,
+        'kab_DZ'      => true,
+        'kam'         => true,
+        'kam_KE'      => true,
+        'kde'         => true,
+        'kde_TZ'      => true,
+        'kea'         => true,
+        'kea_CV'      => true,
+        'khq'         => true,
+        'khq_ML'      => true,
+        'ki'          => true,
+        'ki_KE'       => true,
+        'kk'          => true,
+        'kk_Cyrl'     => true,
+        'kk_Cyrl_KZ'  => true,
+        'kkj'         => true,
+        'kkj_CM'      => true,
+        'kl'          => true,
+        'kl_GL'       => true,
+        'kln'         => true,
+        'kln_KE'      => true,
+        'km'          => true,
+        'km_KH'       => true,
+        'kn'          => true,
+        'kn_IN'       => true,
+        'ko'          => true,
+        'ko_KP'       => true,
+        'ko_KR'       => true,
+        'kok'         => true,
+        'kok_IN'      => true,
+        'ks'          => true,
+        'ks_Arab'     => true,
+        'ks_Arab_IN'  => true,
+        'ksb'         => true,
+        'ksb_TZ'      => true,
+        'ksf'         => true,
+        'ksf_CM'      => true,
+        'ksh'         => true,
+        'ksh_DE'      => true,
+        'kw'          => true,
+        'kw_GB'       => true,
+        'ky'          => true,
+        'lag'         => true,
+        'lag_TZ'      => true,
+        'lg'          => true,
+        'lg_UG'       => true,
+        'ln'          => true,
+        'ln_AO'       => true,
+        'ln_CD'       => true,
+        'ln_CF'       => true,
+        'ln_CG'       => true,
+        'lo'          => true,
+        'lo_LA'       => true,
+        'lt'          => true,
+        'lt_LT'       => true,
+        'lu'          => true,
+        'lu_CD'       => true,
+        'luo'         => true,
+        'luo_KE'      => true,
+        'luy'         => true,
+        'luy_KE'      => true,
+        'lv'          => true,
+        'lv_LV'       => true,
+        'mas'         => true,
+        'mas_KE'      => true,
+        'mas_TZ'      => true,
+        'mer'         => true,
+        'mer_KE'      => true,
+        'mfe'         => true,
+        'mfe_MU'      => true,
+        'mg'          => true,
+        'mg_MG'       => true,
+        'mgh'         => true,
+        'mgh_MZ'      => true,
+        'mgo'         => true,
+        'mgo_CM'      => true,
+        'mk'          => true,
+        'mk_MK'       => true,
+        'ml'          => true,
+        'ml_IN'       => true,
+        'mn'          => true,
+        'mn_Cyrl'     => true,
+        'mn_Cyrl_MN'  => true,
+        'mr'          => true,
+        'mr_IN'       => true,
+        'ms'          => true,
+        'ms_Latn'     => true,
+        'ms_Latn_BN'  => true,
+        'ms_Latn_MY'  => true,
+        'ms_Latn_SG'  => true,
+        'mt'          => true,
+        'mt_MT'       => true,
+        'mua'         => true,
+        'mua_CM'      => true,
+        'my'          => true,
+        'my_MM'       => true,
+        'naq'         => true,
+        'naq_NA'      => true,
+        'nb'          => true,
+        'nb_NO'       => true,
+        'nd'          => true,
+        'nd_ZW'       => true,
+        'ne'          => true,
+        'ne_IN'       => true,
+        'ne_NP'       => true,
+        'nl'          => true,
+        'nl_AW'       => true,
+        'nl_BE'       => true,
+        'nl_CW'       => true,
+        'nl_NL'       => true,
+        'nl_SR'       => true,
+        'nl_SX'       => true,
+        'nmg'         => true,
+        'nmg_CM'      => true,
+        'nn'          => true,
+        'nn_NO'       => true,
+        'nnh'         => true,
+        'nnh_CM'      => true,
+        'nr'          => true,
+        'nr_ZA'       => true,
+        'nso'         => true,
+        'nso_ZA'      => true,
+        'nus'         => true,
+        'nus_SD'      => true,
+        'nyn'         => true,
+        'nyn_UG'      => true,
+        'om'          => true,
+        'om_ET'       => true,
+        'om_KE'       => true,
+        'or'          => true,
+        'or_IN'       => true,
+        'ordinals'    => true,
+        'os'          => true,
+        'os_GE'       => true,
+        'os_RU'       => true,
+        'pa'          => true,
+        'pa_Arab'     => true,
+        'pa_Arab_PK'  => true,
+        'pa_Guru'     => true,
+        'pa_Guru_IN'  => true,
+        'pl'          => true,
+        'pl_PL'       => true,
+        'plurals'     => true,
+        'ps'          => true,
+        'ps_AF'       => true,
+        'pt'          => true,
+        'pt_AO'       => true,
+        'pt_BR'       => true,
+        'pt_CV'       => true,
+        'pt_GW'       => true,
+        'pt_MO'       => true,
+        'pt_MZ'       => true,
+        'pt_PT'       => true,
+        'pt_ST'       => true,
+        'pt_TL'       => true,
+        'rm'          => true,
+        'rm_CH'       => true,
+        'rn'          => true,
+        'rn_BI'       => true,
+        'ro'          => true,
+        'ro_MD'       => true,
+        'ro_RO'       => true,
+        'rof'         => true,
+        'rof_TZ'      => true,
+        'ru'          => true,
+        'ru_BY'       => true,
+        'ru_KG'       => true,
+        'ru_KZ'       => true,
+        'ru_MD'       => true,
+        'ru_RU'       => true,
+        'ru_UA'       => true,
+        'rw'          => true,
+        'rw_RW'       => true,
+        'rwk'         => true,
+        'rwk_TZ'      => true,
+        'sah'         => true,
+        'sah_RU'      => true,
+        'saq'         => true,
+        'saq_KE'      => true,
+        'sbp'         => true,
+        'sbp_TZ'      => true,
+        'se'          => true,
+        'se_FI'       => true,
+        'se_NO'       => true,
+        'seh'         => true,
+        'seh_MZ'      => true,
+        'ses'         => true,
+        'ses_ML'      => true,
+        'sg'          => true,
+        'sg_CF'       => true,
+        'shi'         => true,
+        'shi_Latn'    => true,
+        'shi_Latn_MA' => true,
+        'shi_Tfng'    => true,
+        'shi_Tfng_MA' => true,
+        'si'          => true,
+        'si_LK'       => true,
+        'sk'          => true,
+        'sk_SK'       => true,
+        'sl'          => true,
+        'sl_SI'       => true,
+        'sn'          => true,
+        'sn_ZW'       => true,
+        'so'          => true,
+        'so_DJ'       => true,
+        'so_ET'       => true,
+        'so_KE'       => true,
+        'so_SO'       => true,
+        'sq'          => true,
+        'sq_AL'       => true,
+        'sq_MK'       => true,
+        'sq_XK'       => true,
+        'sr'          => true,
+        'sr_Cyrl'     => true,
+        'sr_Cyrl_BA'  => true,
+        'sr_Cyrl_ME'  => true,
+        'sr_Cyrl_RS'  => true,
+        'sr_Cyrl_XK'  => true,
+        'sr_Latn'     => true,
+        'sr_Latn_BA'  => true,
+        'sr_Latn_ME'  => true,
+        'sr_Latn_RS'  => true,
+        'sr_Latn_XK'  => true,
+        'ss'          => true,
+        'ss_SZ'       => true,
+        'ss_ZA'       => true,
+        'ssy'         => true,
+        'ssy_ER'      => true,
+        'st'          => true,
+        'st_LS'       => true,
+        'st_ZA'       => true,
+        'sv'          => true,
+        'sv_AX'       => true,
+        'sv_FI'       => true,
+        'sv_SE'       => true,
+        'sw'          => true,
+        'sw_KE'       => true,
+        'sw_TZ'       => true,
+        'sw_UG'       => true,
+        'swc'         => true,
+        'swc_CD'      => true,
+        'ta'          => true,
+        'ta_IN'       => true,
+        'ta_LK'       => true,
+        'ta_MY'       => true,
+        'ta_SG'       => true,
+        'te'          => true,
+        'te_IN'       => true,
+        'teo'         => true,
+        'teo_KE'      => true,
+        'teo_UG'      => true,
+        'tg'          => true,
+        'tg_Cyrl'     => true,
+        'tg_Cyrl_TJ'  => true,
+        'th'          => true,
+        'th_TH'       => true,
+        'ti'          => true,
+        'ti_ER'       => true,
+        'ti_ET'       => true,
+        'tig'         => true,
+        'tig_ER'      => true,
+        'tn'          => true,
+        'tn_BW'       => true,
+        'tn_ZA'       => true,
+        'to'          => true,
+        'to_TO'       => true,
+        'tr'          => true,
+        'tr_CY'       => true,
+        'tr_TR'       => true,
+        'ts'          => true,
+        'ts_ZA'       => true,
+        'twq'         => true,
+        'twq_NE'      => true,
+        'tzm'         => true,
+        'tzm_Latn'    => true,
+        'tzm_Latn_MA' => true,
+        'uk'          => true,
+        'uk_UA'       => true,
+        'ur'          => true,
+        'ur_IN'       => true,
+        'ur_PK'       => true,
+        'uz'          => true,
+        'uz_Arab'     => true,
+        'uz_Arab_AF'  => true,
+        'uz_Cyrl'     => true,
+        'uz_Cyrl_UZ'  => true,
+        'uz_Latn'     => true,
+        'uz_Latn_UZ'  => true,
+        'vai'         => true,
+        'vai_Latn'    => true,
+        'vai_Latn_LR' => true,
+        'vai_Vaii'    => true,
+        'vai_Vaii_LR' => true,
+        've'          => true,
+        've_ZA'       => true,
+        'vi'          => true,
+        'vi_VN'       => true,
+        'vo'          => true,
+        'vun'         => true,
+        'vun_TZ'      => true,
+        'wae'         => true,
+        'wae_CH'      => true,
+        'wal'         => true,
+        'wal_ET'      => true,
+        'xh'          => true,
+        'xh_ZA'       => true,
+        'xog'         => true,
+        'xog_UG'      => true,
+        'yav'         => true,
+        'yav_CM'      => true,
+        'yo'          => true,
+        'yo_NG'       => true,
+        'zh'          => true,
+        'zh_Hans'     => true,
+        'zh_Hans_CN'  => true,
+        'zh_Hans_HK'  => true,
+        'zh_Hans_MO'  => true,
+        'zh_Hans_SG'  => true,
+        'zh_Hant'     => true,
+        'zh_Hant_HK'  => true,
+        'zh_Hant_MO'  => true,
+        'zh_Hant_TW'  => true,
+        'zu'          => true,
+        'zu_ZA'       => true,
     );
 
     /**
@@ -48155,55 +51239,252 @@ class Zend_Locale
      * @var array $_territoryData
      */
     private static $_territoryData = array(
-        'AD' => 'ca_AD', 'AE' => 'ar_AE', 'AF' => 'fa_AF', 'AG' => 'en_AG', 'AI' => 'en_AI',
-        'AL' => 'sq_AL', 'AM' => 'hy_AM', 'AN' => 'pap_AN', 'AO' => 'pt_AO', 'AQ' => 'und_AQ',
-        'AR' => 'es_AR', 'AS' => 'sm_AS', 'AT' => 'de_AT', 'AU' => 'en_AU', 'AW' => 'nl_AW',
-        'AX' => 'sv_AX', 'AZ' => 'az_Latn_AZ', 'BA' => 'bs_BA', 'BB' => 'en_BB', 'BD' => 'bn_BD',
-        'BE' => 'nl_BE', 'BF' => 'mos_BF', 'BG' => 'bg_BG', 'BH' => 'ar_BH', 'BI' => 'rn_BI',
-        'BJ' => 'fr_BJ', 'BL' => 'fr_BL', 'BM' => 'en_BM', 'BN' => 'ms_BN', 'BO' => 'es_BO',
-        'BR' => 'pt_BR', 'BS' => 'en_BS', 'BT' => 'dz_BT', 'BV' => 'und_BV', 'BW' => 'en_BW',
-        'BY' => 'be_BY', 'BZ' => 'en_BZ', 'CA' => 'en_CA', 'CC' => 'ms_CC', 'CD' => 'sw_CD',
-        'CF' => 'fr_CF', 'CG' => 'fr_CG', 'CH' => 'de_CH', 'CI' => 'fr_CI', 'CK' => 'en_CK',
-        'CL' => 'es_CL', 'CM' => 'fr_CM', 'CN' => 'zh_Hans_CN', 'CO' => 'es_CO', 'CR' => 'es_CR',
-        'CU' => 'es_CU', 'CV' => 'kea_CV', 'CX' => 'en_CX', 'CY' => 'el_CY', 'CZ' => 'cs_CZ',
-        'DE' => 'de_DE', 'DJ' => 'aa_DJ', 'DK' => 'da_DK', 'DM' => 'en_DM', 'DO' => 'es_DO',
-        'DZ' => 'ar_DZ', 'EC' => 'es_EC', 'EE' => 'et_EE', 'EG' => 'ar_EG', 'EH' => 'ar_EH',
-        'ER' => 'ti_ER', 'ES' => 'es_ES', 'ET' => 'en_ET', 'FI' => 'fi_FI', 'FJ' => 'hi_FJ',
-        'FK' => 'en_FK', 'FM' => 'chk_FM', 'FO' => 'fo_FO', 'FR' => 'fr_FR', 'GA' => 'fr_GA',
-        'GB' => 'en_GB', 'GD' => 'en_GD', 'GE' => 'ka_GE', 'GF' => 'fr_GF', 'GG' => 'en_GG',
-        'GH' => 'ak_GH', 'GI' => 'en_GI', 'GL' => 'iu_GL', 'GM' => 'en_GM', 'GN' => 'fr_GN',
-        'GP' => 'fr_GP', 'GQ' => 'fan_GQ', 'GR' => 'el_GR', 'GS' => 'und_GS', 'GT' => 'es_GT',
-        'GU' => 'en_GU', 'GW' => 'pt_GW', 'GY' => 'en_GY', 'HK' => 'zh_Hant_HK', 'HM' => 'und_HM',
-        'HN' => 'es_HN', 'HR' => 'hr_HR', 'HT' => 'ht_HT', 'HU' => 'hu_HU', 'ID' => 'id_ID',
-        'IE' => 'en_IE', 'IL' => 'he_IL', 'IM' => 'en_IM', 'IN' => 'hi_IN', 'IO' => 'und_IO',
-        'IQ' => 'ar_IQ', 'IR' => 'fa_IR', 'IS' => 'is_IS', 'IT' => 'it_IT', 'JE' => 'en_JE',
-        'JM' => 'en_JM', 'JO' => 'ar_JO', 'JP' => 'ja_JP', 'KE' => 'en_KE', 'KG' => 'ky_Cyrl_KG',
-        'KH' => 'km_KH', 'KI' => 'en_KI', 'KM' => 'ar_KM', 'KN' => 'en_KN', 'KP' => 'ko_KP',
-        'KR' => 'ko_KR', 'KW' => 'ar_KW', 'KY' => 'en_KY', 'KZ' => 'ru_KZ', 'LA' => 'lo_LA',
-        'LB' => 'ar_LB', 'LC' => 'en_LC', 'LI' => 'de_LI', 'LK' => 'si_LK', 'LR' => 'en_LR',
-        'LS' => 'st_LS', 'LT' => 'lt_LT', 'LU' => 'fr_LU', 'LV' => 'lv_LV', 'LY' => 'ar_LY',
-        'MA' => 'ar_MA', 'MC' => 'fr_MC', 'MD' => 'ro_MD', 'ME' => 'sr_Latn_ME', 'MF' => 'fr_MF',
-        'MG' => 'mg_MG', 'MH' => 'mh_MH', 'MK' => 'mk_MK', 'ML' => 'bm_ML', 'MM' => 'my_MM',
-        'MN' => 'mn_Cyrl_MN', 'MO' => 'zh_Hant_MO', 'MP' => 'en_MP', 'MQ' => 'fr_MQ', 'MR' => 'ar_MR',
-        'MS' => 'en_MS', 'MT' => 'mt_MT', 'MU' => 'mfe_MU', 'MV' => 'dv_MV', 'MW' => 'ny_MW',
-        'MX' => 'es_MX', 'MY' => 'ms_MY', 'MZ' => 'pt_MZ', 'NA' => 'kj_NA', 'NC' => 'fr_NC',
-        'NE' => 'ha_Latn_NE', 'NF' => 'en_NF', 'NG' => 'en_NG', 'NI' => 'es_NI', 'NL' => 'nl_NL',
-        'NO' => 'nb_NO', 'NP' => 'ne_NP', 'NR' => 'en_NR', 'NU' => 'niu_NU', 'NZ' => 'en_NZ',
-        'OM' => 'ar_OM', 'PA' => 'es_PA', 'PE' => 'es_PE', 'PF' => 'fr_PF', 'PG' => 'tpi_PG',
-        'PH' => 'fil_PH', 'PK' => 'ur_PK', 'PL' => 'pl_PL', 'PM' => 'fr_PM', 'PN' => 'en_PN',
-        'PR' => 'es_PR', 'PS' => 'ar_PS', 'PT' => 'pt_PT', 'PW' => 'pau_PW', 'PY' => 'gn_PY',
-        'QA' => 'ar_QA', 'RE' => 'fr_RE', 'RO' => 'ro_RO', 'RS' => 'sr_Cyrl_RS', 'RU' => 'ru_RU',
-        'RW' => 'rw_RW', 'SA' => 'ar_SA', 'SB' => 'en_SB', 'SC' => 'crs_SC', 'SD' => 'ar_SD',
-        'SE' => 'sv_SE', 'SG' => 'en_SG', 'SH' => 'en_SH', 'SI' => 'sl_SI', 'SJ' => 'nb_SJ',
-        'SK' => 'sk_SK', 'SL' => 'kri_SL', 'SM' => 'it_SM', 'SN' => 'fr_SN', 'SO' => 'sw_SO',
-        'SR' => 'srn_SR', 'ST' => 'pt_ST', 'SV' => 'es_SV', 'SY' => 'ar_SY', 'SZ' => 'en_SZ',
-        'TC' => 'en_TC', 'TD' => 'fr_TD', 'TF' => 'und_TF', 'TG' => 'fr_TG', 'TH' => 'th_TH',
-        'TJ' => 'tg_Cyrl_TJ', 'TK' => 'tkl_TK', 'TL' => 'pt_TL', 'TM' => 'tk_TM', 'TN' => 'ar_TN',
-        'TO' => 'to_TO', 'TR' => 'tr_TR', 'TT' => 'en_TT', 'TV' => 'tvl_TV', 'TW' => 'zh_Hant_TW',
-        'TZ' => 'sw_TZ', 'UA' => 'uk_UA', 'UG' => 'sw_UG', 'UM' => 'en_UM', 'US' => 'en_US',
-        'UY' => 'es_UY', 'UZ' => 'uz_Cyrl_UZ', 'VA' => 'it_VA', 'VC' => 'en_VC', 'VE' => 'es_VE',
-        'VG' => 'en_VG', 'VI' => 'en_VI', 'VU' => 'bi_VU', 'WF' => 'wls_WF', 'WS' => 'sm_WS',
-        'YE' => 'ar_YE', 'YT' => 'swb_YT', 'ZA' => 'en_ZA', 'ZM' => 'en_ZM', 'ZW' => 'sn_ZW'
+        'AD' => 'ca_AD',
+        'AE' => 'ar_AE',
+        'AF' => 'fa_AF',
+        'AG' => 'en_AG',
+        'AI' => 'en_AI',
+        'AL' => 'sq_AL',
+        'AM' => 'hy_AM',
+        'AN' => 'pap_AN',
+        'AO' => 'pt_AO',
+        'AQ' => 'und_AQ',
+        'AR' => 'es_AR',
+        'AS' => 'sm_AS',
+        'AT' => 'de_AT',
+        'AU' => 'en_AU',
+        'AW' => 'nl_AW',
+        'AX' => 'sv_AX',
+        'AZ' => 'az_Latn_AZ',
+        'BA' => 'bs_BA',
+        'BB' => 'en_BB',
+        'BD' => 'bn_BD',
+        'BE' => 'nl_BE',
+        'BF' => 'mos_BF',
+        'BG' => 'bg_BG',
+        'BH' => 'ar_BH',
+        'BI' => 'rn_BI',
+        'BJ' => 'fr_BJ',
+        'BL' => 'fr_BL',
+        'BM' => 'en_BM',
+        'BN' => 'ms_BN',
+        'BO' => 'es_BO',
+        'BR' => 'pt_BR',
+        'BS' => 'en_BS',
+        'BT' => 'dz_BT',
+        'BV' => 'und_BV',
+        'BW' => 'en_BW',
+        'BY' => 'be_BY',
+        'BZ' => 'en_BZ',
+        'CA' => 'en_CA',
+        'CC' => 'ms_CC',
+        'CD' => 'sw_CD',
+        'CF' => 'fr_CF',
+        'CG' => 'fr_CG',
+        'CH' => 'de_CH',
+        'CI' => 'fr_CI',
+        'CK' => 'en_CK',
+        'CL' => 'es_CL',
+        'CM' => 'fr_CM',
+        'CN' => 'zh_Hans_CN',
+        'CO' => 'es_CO',
+        'CR' => 'es_CR',
+        'CU' => 'es_CU',
+        'CV' => 'kea_CV',
+        'CX' => 'en_CX',
+        'CY' => 'el_CY',
+        'CZ' => 'cs_CZ',
+        'DE' => 'de_DE',
+        'DJ' => 'aa_DJ',
+        'DK' => 'da_DK',
+        'DM' => 'en_DM',
+        'DO' => 'es_DO',
+        'DZ' => 'ar_DZ',
+        'EC' => 'es_EC',
+        'EE' => 'et_EE',
+        'EG' => 'ar_EG',
+        'EH' => 'ar_EH',
+        'ER' => 'ti_ER',
+        'ES' => 'es_ES',
+        'ET' => 'en_ET',
+        'FI' => 'fi_FI',
+        'FJ' => 'hi_FJ',
+        'FK' => 'en_FK',
+        'FM' => 'chk_FM',
+        'FO' => 'fo_FO',
+        'FR' => 'fr_FR',
+        'GA' => 'fr_GA',
+        'GB' => 'en_GB',
+        'GD' => 'en_GD',
+        'GE' => 'ka_GE',
+        'GF' => 'fr_GF',
+        'GG' => 'en_GG',
+        'GH' => 'ak_GH',
+        'GI' => 'en_GI',
+        'GL' => 'iu_GL',
+        'GM' => 'en_GM',
+        'GN' => 'fr_GN',
+        'GP' => 'fr_GP',
+        'GQ' => 'fan_GQ',
+        'GR' => 'el_GR',
+        'GS' => 'und_GS',
+        'GT' => 'es_GT',
+        'GU' => 'en_GU',
+        'GW' => 'pt_GW',
+        'GY' => 'en_GY',
+        'HK' => 'zh_Hant_HK',
+        'HM' => 'und_HM',
+        'HN' => 'es_HN',
+        'HR' => 'hr_HR',
+        'HT' => 'ht_HT',
+        'HU' => 'hu_HU',
+        'ID' => 'id_ID',
+        'IE' => 'en_IE',
+        'IL' => 'he_IL',
+        'IM' => 'en_IM',
+        'IN' => 'hi_IN',
+        'IO' => 'und_IO',
+        'IQ' => 'ar_IQ',
+        'IR' => 'fa_IR',
+        'IS' => 'is_IS',
+        'IT' => 'it_IT',
+        'JE' => 'en_JE',
+        'JM' => 'en_JM',
+        'JO' => 'ar_JO',
+        'JP' => 'ja_JP',
+        'KE' => 'en_KE',
+        'KG' => 'ky_Cyrl_KG',
+        'KH' => 'km_KH',
+        'KI' => 'en_KI',
+        'KM' => 'ar_KM',
+        'KN' => 'en_KN',
+        'KP' => 'ko_KP',
+        'KR' => 'ko_KR',
+        'KW' => 'ar_KW',
+        'KY' => 'en_KY',
+        'KZ' => 'ru_KZ',
+        'LA' => 'lo_LA',
+        'LB' => 'ar_LB',
+        'LC' => 'en_LC',
+        'LI' => 'de_LI',
+        'LK' => 'si_LK',
+        'LR' => 'en_LR',
+        'LS' => 'st_LS',
+        'LT' => 'lt_LT',
+        'LU' => 'fr_LU',
+        'LV' => 'lv_LV',
+        'LY' => 'ar_LY',
+        'MA' => 'ar_MA',
+        'MC' => 'fr_MC',
+        'MD' => 'ro_MD',
+        'ME' => 'sr_Latn_ME',
+        'MF' => 'fr_MF',
+        'MG' => 'mg_MG',
+        'MH' => 'mh_MH',
+        'MK' => 'mk_MK',
+        'ML' => 'bm_ML',
+        'MM' => 'my_MM',
+        'MN' => 'mn_Cyrl_MN',
+        'MO' => 'zh_Hant_MO',
+        'MP' => 'en_MP',
+        'MQ' => 'fr_MQ',
+        'MR' => 'ar_MR',
+        'MS' => 'en_MS',
+        'MT' => 'mt_MT',
+        'MU' => 'mfe_MU',
+        'MV' => 'dv_MV',
+        'MW' => 'ny_MW',
+        'MX' => 'es_MX',
+        'MY' => 'ms_MY',
+        'MZ' => 'pt_MZ',
+        'NA' => 'kj_NA',
+        'NC' => 'fr_NC',
+        'NE' => 'ha_Latn_NE',
+        'NF' => 'en_NF',
+        'NG' => 'en_NG',
+        'NI' => 'es_NI',
+        'NL' => 'nl_NL',
+        'NO' => 'nb_NO',
+        'NP' => 'ne_NP',
+        'NR' => 'en_NR',
+        'NU' => 'niu_NU',
+        'NZ' => 'en_NZ',
+        'OM' => 'ar_OM',
+        'PA' => 'es_PA',
+        'PE' => 'es_PE',
+        'PF' => 'fr_PF',
+        'PG' => 'tpi_PG',
+        'PH' => 'fil_PH',
+        'PK' => 'ur_PK',
+        'PL' => 'pl_PL',
+        'PM' => 'fr_PM',
+        'PN' => 'en_PN',
+        'PR' => 'es_PR',
+        'PS' => 'ar_PS',
+        'PT' => 'pt_PT',
+        'PW' => 'pau_PW',
+        'PY' => 'gn_PY',
+        'QA' => 'ar_QA',
+        'RE' => 'fr_RE',
+        'RO' => 'ro_RO',
+        'RS' => 'sr_Cyrl_RS',
+        'RU' => 'ru_RU',
+        'RW' => 'rw_RW',
+        'SA' => 'ar_SA',
+        'SB' => 'en_SB',
+        'SC' => 'crs_SC',
+        'SD' => 'ar_SD',
+        'SE' => 'sv_SE',
+        'SG' => 'en_SG',
+        'SH' => 'en_SH',
+        'SI' => 'sl_SI',
+        'SJ' => 'nb_SJ',
+        'SK' => 'sk_SK',
+        'SL' => 'kri_SL',
+        'SM' => 'it_SM',
+        'SN' => 'fr_SN',
+        'SO' => 'sw_SO',
+        'SR' => 'srn_SR',
+        'ST' => 'pt_ST',
+        'SV' => 'es_SV',
+        'SY' => 'ar_SY',
+        'SZ' => 'en_SZ',
+        'TC' => 'en_TC',
+        'TD' => 'fr_TD',
+        'TF' => 'und_TF',
+        'TG' => 'fr_TG',
+        'TH' => 'th_TH',
+        'TJ' => 'tg_Cyrl_TJ',
+        'TK' => 'tkl_TK',
+        'TL' => 'pt_TL',
+        'TM' => 'tk_TM',
+        'TN' => 'ar_TN',
+        'TO' => 'to_TO',
+        'TR' => 'tr_TR',
+        'TT' => 'en_TT',
+        'TV' => 'tvl_TV',
+        'TW' => 'zh_Hant_TW',
+        'TZ' => 'sw_TZ',
+        'UA' => 'uk_UA',
+        'UG' => 'sw_UG',
+        'UM' => 'en_UM',
+        'US' => 'en_US',
+        'UY' => 'es_UY',
+        'UZ' => 'uz_Cyrl_UZ',
+        'VA' => 'it_VA',
+        'VC' => 'en_VC',
+        'VE' => 'es_VE',
+        'VG' => 'en_VG',
+        'VI' => 'en_VI',
+        'VN' => 'vi_VN',
+        'VU' => 'bi_VU',
+        'WF' => 'wls_WF',
+        'WS' => 'sm_WS',
+        'YE' => 'ar_YE',
+        'YT' => 'swb_YT',
+        'ZA' => 'en_ZA',
+        'ZM' => 'en_ZM',
+        'ZW' => 'sn_ZW'
     );
 
     /**
@@ -48517,6 +51798,12 @@ class Zend_Locale
         $locale = self::_prepareLocale($locale);
 
         if (isset(self::$_localeData[(string) $locale]) === false) {
+            // Is it an alias? If so, we can use this locale
+            if (isset(self::$_localeAliases[$locale]) === true) {
+                $this->_locale = $locale;
+                return;
+            }
+
             $region = substr((string) $locale, 0, 3);
             if (isset($region[2]) === true) {
                 if (($region[2] === '_') or ($region[2] === '-')) {
@@ -48697,7 +51984,7 @@ class Zend_Locale
         #require_once 'Zend/Locale/Data.php';
         $locale = self::findLocale($locale);
         $result = Zend_Locale_Data::getContent($locale, $path, $value);
-        if (empty($result) === true) {
+        if (empty($result) === true && '0' !== $result) {
             return false;
         }
 
@@ -48844,6 +52131,11 @@ class Zend_Locale
         if (($locale instanceof Zend_Locale)
             || (is_string($locale) && array_key_exists($locale, self::$_localeData))
         ) {
+            return true;
+        }
+
+        // Is it an alias?
+        if (is_string($locale) && array_key_exists($locale, self::$_localeAliases)) {
             return true;
         }
 
@@ -49129,6 +52421,40 @@ class Zend_Locale
 
         return $languages;
     }
+
+    /**
+     * Is the given locale in the list of aliases?
+     *
+     * @param  string|Zend_Locale $locale Locale to work on
+     * @return boolean
+     */
+    public static function isAlias($locale)
+    {
+        if ($locale instanceof Zend_Locale) {
+            $locale = $locale->toString();
+        }
+
+        return isset(self::$_localeAliases[$locale]);
+    }
+
+    /**
+     * Return an alias' actual locale.
+     *
+     * @param  string|Zend_Locale $locale Locale to work on
+     * @return string
+     */
+    public static function getAlias($locale)
+    {
+        if ($locale instanceof Zend_Locale) {
+            $locale = $locale->toString();
+        }
+
+        if (isset(self::$_localeAliases[$locale]) === true) {
+            return self::$_localeAliases[$locale];
+        }
+
+        return (string) $locale;
+    }
 }
 /**
  * Zend Framework
@@ -49146,9 +52472,9 @@ class Zend_Locale
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Data
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Data.php 22712 2010-07-29 08:24:28Z thomas $
+ * @version    $Id$
  */
 
 /**
@@ -49156,13 +52482,16 @@ class Zend_Locale
  */
 #require_once 'Zend/Locale.php';
 
+/** @see Zend_Xml_Security */
+#require_once 'Zend/Xml/Security.php';
+
 /**
  * Locale data reader, handles the CLDR
  *
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Data
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Locale_Data
@@ -49289,7 +52618,7 @@ class Zend_Locale_Data
                 throw new Zend_Locale_Exception("Missing locale file '$filename' for '$locale' locale.");
             }
 
-            self::$_ldml[(string) $locale] = simplexml_load_file($filename);
+            self::$_ldml[(string) $locale] = Zend_Xml_Security::scanFile($filename);
         }
 
         // search for 'alias' tag in the search path for redirection
@@ -49420,6 +52749,10 @@ class Zend_Locale_Data
             throw new Zend_Locale_Exception("Locale (" . (string) $locale . ") is a unknown locale");
         }
 
+        if (Zend_Locale::isAlias($locale)) {
+            // Return a valid CLDR locale so that the XML file can be loaded.
+            return Zend_Locale::getAlias($locale);
+        }
         return (string) $locale;
     }
 
@@ -49470,13 +52803,13 @@ class Zend_Locale_Data
                 $temp = self::_getFile($locale, '/ldml/localeDisplayNames/territories/territory', 'type');
                 if ($value === 1) {
                     foreach($temp as $key => $value) {
-                        if ((is_numeric($key) === false) and ($key != 'QO') and ($key != 'QU')) {
+                        if ((is_numeric($key) === false) and ($key != 'QO') and ($key != 'EU')) {
                             unset($temp[$key]);
                         }
                     }
                 } else if ($value === 2) {
                     foreach($temp as $key => $value) {
-                        if (is_numeric($key) or ($key == 'QO') or ($key == 'QU')) {
+                        if (is_numeric($key) or ($key == 'QO') or ($key == 'EU')) {
                             unset($temp[$key]);
                         }
                     }
@@ -49492,7 +52825,7 @@ class Zend_Locale_Data
                 break;
 
             case 'type':
-                if (empty($type)) {
+                if (empty($value)) {
                     $temp = self::_getFile($locale, '/ldml/localeDisplayNames/types/type', 'type');
                 } else {
                     if (($value == 'calendar') or
@@ -49506,28 +52839,50 @@ class Zend_Locale_Data
                 break;
 
             case 'layout':
-                $temp  = self::_getFile($locale, '/ldml/layout/orientation',                 'lines',      'lines');
-                $temp += self::_getFile($locale, '/ldml/layout/orientation',                 'characters', 'characters');
-                $temp += self::_getFile($locale, '/ldml/layout/inList',                      '',           'inList');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'currency\']',  '',           'currency');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'dayWidth\']',  '',           'dayWidth');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'fields\']',    '',           'fields');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'keys\']',      '',           'keys');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'languages\']', '',           'languages');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'long\']',      '',           'long');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'measurementSystemNames\']', '', 'measurementSystemNames');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'monthWidth\']',   '',        'monthWidth');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'quarterWidth\']', '',        'quarterWidth');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'scripts\']',   '',           'scripts');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'territories\']',  '',        'territories');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'types\']',     '',           'types');
-                $temp += self::_getFile($locale, '/ldml/layout/inText[@type=\'variants\']',  '',           'variants');
+                $temp  = self::_getFile($locale, '/ldml/layout/orientation/characterOrder', '', 'characterOrder');
+                $temp += self::_getFile($locale, '/ldml/layout/orientation/lineOrder', '', 'lineOrder');
+                break;
+
+            case 'contexttransform':
+                if (empty($value)) {
+                    $value = 'uiListOrMenu';
+                }
+                $temp = self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'languages\']/contextTransform[@type=\''.$value.'\']', '', 'languages');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'day-format-except-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'day-format-except-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'day-standalone-except-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'day-standalone-except-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'day-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'day-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'month-format-except-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'month-format-except-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'month-standalone-except-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'month-standalone-except-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'month-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'month-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'script\']/contextTransform[@type=\''.$value.'\']', '', 'script');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'territory\']/contextTransform[@type=\''.$value.'\']', '', 'territory');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'variant\']/contextTransform[@type=\''.$value.'\']', '', 'variant');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'key\']/contextTransform[@type=\''.$value.'\']', '', 'key');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'type\']/contextTransform[@type=\''.$value.'\']', '', 'type');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'era-name\']/contextTransform[@type=\''.$value.'\']', '', 'era-name');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'era-abbr\']/contextTransform[@type=\''.$value.'\']', '', 'era-abbr');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'era-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'era-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'quater-format-wide\']/contextTransform[@type=\''.$value.'\']', '', 'quater-format-wide');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'quater-standalone-wide\']/contextTransform[@type=\''.$value.'\']', '', 'quater-standalone-wide');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'quater-abbreviated\']/contextTransform[@type=\''.$value.'\']', '', 'quater-abbreviated');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'quater-narrow\']/contextTransform[@type=\''.$value.'\']', '', 'quater-narrow');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'calendar-field\']/contextTransform[@type=\''.$value.'\']', '', 'calendar-field');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'symbol\']/contextTransform[@type=\''.$value.'\']', '', 'symbol');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'tense\']/contextTransform[@type=\''.$value.'\']', '', 'tense');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'zone-exemplarCity\']/contextTransform[@type=\''.$value.'\']', '', 'zone-exemplarCity');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'zone-long\']/contextTransform[@type=\''.$value.'\']', '', 'zone-long');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'zone-short\']/contextTransform[@type=\''.$value.'\']', '', 'zone-short');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'metazone-long\']/contextTransform[@type=\''.$value.'\']', '', 'metazone-long');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'metazone-short\']/contextTransform[@type=\''.$value.'\']', '', 'metazone-short');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'displayName-count\']/contextTransform[@type=\''.$value.'\']', '', 'displayName-count');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'displayName\']/contextTransform[@type=\''.$value.'\']', '', 'displayName');
+                $temp += self::_getFile($locale, '/ldml/contextTransforms/contextTransformUsage[@type=\'unit-pattern\']/contextTransform[@type=\''.$value.'\']', '', 'unit-pattern');
                 break;
 
             case 'characters':
                 $temp  = self::_getFile($locale, '/ldml/characters/exemplarCharacters',                           '', 'characters');
                 $temp += self::_getFile($locale, '/ldml/characters/exemplarCharacters[@type=\'auxiliary\']',      '', 'auxiliary');
-                $temp += self::_getFile($locale, '/ldml/characters/exemplarCharacters[@type=\'currencySymbol\']', '', 'currencySymbol');
+                // $temp += self::_getFile($locale, '/ldml/characters/exemplarCharacters[@type=\'currencySymbol\']', '', 'currencySymbol');
                 break;
 
             case 'delimiters':
@@ -49548,8 +52903,8 @@ class Zend_Locale_Data
                 if (empty($value)) {
                     $value = "gregorian";
                 }
-                $temp  = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/months/default', 'choice', 'context');
-                $temp += self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/months/monthContext[@type=\'format\']/default', 'choice', 'default');
+                $temp['context'] = "format";
+                $temp['default'] = "wide";
                 $temp['format']['abbreviated'] = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/months/monthContext[@type=\'format\']/monthWidth[@type=\'abbreviated\']/month', 'type');
                 $temp['format']['narrow']      = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/months/monthContext[@type=\'format\']/monthWidth[@type=\'narrow\']/month', 'type');
                 $temp['format']['wide']        = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/months/monthContext[@type=\'format\']/monthWidth[@type=\'wide\']/month', 'type');
@@ -49569,8 +52924,8 @@ class Zend_Locale_Data
                 if (empty($value)) {
                     $value = "gregorian";
                 }
-                $temp  = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/days/default', 'choice', 'context');
-                $temp += self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/days/dayContext[@type=\'format\']/default', 'choice', 'default');
+                $temp['context'] = "format";
+                $temp['default'] = "wide";
                 $temp['format']['abbreviated'] = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/days/dayContext[@type=\'format\']/dayWidth[@type=\'abbreviated\']/day', 'type');
                 $temp['format']['narrow']      = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/days/dayContext[@type=\'format\']/dayWidth[@type=\'narrow\']/day', 'type');
                 $temp['format']['wide']        = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/days/dayContext[@type=\'format\']/dayWidth[@type=\'wide\']/day', 'type');
@@ -49703,17 +53058,19 @@ class Zend_Locale_Data
                 if (empty($value)) {
                     $value = "gregorian";
                 }
-                $temp2 = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/fields/field', 'type');
+                $temp2 = self::_getFile($locale, '/ldml/dates/fields/field', 'type');
+                // $temp2 = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/fields/field', 'type');
                 foreach ($temp2 as $key => $keyvalue) {
-                    $temp += self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/fields/field[@type=\'' . $key . '\']/displayName', '', $key);
+                    $temp += self::_getFile($locale, '/ldml/dates/fields/field[@type=\'' . $key . '\']/displayName', '', $key);
+                    // $temp += self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/fields/field[@type=\'' . $key . '\']/displayName', '', $key);
                 }
                 break;
 
             case 'relative':
                 if (empty($value)) {
-                    $value = "gregorian";
+                    $value = "day";
                 }
-                $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/fields/field/relative', 'type');
+                $temp = self::_getFile($locale, '/ldml/dates/fields/field[@type=\'' . $value . '\']/relative', 'type');
                 break;
 
             case 'symbols':
@@ -49889,30 +53246,30 @@ class Zend_Locale_Data
                 break;
 
             case 'timezonetowindows':
-                $_temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/mapTimezones[@type=\'windows\']/mapZone', 'other');
+                $_temp = self::_getFile('windowsZones', '/supplementalData/windowsZones/mapTimezones/mapZone', 'other');
                 foreach ($_temp as $key => $found) {
-                    $temp += self::_getFile('supplementalData', '/supplementalData/timezoneData/mapTimezones[@type=\'windows\']/mapZone[@other=\'' . $key . '\']', 'type', $key);
+                    $temp += self::_getFile('windowsZones', '/supplementalData/windowsZones/mapTimezones/mapZone[@other=\'' . $key . '\']', 'type', $key);
                 }
                 break;
 
             case 'windowstotimezone':
-                $_temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/mapTimezones[@type=\'windows\']/mapZone', 'type');
+                $_temp = self::_getFile('windowsZones', '/supplementalData/windowsZones/mapTimezones/mapZone', 'type');
                 foreach ($_temp as $key => $found) {
-                    $temp += self::_getFile('supplementalData', '/supplementalData/timezoneData/mapTimezones[@type=\'windows\']/mapZone[@type=\'' .$key . '\']', 'other', $key);
+                    $temp += self::_getFile('windowsZones', '/supplementalData/windowsZones/mapTimezones/mapZone[@type=\'' .$key . '\']', 'other', $key);
                 }
                 break;
 
             case 'territorytotimezone':
-                $_temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/zoneFormatting/zoneItem', 'type');
+                $_temp = self::_getFile('metaZones', '/supplementalData/metaZones/mapTimezones/mapZone', 'type');
                 foreach ($_temp as $key => $found) {
-                    $temp += self::_getFile('supplementalData', '/supplementalData/timezoneData/zoneFormatting/zoneItem[@type=\'' . $key . '\']', 'territory', $key);
+                    $temp += self::_getFile('metaZones', '/supplementalData/metaZones/mapTimezones/mapZone[@type=\'' . $key . '\']', 'territory', $key);
                 }
                 break;
 
             case 'timezonetoterritory':
-                $_temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/zoneFormatting/zoneItem', 'territory');
+                $_temp = self::_getFile('metaZones', '/supplementalData/metaZones/mapTimezones/mapZone', 'territory');
                 foreach ($_temp as $key => $found) {
-                    $temp += self::_getFile('supplementalData', '/supplementalData/timezoneData/zoneFormatting/zoneItem[@territory=\'' . $key . '\']', 'type', $key);
+                    $temp += self::_getFile('metaZones', '/supplementalData/metaZones/mapTimezones/mapZone[@territory=\'' . $key . '\']', 'type', $key);
                 }
                 break;
 
@@ -50025,9 +53382,9 @@ class Zend_Locale_Data
                 break;
 
             case 'unit':
-                $_temp = self::_getFile($locale, '/ldml/units/unit', 'type');
+                $_temp = self::_getFile($locale, '/ldml/units/unitLength/unit', 'type');
                 foreach($_temp as $key => $keyvalue) {
-                    $_temp2 = self::_getFile($locale, '/ldml/units/unit[@type=\'' . $key . '\']/unitPattern', 'count');
+                    $_temp2 = self::_getFile($locale, '/ldml/units/unitLength/unit[@type=\'' . $key . '\']/unitPattern', 'count');
                     $temp[$key] = $_temp2;
                 }
                 break;
@@ -50104,21 +53461,35 @@ class Zend_Locale_Data
                 break;
 
             case 'defaultcalendar':
-                $temp = self::_getFile($locale, '/ldml/dates/calendars/default', 'choice', 'default');
+                $givenLocale = new Zend_Locale($locale);
+                $territory = $givenLocale->getRegion();
+                unset($givenLocale);
+                $temp = self::_getFile('supplementalData', '/supplementalData/calendarPreferenceData/calendarPreference[contains(@territories,\'' . $territory . '\')]', 'ordering', 'ordering');
+                if (isset($temp['ordering'])) {
+                    list($temp) = explode(' ', $temp['ordering']);
+                } else {
+                    $temp = 'gregorian';
+                }
                 break;
 
             case 'monthcontext':
+                /* default context is always 'format'
                 if (empty ($value)) {
                     $value = "gregorian";
                 }
                 $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/months/default', 'choice', 'context');
+                */
+                $temp = 'format';
                 break;
 
             case 'defaultmonth':
+                /* default width is always 'wide'
                 if (empty ($value)) {
                     $value = "gregorian";
                 }
                 $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/months/monthContext[@type=\'format\']/default', 'choice', 'default');
+                */
+                $temp = 'wide';
                 break;
 
             case 'month':
@@ -50130,17 +53501,23 @@ class Zend_Locale_Data
                 break;
 
             case 'daycontext':
+                /* default context is always 'format'
                 if (empty($value)) {
                     $value = "gregorian";
                 }
                 $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/days/default', 'choice', 'context');
+                */
+                $temp = 'format';
                 break;
 
             case 'defaultday':
+                /* default width is always 'wide'
                 if (empty($value)) {
                     $value = "gregorian";
                 }
                 $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/days/dayContext[@type=\'format\']/default', 'choice', 'default');
+                */
+                $temp = 'wide';
                 break;
 
             case 'day':
@@ -50161,16 +53538,24 @@ class Zend_Locale_Data
 
             case 'am':
                 if (empty($value)) {
-                    $value = "gregorian";
+                    $value = array("gregorian", "format", "wide");
                 }
-                $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/am', '', 'am');
+                if (!is_array($value)) {
+                    $temp = $value;
+                    $value = array($temp, "format", "wide");
+                }
+                $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value[0] . '\']/dayPeriods/dayPeriodContext[@type=\'' . $value[1] . '\']/dayPeriodWidth[@type=\'' . $value[2] . '\']/dayPeriod[@type=\'am\']', '', 'dayPeriod');
                 break;
 
             case 'pm':
                 if (empty($value)) {
-                    $value = "gregorian";
+                    $value = array("gregorian", "format", "wide");
                 }
-                $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/pm', '', 'pm');
+                if (!is_array($value)) {
+                    $temp = $value;
+                    $value = array($temp, "format", "wide");
+                }
+                $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value[0] . '\']/dayPeriods/dayPeriodContext[@type=\'' . $value[1] . '\']/dayPeriodWidth[@type=\'' . $value[2] . '\']/dayPeriod[@type=\'pm\']', '', 'dayPeriod');
                 break;
 
             case 'era':
@@ -50182,10 +53567,13 @@ class Zend_Locale_Data
                 break;
 
             case 'defaultdate':
+                /* default choice is deprecated in CDLR - should be always medium here
                 if (empty($value)) {
                     $value = "gregorian";
                 }
                 $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/dateFormats/default', 'choice', 'default');
+                */
+                $temp = 'medium';
                 break;
 
             case 'date':
@@ -50200,10 +53588,13 @@ class Zend_Locale_Data
                 break;
 
             case 'defaulttime':
+                /* default choice is deprecated in CDLR - should be always medium here
                 if (empty($value)) {
                     $value = "gregorian";
                 }
                 $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value . '\']/timeFormats/default', 'choice', 'default');
+                */
+                $temp = 'medium';
                 break;
 
             case 'time':
@@ -50259,7 +53650,7 @@ class Zend_Locale_Data
                     $temp = $value;
                     $value = array("gregorian", $temp);
                 }
-                $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value[0] . '\']/fields/field[@type=\'' . $value[1] . '\']/displayName', '', $value[1]);
+                $temp = self::_getFile($locale, '/ldml/dates/fields/field[@type=\'' . $value[1] . '\']/displayName', '', $value[1]);
                 break;
 
             case 'relative':
@@ -50267,7 +53658,12 @@ class Zend_Locale_Data
                     $temp = $value;
                     $value = array("gregorian", $temp);
                 }
-                $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value[0] . '\']/fields/field/relative[@type=\'' . $value[1] . '\']', '', $value[1]);
+                $temp = self::_getFile($locale, '/ldml/dates/fields/field[@type=\'day\']/relative[@type=\'' . $value[1] . '\']', '', $value[1]);
+                // $temp = self::_getFile($locale, '/ldml/dates/calendars/calendar[@type=\'' . $value[0] . '\']/fields/field/relative[@type=\'' . $value[1] . '\']', '', $value[1]);
+                break;
+
+            case 'defaultnumberingsystem':
+                $temp = self::_getFile($locale, '/ldml/numbers/defaultNumberingSystem', '', 'default');
                 break;
 
             case 'decimalnumber':
@@ -50428,19 +53824,19 @@ class Zend_Locale_Data
                 break;
 
             case 'timezonetowindows':
-                $temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/mapTimezones[@type=\'windows\']/mapZone[@other=\''.$value.'\']', 'type', $value);
+                $temp = self::_getFile('windowsZones', '/supplementalData/windowsZones/mapTimezones/mapZone[@other=\''.$value.'\']', 'type', $value);
                 break;
 
             case 'windowstotimezone':
-                $temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/mapTimezones[@type=\'windows\']/mapZone[@type=\''.$value.'\']', 'other', $value);
+                $temp = self::_getFile('windowsZones', '/supplementalData/windowsZones/mapTimezones/mapZone[@type=\''.$value.'\']', 'other', $value);
                 break;
 
             case 'territorytotimezone':
-                $temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/zoneFormatting/zoneItem[@type=\'' . $value . '\']', 'territory', $value);
+                $temp = self::_getFile('metaZones', '/supplementalData/metaZones/mapTimezones/mapZone[@type=\'' . $value . '\']', 'territory', $value);
                 break;
 
             case 'timezonetoterritory':
-                $temp = self::_getFile('supplementalData', '/supplementalData/timezoneData/zoneFormatting/zoneItem[@territory=\'' . $value . '\']', 'type', $value);
+                $temp = self::_getFile('metaZones', '/supplementalData/metaZones/mapTimezones/mapZone[@territory=\'' . $value . '\']', 'type', $value);
                 break;
 
             case 'citytotimezone':
@@ -50533,7 +53929,7 @@ class Zend_Locale_Data
                 break;
 
             case 'unit':
-                $temp = self::_getFile($locale, '/ldml/units/unit[@type=\'' . $value[0] . '\']/unitPattern[@count=\'' . $value[1] . '\']', '');
+                $temp = self::_getFile($locale, '/ldml/units/unitLength/unit[@type=\'' . $value[0] . '\']/unitPattern[@count=\'' . $value[1] . '\']', '');
                 break;
 
             default :
@@ -50659,8 +54055,8 @@ class Zend_Locale_Data
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Format
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
- * @version    $Id: Format.php 22808 2010-08-08 09:38:42Z thomas $
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @version    $Id$
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -50673,7 +54069,7 @@ class Zend_Locale_Data
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Format
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Locale_Format
@@ -50703,7 +54099,7 @@ class Zend_Locale_Format
      * @param  array  $options  Array of options, keyed by option name: format_type = 'iso' | 'php', fix_date = true | false,
      *                          locale = Zend_Locale | locale string, precision = whole number between -1 and 30
      * @throws Zend_Locale_Exception
-     * @return Options array if no option was given
+     * @return array if no option was given
      */
     public static function setOptions(array $options = array())
     {
@@ -50718,7 +54114,7 @@ class Zend_Locale_Format
      * @param  array  $options  Array of options, keyed by option name: format_type = 'iso' | 'php', fix_date = true | false,
      *                          locale = Zend_Locale | locale string, precision = whole number between -1 and 30
      * @throws Zend_Locale_Exception
-     * @return Options array if no option was given
+     * @return array if no option was given
      */
     private static function _checkOptions(array $options = array())
     {
@@ -50743,8 +54139,9 @@ class Zend_Locale_Format
                         $options['number_format'] = Zend_Locale_Data::getContent($locale, 'decimalnumber');
                     } else if ((gettype($value) !== 'string') and ($value !== NULL)) {
                         #require_once 'Zend/Locale/Exception.php';
+                        $stringValue = (string)(is_array($value) ? implode(' ', $value) : $value);
                         throw new Zend_Locale_Exception("Unknown number format type '" . gettype($value) . "'. "
-                            . "Format '$value' must be a valid number format string.");
+                            . "Format '$stringValue' must be a valid number format string.");
                     }
                     break;
 
@@ -50757,8 +54154,9 @@ class Zend_Locale_Format
                         $options['date_format'] = Zend_Locale_Format::getDateFormat($locale);
                     } else if ((gettype($value) !== 'string') and ($value !== NULL)) {
                         #require_once 'Zend/Locale/Exception.php';
+                        $stringValue = (string)(is_array($value) ? implode(' ', $value) : $value);
                         throw new Zend_Locale_Exception("Unknown dateformat type '" . gettype($value) . "'. "
-                            . "Format '$value' must be a valid ISO or PHP date format string.");
+                            . "Format '$stringValue' must be a valid ISO or PHP date format string.");
                     } else {
                         if (((isset($options['format_type']) === true) and ($options['format_type'] == 'php')) or
                             ((isset($options['format_type']) === false) and (self::$_options['format_type'] == 'php'))) {
@@ -50934,7 +54332,7 @@ class Zend_Locale_Format
      * ##0.00 -> 12345.12345 -> 12345.12
      * ##,##0.00 -> 12345.12345 -> 12,345.12
      *
-     * @param   string  $input    Localized number string
+     * @param   string  $value    Localized number string
      * @param   array   $options  Options: number_format, locale, precision. See {@link setOptions()} for details.
      * @return  string  locale formatted number
      * @throws Zend_Locale_Exception
@@ -50944,16 +54342,16 @@ class Zend_Locale_Format
         // load class within method for speed
         #require_once 'Zend/Locale/Math.php';
 
-        $value             = Zend_Locale_Math::normalize($value);
         $value             = Zend_Locale_Math::floatalize($value);
+        $value             = Zend_Locale_Math::normalize($value);
         $options           = self::_checkOptions($options) + self::$_options;
         $options['locale'] = (string) $options['locale'];
 
         // Get correct signs for this locale
         $symbols = Zend_Locale_Data::getList($options['locale'], 'symbols');
-        $oenc = iconv_get_encoding('internal_encoding');
-        iconv_set_encoding('internal_encoding', 'UTF-8');
-
+        $oenc = self::_getEncoding();
+        self::_setEncoding('UTF-8');
+        
         // Get format
         $format = $options['number_format'];
         if ($format === null) {
@@ -50987,7 +54385,7 @@ class Zend_Locale_Format
         }
 
         if (iconv_strpos($format, '0') === false) {
-            iconv_set_encoding('internal_encoding', $oenc);
+            self::_setEncoding($oenc);
             #require_once 'Zend/Locale/Exception.php';
             throw new Zend_Locale_Exception('Wrong format... missing 0');
         }
@@ -51113,10 +54511,16 @@ class Zend_Locale_Format
             }
         }
 
-        iconv_set_encoding('internal_encoding', $oenc);
+        self::_setEncoding($oenc);
         return (string) $format;
     }
 
+    /**
+     * @param string $format
+     * @param string $value
+     * @param int $precision
+     * @return string
+     */
     private static function _seperateFormat($format, $value, $precision)
     {
         if (iconv_strpos($format, ';') !== false) {
@@ -51173,7 +54577,9 @@ class Zend_Locale_Format
      * Internal method to convert cldr number syntax into regex
      *
      * @param  string $type
+     * @param  array  $options Options: locale. See {@link setOptions()} for details.
      * @return string
+     * @throws Zend_Locale_Exception
      */
     private static function _getRegexForType($type, $options)
     {
@@ -51273,7 +54679,7 @@ class Zend_Locale_Format
     /**
      * Alias for getNumber
      *
-     * @param   string  $value    Number to localize
+     * @param   string  $input    Number to localize
      * @param   array   $options  Options: locale, precision. See {@link setOptions()} for details.
      * @return  float
      */
@@ -51300,9 +54706,9 @@ class Zend_Locale_Format
      * Returns if a float was found
      * Alias for isNumber()
      *
-     * @param   string  $input    Localized number string
-     * @param   array   $options  Options: locale. See {@link setOptions()} for details.
-     * @return  boolean           Returns true if a number was found
+     * @param   string $value  Localized number string
+     * @param   array $options Options: locale. See {@link setOptions()} for details.
+     * @return  boolean        Returns true if a number was found
      */
     public static function isFloat($value, array $options = array())
     {
@@ -51348,9 +54754,9 @@ class Zend_Locale_Format
     /**
      * Returns if a integer was found
      *
-     * @param   string  $input    Localized number string
-     * @param   array   $options  Options: locale. See {@link setOptions()} for details.
-     * @return  boolean           Returns true if a integer was found
+     * @param  string $value Localized number string
+     * @param  array $options Options: locale. See {@link setOptions()} for details.
+     * @return boolean Returns true if a integer was found
      */
     public static function isInteger($value, array $options = array())
     {
@@ -51397,15 +54803,16 @@ class Zend_Locale_Format
             }
         }
 
-        return join($values);
+        return implode($values);
     }
 
     /**
      * Parse date and split in named array fields
      *
-     * @param   string  $date     Date string to parse
-     * @param   array   $options  Options: format_type, fix_date, locale, date_format. See {@link setOptions()} for details.
-     * @return  array             Possible array members: day, month, year, hour, minute, second, fixed, format
+     * @param  string $date    Date string to parse
+     * @param  array  $options Options: format_type, fix_date, locale, date_format. See {@link setOptions()} for details.
+     * @return array Possible array members: day, month, year, hour, minute, second, fixed, format
+     * @throws Zend_Locale_Exception
      */
     private static function _parseDate($date, $options)
     {
@@ -51422,8 +54829,8 @@ class Zend_Locale_Format
         $result['date_format'] = $format; // save the format used to normalize $number (convenience)
         $result['locale'] = $options['locale']; // save the locale used to normalize $number (convenience)
 
-        $oenc = iconv_get_encoding('internal_encoding');
-        iconv_set_encoding('internal_encoding', 'UTF-8');
+        $oenc = self::_getEncoding();
+        self::_setEncoding('UTF-8');
         $day   = iconv_strpos($format, 'd');
         $month = iconv_strpos($format, 'M');
         $year  = iconv_strpos($format, 'y');
@@ -51488,7 +54895,7 @@ class Zend_Locale_Format
         }
 
         if (empty($parse)) {
-            iconv_set_encoding('internal_encoding', $oenc);
+            self::_setEncoding($oenc);
             #require_once 'Zend/Locale/Exception.php';
             throw new Zend_Locale_Exception("Unknown date format, neither date nor time in '" . $format . "' found");
         }
@@ -51508,7 +54915,7 @@ class Zend_Locale_Format
         preg_match_all('/\d+/u', $number, $splitted);
 
         if (count($splitted[0]) == 0) {
-            iconv_set_encoding('internal_encoding', $oenc);
+            self::_setEncoding($oenc);
             #require_once 'Zend/Locale/Exception.php';
             throw new Zend_Locale_Exception("No date part in '$date' found.");
         }
@@ -51614,7 +55021,7 @@ class Zend_Locale_Format
                 if (($position !== false) and ((iconv_strpos($date, $result['day']) === false) or
                                                (isset($result['year']) and (iconv_strpos($date, $result['year']) === false)))) {
                     if ($options['fix_date'] !== true) {
-                        iconv_set_encoding('internal_encoding', $oenc);
+                        self::_setEncoding($oenc);
                         #require_once 'Zend/Locale/Exception.php';
                         throw new Zend_Locale_Exception("Unable to parse date '$date' using '" . $format
                             . "' (false month, $position, $month)");
@@ -51630,7 +55037,7 @@ class Zend_Locale_Format
             if (isset($result['day']) and isset($result['year'])) {
                 if ($result['day'] > 31) {
                     if ($options['fix_date'] !== true) {
-                        iconv_set_encoding('internal_encoding', $oenc);
+                        self::_setEncoding($oenc);
                         #require_once 'Zend/Locale/Exception.php';
                         throw new Zend_Locale_Exception("Unable to parse date '$date' using '"
                                                       . $format . "' (d <> y)");
@@ -51646,7 +55053,7 @@ class Zend_Locale_Format
             if (isset($result['month']) and isset($result['year'])) {
                 if ($result['month'] > 31) {
                     if ($options['fix_date'] !== true) {
-                        iconv_set_encoding('internal_encoding', $oenc);
+                        self::_setEncoding($oenc);
                         #require_once 'Zend/Locale/Exception.php';
                         throw new Zend_Locale_Exception("Unable to parse date '$date' using '"
                                                       . $format . "' (M <> y)");
@@ -51662,7 +55069,7 @@ class Zend_Locale_Format
             if (isset($result['month']) and isset($result['day'])) {
                 if ($result['month'] > 12) {
                     if ($options['fix_date'] !== true || $result['month'] > 31) {
-                        iconv_set_encoding('internal_encoding', $oenc);
+                        self::_setEncoding($oenc);
                         #require_once 'Zend/Locale/Exception.php';
                         throw new Zend_Locale_Exception("Unable to parse date '$date' using '"
                                                       . $format . "' (M <> d)");
@@ -51689,7 +55096,7 @@ class Zend_Locale_Format
             }
         }
 
-        iconv_set_encoding('internal_encoding', $oenc);
+        self::_setEncoding($oenc);
         return $result;
     }
 
@@ -51781,7 +55188,7 @@ class Zend_Locale_Format
 
         if (empty($options['date_format'])) {
             $options['format_type'] = 'iso';
-            $options['date_format'] = self::getDateFormat($options['locale']);
+            $options['date_format'] = self::getDateFormat(isset($options['locale']) ? $options['locale'] : null);
         }
         $options = self::_checkOptions($options) + self::$_options;
 
@@ -51823,8 +55230,9 @@ class Zend_Locale_Format
     /**
      * Returns the default time format for $locale.
      *
-     * @param  string|Zend_Locale  $locale  OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
+     * @param  string|Zend_Locale $locale OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
      * @return string  format
+     * @throws Zend_Locale_Exception
      */
     public static function getTimeFormat($locale = null)
     {
@@ -51838,7 +55246,7 @@ class Zend_Locale_Format
 
     /**
      * Returns an array with 'hour', 'minute', and 'second' elements extracted from $time
-     * according to the order described in $format.  For a format of 'H:m:s', and
+     * according to the order described in $format.  For a format of 'H:i:s', and
      * an input of 11:20:55, getTime() would return:
      * array ('hour' => 11, 'minute' => 20, 'second' => 55)
      * The optional $locale parameter may be used to help extract times from strings
@@ -51861,8 +55269,9 @@ class Zend_Locale_Format
     /**
      * Returns the default datetime format for $locale.
      *
-     * @param  string|Zend_Locale  $locale  OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
+     * @param  string|Zend_Locale $locale OPTIONAL Locale of $number, possibly in string form (e.g. 'de_AT')
      * @return string  format
+     * @throws Zend_Locale_Exception
      */
     public static function getDateTimeFormat($locale = null)
     {
@@ -51876,7 +55285,7 @@ class Zend_Locale_Format
 
     /**
      * Returns an array with 'year', 'month', 'day', 'hour', 'minute', and 'second' elements
-     * extracted from $datetime according to the order described in $format.  For a format of 'd.M.y H:m:s',
+     * extracted from $datetime according to the order described in $format.  For a format of 'd.M.y H:i:s',
      * and an input of 10.05.1985 11:20:55, getDateTime() would return:
      * array ('year' => 1985, 'month' => 5, 'day' => 10, 'hour' => 11, 'minute' => 20, 'second' => 55)
      * The optional $locale parameter may be used to help extract times from strings
@@ -51906,6 +55315,35 @@ class Zend_Locale_Format
     {
         return (@preg_match('/\pL/u', 'a')) ? true : false;
     }
+
+    /**
+     * Internal method to retrieve the current encoding via the ini setting
+     * default_charset for PHP >= 5.6 or iconv_get_encoding otherwise.
+     *
+     * @return string
+     */
+    protected static function _getEncoding()
+    {
+        $oenc = PHP_VERSION_ID < 50600
+            ? iconv_get_encoding('internal_encoding')
+            : ini_get('default_charset');
+
+    }
+
+    /**
+     * Internal method to set the encoding via the ini setting
+     * default_charset for PHP >= 5.6 or iconv_set_encoding otherwise.
+     *
+     * @return void
+     */
+    protected static function _setEncoding($enc)
+    {
+        if (PHP_VERSION_ID < 50600) {
+            iconv_set_encoding('internal_encoding', $enc);
+        } else {
+            ini_set('default_charset', $enc);
+        }
+    }
 }
 /**
  * Zend Framework
@@ -51922,9 +55360,9 @@ class Zend_Locale_Format
  *
  * @category   Zend
  * @package    Zend_Locale
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Math.php 21180 2010-02-23 22:00:29Z matthew $
+ * @version    $Id$
  */
 
 
@@ -51936,7 +55374,7 @@ class Zend_Locale_Format
  *
  * @category   Zend
  * @package    Zend_Locale
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 

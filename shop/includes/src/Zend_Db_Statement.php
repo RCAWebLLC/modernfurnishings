@@ -181,32 +181,23 @@ abstract class Zend_Db_Statement implements Zend_Db_Statement_Interface
         $d = $this->_adapter->quoteIdentifier('a');
         $d = $d[0];
 
-        // get the value used as an escaped delimited id quote,
-        // e.g. \" or "" or \`
-        $de = $this->_adapter->quoteIdentifier($d);
-        $de = substr($de, 1, 2);
-        $de = str_replace('\\', '\\\\', $de);
-
         // get the character for value quoting
         // this should be '
         $q = $this->_adapter->quote('a');
         $q = $q[0];
 
-        // get the value used as an escaped quote,
-        // e.g. \' or ''
-        $qe = $this->_adapter->quote($q);
-        $qe = substr($qe, 1, 2);
-        $qe = str_replace('\\', '\\\\', $qe);
-
         // get a version of the SQL statement with all quoted
         // values and delimited identifiers stripped out
-        // remove "foo\"bar"
-        $sql = preg_replace("/$q($qe|\\\\{2}|[^$q])*$q/", '', $sql);
-        // remove 'foo\'bar'
-        if (!empty($q)) {
-            $sql = preg_replace("/$q($qe|[^$q])*$q/", '', $sql);
+        // remove quoted identifiers
+        if (!empty($d)) {
+            $rx = "{$d}.*?(?<!(((?<![{$d}\\\\]){$d})|((?<!\\\\)\\\\))){$d}(?!{$d})";
+            $sql = preg_replace("/$rx/Us", '', $sql);
         }
-
+        // remove quoted values
+        if (!empty($q)) {
+            $rx = "{$q}.*?(?<!(((?<![{$q}\\\\]){$q})|((?<!\\\\)\\\\))){$q}(?!{$q})";
+            $sql = preg_replace("/$rx/Us", '', $sql);
+        }
         return $sql;
     }
 

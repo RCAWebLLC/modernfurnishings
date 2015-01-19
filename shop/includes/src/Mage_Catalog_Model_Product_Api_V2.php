@@ -10,18 +10,18 @@
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -33,76 +33,22 @@
  */
 class Mage_Catalog_Model_Product_Api_V2 extends Mage_Catalog_Model_Product_Api
 {
-
-    /**
-     * Retrieve list of products with basic info (id, sku, type, set, name)
-     *
-     * @param array $filters
-     * @param string|int $store
-     * @return array
-     */
-    public function items($filters = null, $store = null)
-    {
-        $collection = Mage::getModel('catalog/product')->getCollection()
-            ->addStoreFilter($this->_getStoreId($store))
-            ->addAttributeToSelect('name');
-
-        $preparedFilters = array();
-        if (isset($filters->filter)) {
-            foreach ($filters->filter as $_filter) {
-                $preparedFilters[$_filter->key] = $_filter->value;
-            }
-        }
-        if (isset($filters->complex_filter)) {
-            foreach ($filters->complex_filter as $_filter) {
-                $_value = $_filter->value;
-                $preparedFilters[$_filter->key] = array(
-                    $_value->key => $_value->value
-                );
-            }
-        }
-
-        if (!empty($preparedFilters)) {
-            try {
-                foreach ($preparedFilters as $field => $value) {
-                    if (isset($this->_filtersMap[$field])) {
-                        $field = $this->_filtersMap[$field];
-                    }
-
-                    $collection->addFieldToFilter($field, $value);
-                }
-            } catch (Mage_Core_Exception $e) {
-                $this->_fault('filters_invalid', $e->getMessage());
-            }
-        }
-
-        $result = array();
-
-        foreach ($collection as $product) {
-            $result[] = array(
-                'product_id' => $product->getId(),
-                'sku'        => $product->getSku(),
-                'name'       => $product->getName(),
-                'set'        => $product->getAttributeSetId(),
-                'type'       => $product->getTypeId(),
-                'category_ids' => $product->getCategoryIds(),
-                'website_ids'  => $product->getWebsiteIds()
-            );
-        }
-
-        return $result;
-    }
-
     /**
      * Retrieve product info
      *
      * @param int|string $productId
      * @param string|int $store
-     * @param stdClass $attributes
+     * @param stdClass   $attributes
+     * @param string     $identifierType
      * @return array
      */
     public function info($productId, $store = null, $attributes = null, $identifierType = null)
     {
+        // make sku flag case-insensitive
+        if (!empty($identifierType)) {
+            $identifierType = strtolower($identifierType);
+        }
+
         $product = $this->_getProduct($productId, $store, $identifierType);
 
         $result = array( // Basic product data
@@ -254,6 +200,41 @@ class Mage_Catalog_Model_Product_Api_V2 extends Mage_Catalog_Model_Product_Api
     }
 
     /**
+     * Update multiple products information at once
+     *
+     * @param array      $productIds
+     * @param array      $productData
+     * @param string|int $store
+     * @param string     $identifierType
+     * @return boolean
+     */
+    public function multiUpdate($productIds, $productData, $store = null, $identifierType = null)
+    {
+        if (count($productIds) != count($productData)) {
+            $this->_fault('multi_update_not_match');
+        }
+
+        $productData = (array)$productData;
+        $failMessages = array();
+
+        foreach ($productIds as $index => $productId) {
+            try {
+                $this->update($productId, $productData[$index], $store, $identifierType);
+            } catch (Mage_Api_Exception $e) {
+                $failMessages[] = sprintf("Product ID %d:\n %s", $productId, $e->getMessage());
+            }
+        }
+
+        if (empty($failMessages)) {
+            return true;
+        } else {
+            $this->_fault('partially_updated', implode("\n", $failMessages));
+        }
+
+        return false;
+    }
+
+    /**
      *  Set additional data before product saved
      *
      *  @param    Mage_Catalog_Model_Product $product
@@ -336,7 +317,7 @@ class Mage_Catalog_Model_Product_Api_V2 extends Mage_Catalog_Model_Product_Api
     }
 
     /**
-     * Update product special price
+     * Update product special priceim
      *
      * @param int|string $productId
      * @param float $specialPrice
@@ -356,24 +337,4 @@ class Mage_Catalog_Model_Product_Api_V2 extends Mage_Catalog_Model_Product_Api
         $obj->special_to_date = $toDate;
         return $this->update($productId, $obj, $store, $identifierType);
     }
-
-    /**
-     * Retrieve product special price
-     *
-     * @param int|string $productId
-     * @param string|int $store
-     * @return array
-     */
-    public function getSpecialPrice($productId, $store = null)
-    {
-        return $this->info($productId, $store, array(
-            'attributes' => array(
-                'special_price',
-                'special_from_date',
-                'special_to_date'
-                )
-            )
-        );
-    }
-
 }

@@ -11,18 +11,18 @@
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
  
 /**
@@ -86,66 +86,114 @@ class Mage_Catalog_Block_Breadcrumbs extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * Catalog flat helper
+ * Catalog flat abstract helper
  *
  * @category   Mage
  * @package    Mage_Catalog
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Catalog_Helper_Category_Flat extends Mage_Core_Helper_Abstract
+abstract class Mage_Catalog_Helper_Flat_Abstract extends Mage_Core_Helper_Abstract
 {
-    const XML_PATH_IS_ENABLED_FLAT_CATALOG_CATEGORY = 'catalog/frontend/flat_catalog_category';
-
     /**
-     * Return true if flat catalog is enabled, rebuileded and is not Admin
+     * Catalog Flat index process code
      *
-     * @param boolean $skipAdmin
-     * @return boolean
+     * @var null|string
      */
-    public function isEnabled($skipAdminCheck = false)
-    {
-        $flatFlag = Mage::getStoreConfigFlag(self::XML_PATH_IS_ENABLED_FLAT_CATALOG_CATEGORY);
-        $isFront = !Mage::app()->getStore()->isAdmin();
-        if ($skipAdminCheck === true) {
-            $isFront = true;
-        }
-
-        return (boolean) $flatFlag && $isFront;
-    }
+    protected $_indexerCode = null;
 
     /**
-     * Return true if catalog category flat data rebuilt
+     * Store catalog Flat index process instance
      *
-     * @return boolean
+     * @var Mage_Index_Model_Process|null
      */
-    public function isRebuilt()
-    {
-        return Mage::getResourceSingleton('catalog/category_flat')->isRebuilt();
-    }
+    protected $_process = null;
 
     /**
-     * Back Flat compatibility: check is built and enabled flat
+     * Flag for accessibility
+     *
+     * @var bool
+     */
+    protected $_isAccessible = null;
+
+    /**
+     * Flag for availability
+     *
+     * @var bool
+     */
+    protected $_isAvailable = null;
+
+    /**
+     * Check if Catalog Flat Data has been initialized
+     *
+     * @param null|bool|int|Mage_Core_Model_Store $store Store(id) for which the value is checked
+     * @return bool
+     */
+    abstract public function isBuilt($store = null);
+
+    /**
+     * Check if Catalog Category Flat Data is enabled
+     *
+     * @param mixed $deprecatedParam this parameter is deprecated and no longer in use
      *
      * @return bool
      */
-    public function isBuilt()
+    abstract public function isEnabled($deprecatedParam = false);
+
+    /**
+     * Check if Catalog Category Flat Data is available
+     * without lock check
+     *
+     * @return bool
+     */
+    public function isAccessible()
     {
-        return $this->isEnabled(true);
+        if (is_null($this->_isAccessible)) {
+            $this->_isAccessible = $this->isEnabled()
+                && $this->getProcess()->getStatus() != Mage_Index_Model_Process::STATUS_RUNNING;
+        }
+        return $this->_isAccessible;
+    }
+
+    /**
+     * Check if Catalog Category Flat Data is available for use
+     *
+     * @return bool
+     */
+    public function isAvailable()
+    {
+        if (is_null($this->_isAvailable)) {
+            $this->_isAvailable = $this->isAccessible() && !$this->getProcess()->isLocked();
+        }
+        return $this->_isAvailable;
+    }
+
+    /**
+     * Retrieve Catalog Flat index process
+     *
+     * @return Mage_Index_Model_Process
+     */
+    public function getProcess()
+    {
+        if (is_null($this->_process)) {
+            $this->_process = Mage::getModel('index/process')
+                ->load($this->_indexerCode, 'indexer_code');
+        }
+        return $this->_process;
     }
 }
 /**
@@ -159,18 +207,111 @@ class Mage_Catalog_Helper_Category_Flat extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * Catalog flat helper
+ *
+ * @category   Mage
+ * @package    Mage_Catalog
+ * @author     Magento Core Team <core@magentocommerce.com>
+ */
+class Mage_Catalog_Helper_Category_Flat extends Mage_Catalog_Helper_Flat_Abstract
+{
+    /**
+     * Catalog Category Flat Is Enabled Config
+     */
+    const XML_PATH_IS_ENABLED_FLAT_CATALOG_CATEGORY = 'catalog/frontend/flat_catalog_category';
+
+    /**
+     * Catalog Flat Category index process code
+     */
+    const CATALOG_CATEGORY_FLAT_PROCESS_CODE = 'catalog_category_flat';
+
+    /**
+     * Catalog Category Flat index process code
+     *
+     * @var string
+     */
+    protected $_indexerCode = self::CATALOG_CATEGORY_FLAT_PROCESS_CODE;
+
+    /**
+     * Store catalog Category Flat index process instance
+     *
+     * @var Mage_Index_Model_Process|null
+     */
+    protected $_process = null;
+
+    /**
+     * Check if Catalog Category Flat Data is enabled
+     *
+     * @param bool $skipAdminCheck this parameter is deprecated and no longer in use
+     *
+     * @return bool
+     */
+    public function isEnabled($skipAdminCheck = false)
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_IS_ENABLED_FLAT_CATALOG_CATEGORY);
+    }
+
+    /**
+     * Check if Catalog Category Flat Data has been initialized
+     *
+     * @param null|bool|int|Mage_Core_Model_Store $store Store(id) for which the value is checked
+     * @return bool
+     */
+    public function isBuilt($store = null)
+    {
+        return Mage::getResourceSingleton('catalog/category_flat')->isBuilt($store);
+    }
+
+    /**
+     * Check if Catalog Category Flat Data has been initialized
+     *
+     * @deprecated after 1.7.0.0 use Mage_Catalog_Helper_Category_Flat::isBuilt() instead
+     *
+     * @return bool
+     */
+    public function isRebuilt()
+    {
+        return $this->isBuilt();
+    }
+}
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Mage
+ * @package     Mage_Catalog
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 class Mage_Catalog_Helper_Output extends Mage_Core_Helper_Abstract
@@ -331,20 +472,19 @@ class Mage_Catalog_Helper_Output extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
 
 /**
  * Catalog Product Flat Helper
@@ -353,33 +493,48 @@ class Mage_Catalog_Helper_Output extends Mage_Core_Helper_Abstract
  * @package    Mage_Catalog
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
+class Mage_Catalog_Helper_Product_Flat extends Mage_Catalog_Helper_Flat_Abstract
 {
+    /**
+     * Catalog Product Flat Config
+     */
     const XML_PATH_USE_PRODUCT_FLAT          = 'catalog/frontend/flat_catalog_product';
     const XML_NODE_ADD_FILTERABLE_ATTRIBUTES = 'global/catalog/product/flat/add_filterable_attributes';
     const XML_NODE_ADD_CHILD_DATA            = 'global/catalog/product/flat/add_child_data';
 
     /**
-     * Catalog Flat Product index process code
-     * 
-     * @var string
+     * Path for flat flag model
      */
-    const CATALOG_FLAT_PROCESS_CODE = 'catalog_product_flat';
-    
-    /**
-     * Catalog Product Flat index process
-     * 
-     * @var Mage_Index_Model_Process
-     */
-    protected $_process;
+    const XML_PATH_FLAT_FLAG                 = 'global/catalog/product/flat/flag/model';
 
     /**
-     * Catalog Product Flat status by store
-     * 
+     * Catalog Flat Product index process code
+     */
+    const CATALOG_FLAT_PROCESS_CODE = 'catalog_product_flat';
+
+    /**
+     * Catalog Product Flat index process code
+     *
+     * @var string
+     */
+    protected $_indexerCode = self::CATALOG_FLAT_PROCESS_CODE;
+
+    /**
+     * Catalog Product Flat index process instance
+     *
+     * @var Mage_Index_Model_Process|null
+     */
+    protected $_process = null;
+
+    /**
+     * Store flags which defines if Catalog Product Flat functionality is enabled
+     *
+     * @deprecated after 1.7.0.0
+     *
      * @var array
      */
-    protected $_isEnabled = array();    
-    
+    protected $_isEnabled = array();
+
     /**
      * Catalog Product Flat Flag object
      *
@@ -395,43 +550,52 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
     public function getFlag()
     {
         if (is_null($this->_flagObject)) {
-            $this->_flagObject = Mage::getSingleton('catalog/product_flat_flag')
+            $className = (string)Mage::getConfig()->getNode(self::XML_PATH_FLAT_FLAG);
+            $this->_flagObject = Mage::getSingleton($className)
                 ->loadSelf();
         }
         return $this->_flagObject;
     }
 
     /**
-     * Check is builded Catalog Product Flat Data
+     * Check Catalog Product Flat functionality is enabled
      *
-     * @return bool
-     */
-    public function isBuilt()
-    {
-        return $this->getFlag()->getIsBuilt();
-    }
-
-    /**
-     * Check is enable catalog product for store
+     * @param int|string|null|Mage_Core_Model_Store $store this parameter is deprecated and no longer in use
      *
-     * @param mixed $store
      * @return bool
      */
     public function isEnabled($store = null)
     {
-        $store = Mage::app()->getStore($store);
-        if ($store->isAdmin()) {
-            return false;
+        return Mage::getStoreConfigFlag(self::XML_PATH_USE_PRODUCT_FLAT);
+    }
+
+    /**
+     * Check if Catalog Product Flat Data has been initialized
+     *
+     * @param null|bool|int|Mage_Core_Model_Store $store Store(id) for which the value is checked
+     * @return bool
+     */
+    public function isBuilt($store = null)
+    {
+        if ($store !== null) {
+            return $this->getFlag()->isStoreBuilt(Mage::app()->getStore($store)->getId());
         }
-        
-        if (!isset($this->_isEnabled[$store->getId()])) {
-            if (Mage::getStoreConfigFlag(self::XML_PATH_USE_PRODUCT_FLAT, $store)) {
-                $this->_isEnabled[$store->getId()] = $this->getProcess()->getStatus() == Mage_Index_Model_Process::STATUS_PENDING;
-            } else {
-                $this->_isEnabled[$store->getId()] = false;
-            }
+        return $this->getFlag()->getIsBuilt();
+    }
+
+    /**
+     * Check if Catalog Product Flat Data has been initialized for all stores
+     *
+     * @return bool
+     */
+    public function isBuiltAllStores()
+    {
+        $isBuildAll = true;
+        foreach(Mage::app()->getStores(false) as $store) {
+            /** @var $store Mage_Core_Model_Store */
+            $isBuildAll = $isBuildAll && $this->isBuilt($store->getId());
         }
-        return $this->_isEnabled[$store->getId()];        
+        return $isBuildAll;
     }
 
     /**
@@ -453,20 +617,6 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
     {
         return intval(Mage::getConfig()->getNode(self::XML_NODE_ADD_CHILD_DATA));
     }
-
-    /**
-     * Retrive Catalog Product Flat index process
-     * 
-     * @return Mage_Index_Model_Process
-     */
-    public function getProcess()
-    {
-        if (is_null($this->_process)) {
-            $this->_process = Mage::getModel('index/process')
-                ->load(self::CATALOG_FLAT_PROCESS_CODE, 'indexer_code');
-        }
-        return $this->_process;
-    }
 }
 /**
  * Magento
@@ -479,18 +629,18 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -839,18 +989,18 @@ class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -890,7 +1040,8 @@ class Mage_Catalog_Model_Design extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        if (Mage::helper('catalog/category_flat')->isEnabled()) {
+        // If Flat Data enabled then use it but only on frontend
+        if (Mage::helper('catalog/category_flat')->isAvailable() && !Mage::app()->getStore()->isAdmin()) {
             $this->_applyDesign($object, $calledFrom);
         } else {
             $this->_inheritDesign($object, $calledFrom);
@@ -1243,28 +1394,29 @@ class Mage_Catalog_Model_Design extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog product model
  *
  * @method Mage_Catalog_Model_Resource_Product getResource()
- * @method Mage_Catalog_Model_Resource_Product _getResource()
+ * @method Mage_Catalog_Model_Product setHasError(bool $value)
+ * @method null|bool getHasError()
  *
- * @category   Mage
- * @package    Mage_Catalog
+ * @category    Mage
+ * @package     Mage_Catalog
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
@@ -1398,7 +1550,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     public function getUrlModel()
     {
         if ($this->_urlModel === null) {
-            $this->_urlModel = Mage::getSingleton('catalog/product_url');
+            $this->_urlModel = Mage::getSingleton('catalog/factory')->getProductUrlInstance();
         }
         return $this->_urlModel;
     }
@@ -1778,12 +1930,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
         $this->getOptionInstance()->setProduct($this)
             ->saveOptions();
 
-        $result = parent::_afterSave();
-
-        Mage::getSingleton('index/indexer')->processEntityAction(
-            $this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE
-        );
-        return $result;
+        return parent::_afterSave();
     }
 
     /**
@@ -1796,9 +1943,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     {
         $this->_protectFromNonAdmin();
         $this->cleanCache();
-        Mage::getSingleton('index/indexer')->logEvent(
-            $this, self::ENTITY, Mage_Index_Model_Event::TYPE_DELETE
-        );
+
         return parent::_beforeDelete();
     }
 
@@ -1810,9 +1955,11 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     protected function _afterDeleteCommit()
     {
         parent::_afterDeleteCommit();
-        Mage::getSingleton('index/indexer')->indexEvents(
-            self::ENTITY, Mage_Index_Model_Event::TYPE_DELETE
-        );
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+
+        $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_DELETE);
     }
 
     /**
@@ -2558,7 +2705,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     public function getIsSalable()
     {
         $productType = $this->getTypeInstance(true);
-        if (is_callable(array($productType, 'getIsSalable'))) {
+        if (method_exists($productType, 'getIsSalable')) {
             return $productType->getIsSalable($this);
         }
         if ($this->hasData('is_salable')) {
@@ -2767,6 +2914,9 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
      */
     public function getRequestPath()
     {
+        if (!$this->_getData('request_path')) {
+            $this->getProductUrl();
+        }
         return $this->_getData('request_path');
     }
 
@@ -3147,7 +3297,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
         $products = $this->_getResource()->getProductsSku($productIds);
         if (count($products)) {
             foreach ($products as $product) {
-                if (empty($product['sku'])) {
+                if (!strlen($product['sku'])) {
                     return false;
                 }
             }
@@ -3169,7 +3319,12 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
         /* add product custom options data */
         $customOptions = $buyRequest->getOptions();
         if (is_array($customOptions)) {
-            $options->setOptions(array_diff($buyRequest->getOptions(), array('')));
+            foreach ($customOptions as $key => $value) {
+                if ($value === '') {
+                    unset($customOptions[$key]);
+                }
+            }
+            $options->setOptions($customOptions);
         }
 
         /* add product type selected options data */
@@ -3290,6 +3445,22 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     {
         return $this->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED;
     }
+
+    /**
+     * Callback function which called after transaction commit in resource model
+     *
+     * @return Mage_Catalog_Model_Product
+     */
+    public function afterCommitCallback()
+    {
+        parent::afterCommitCallback();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+        $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
+
+        return $this;
+    }
 }
 /**
  * Magento
@@ -3302,18 +3473,18 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -3651,18 +3822,18 @@ class Mage_Catalog_Model_Product_Status extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -3960,18 +4131,18 @@ class Mage_Catalog_Model_Product_Visibility extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -4659,18 +4830,18 @@ abstract class Mage_Catalog_Model_Resource_Abstract extends Mage_Eav_Model_Entit
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Index
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -4934,18 +5105,18 @@ abstract class Mage_Index_Model_Resource_Abstract extends Mage_Core_Model_Resour
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -4958,6 +5129,11 @@ abstract class Mage_Index_Model_Resource_Abstract extends Mage_Core_Model_Resour
  */
 class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resource_Abstract
 {
+    /**
+     * Amount of categories to be processed in batch
+     */
+    const CATEGORY_BATCH = 500;
+
     /**
      * Store id
      *
@@ -5008,9 +5184,18 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
     protected $_inactiveCategoryIds      = null;
 
     /**
-     * Is rebuild
+     * Store flag which defines if Catalog Category Flat Data has been initialized
      *
-     * @var boolean
+     * @var array
+     */
+    protected $_isBuilt                  = array();
+
+    /**
+     * Store flag which defines if Catalog Category Flat Data has been initialized
+     *
+     * @deprecated after 1.7.0.0 use $this->_isBuilt instead
+     *
+     * @var bool|null
      */
     protected $_isRebuilt                = null;
 
@@ -5027,6 +5212,24 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
      * @var bool
      */
     protected $_allowTableChanges        = true;
+
+    /**
+     * Factory instance
+     *
+     * @var Mage_Catalog_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * Initialize factory instance
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('catalog/factory');
+        parent::__construct();
+    }
 
     /**
      * Resource initializations
@@ -5106,7 +5309,7 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
     /**
      * Add inactive categories ids
      *
-     * @param unknown_type $ids
+     * @param array $ids
      * @return Mage_Catalog_Model_Resource_Category_Flat
      */
     public function addInactiveCategoryIds($ids)
@@ -5150,9 +5353,10 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
      * @param Mage_Catalog_Model_Category|int $parentNode
      * @param integer $recursionLevel
      * @param integer $storeId
+     * @param bool $onlyActive
      * @return Mage_Catalog_Model_Resource_Category_Flat
      */
-    protected function _loadNodes($parentNode = null, $recursionLevel = 0, $storeId = 0)
+    protected function _loadNodes($parentNode = null, $recursionLevel = 0, $storeId = 0, $onlyActive = true)
     {
         $_conn = $this->_getReadAdapter();
         $startLevel = 1;
@@ -5179,17 +5383,17 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
                     new Zend_Db_Expr('main_table.' . $_conn->quoteIdentifier('path')),
                     'is_active',
                     'is_anchor'))
-            ->joinLeft(
-                array('url_rewrite'=>$this->getTable('core/url_rewrite')),
-                'url_rewrite.category_id=main_table.entity_id AND url_rewrite.is_system=1 AND ' .
-                $_conn->quoteInto(
-                'url_rewrite.product_id IS NULL AND url_rewrite.store_id=? AND ',
-                $storeId) .
-                $_conn->prepareSqlCondition('url_rewrite.id_path', array('like' => 'category/%')),
-                array('request_path' => 'url_rewrite.request_path'))
-            ->where('main_table.is_active = ?', '1')
+
             ->where('main_table.include_in_menu = ?', '1')
             ->order('main_table.position');
+
+        if ($onlyActive) {
+            $select->where('main_table.is_active = ?', '1');
+        }
+
+        /** @var $urlRewrite Mage_Catalog_Helper_Category_Url_Rewrite_Interface */
+        $urlRewrite = $this->_factory->getCategoryUrlRewriteHelper();
+        $urlRewrite->joinTableToSelect($select, $storeId);
 
         if ($parentPath) {
             $select->where($_conn->quoteInto("main_table.path like ?", "$parentPath/%"));
@@ -5351,35 +5555,36 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
     }
 
     /**
-     * Check if category flat data is rebuilt
+     * Check if Catalog Category Flat Data has been initialized
      *
+     * @param bool|int|\Mage_Core_Model_Store|null $storeView Store(id) for which the value is checked
      * @return bool
      */
-    public function isRebuilt()
+    public function isBuilt($storeView = null)
     {
-        if ($this->_isRebuilt === null) {
-            $defaultStoreView = Mage::app()->getDefaultStoreView();
-            if ($defaultStoreView === null) {
-                $defaultStoreId = Mage_Core_Model_App::ADMIN_STORE_ID;
-            } else {
-                $defaultStoreId = $defaultStoreView->getId();
-            }
+        $storeView = is_null($storeView) ? Mage::app()->getDefaultStoreView() : Mage::app()->getStore($storeView);
+        if ($storeView === null) {
+            $storeId = Mage_Core_Model_App::ADMIN_STORE_ID;
+        } else {
+            $storeId = $storeView->getId();
+        }
+        if (!isset($this->_isBuilt[$storeId])) {
             $select = $this->_getReadAdapter()->select()
-                ->from($this->getMainStoreTable($defaultStoreId), 'entity_id')
+                ->from($this->getMainStoreTable($storeId), 'entity_id')
                 ->limit(1);
             try {
-                $this->_isRebuilt = (bool) $this->_getReadAdapter()->fetchOne($select);
+                $this->_isBuilt[$storeId] = (bool)$this->_getReadAdapter()->fetchOne($select);
             } catch (Exception $e) {
-                $this->_isRebuilt = false;
+                $this->_isBuilt[$storeId] = false;
             }
         }
-        return $this->_isRebuilt;
+        return $this->_isBuilt[$storeId];
     }
 
     /**
      * Rebuild flat data from eav
      *
-     * @param unknown_type $stores
+     * @param array|null $stores
      * @return Mage_Catalog_Model_Resource_Category_Flat
      */
     public function rebuild($stores = null)
@@ -5413,7 +5618,7 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
                     $categoriesIds[$store->getRootCategoryId()][] = $category['entity_id'];
                 }
             }
-            $categoriesIdsChunks = array_chunk($categoriesIds[$store->getRootCategoryId()], 500);
+            $categoriesIdsChunks = array_chunk($categoriesIds[$store->getRootCategoryId()], self::CATEGORY_BATCH);
             foreach ($categoriesIdsChunks as $categoriesIdsChunk) {
                 $attributesData = $this->_getAttributeValues($categoriesIdsChunk, $store->getId());
                 $data = array();
@@ -5731,10 +5936,10 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
      *
      * @param string $type
      * @param array $entityIds
-     * @param integer $sid
+     * @param integer $storeId
      * @return array
      */
-    protected function _getAttributeTypeValues($type, $entityIds, $sid)
+    protected function _getAttributeTypeValues($type, $entityIds, $storeId)
     {
         $select = $this->_getWriteAdapter()->select()
             ->from(
@@ -5743,14 +5948,16 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
             )
             ->joinLeft(
                 array('store' => $this->getTable(array('catalog/category', $type))),
-                'store.entity_id = def.entity_id AND store.attribute_id = def.attribute_id AND store.store_id = '.$sid,
-                array('value' => $this->_getWriteAdapter()->getCheckSql('store.value_id > 0',
+                'store.entity_id = def.entity_id AND store.attribute_id = def.attribute_id '
+                    . 'AND store.store_id = ' . $storeId,
+                array('value' => $this->_getWriteAdapter()->getCheckSql(
+                    'store.value_id > 0',
                     $this->_getWriteAdapter()->quoteIdentifier('store.value'),
-                    $this->_getWriteAdapter()->quoteIdentifier('def.value'))
-                )
+                    $this->_getWriteAdapter()->quoteIdentifier('def.value')
+                ))
             )
             ->where('def.entity_id IN (?)', $entityIds)
-            ->where('def.store_id = ?', Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID);
+            ->where('def.store_id IN (?)', array(Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID, $storeId));
         return $this->_getWriteAdapter()->fetchAll($select);
     }
 
@@ -6105,30 +6312,26 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
      * Return parent categories of category
      *
      * @param Mage_Catalog_Model_Category $category
-     * @param unknown_type $isActive
+     * @param bool $isActive
      * @return array
      */
     public function getParentCategories($category, $isActive = true)
     {
         $categories = array();
-        $read = $this->_getReadAdapter();
-        $select = $read->select()
+        $select = $this->_getReadAdapter()->select()
             ->from(
                 array('main_table' => $this->getMainStoreTable($category->getStoreId())),
                 array('main_table.entity_id', 'main_table.name')
             )
-            ->joinLeft(
-                array('url_rewrite'=>$this->getTable('core/url_rewrite')),
-                'url_rewrite.category_id=main_table.entity_id AND url_rewrite.is_system=1 AND '.
-                $read->quoteInto('url_rewrite.product_id IS NULL AND url_rewrite.store_id=? AND ',
-                $category->getStoreId() ).
-                $read->prepareSqlCondition('url_rewrite.id_path', array('like' => 'category/%')),
-                array('request_path' => 'url_rewrite.request_path'))
             ->where('main_table.entity_id IN (?)', array_reverse(explode(',', $category->getPathInStore())));
         if ($isActive) {
             $select->where('main_table.is_active = ?', '1');
         }
         $select->order('main_table.path ASC');
+
+        $urlRewrite = $this->_factory->getCategoryUrlRewriteHelper();
+        $urlRewrite->joinTableToSelect($select, $category->getStoreId());
+
         $result = $this->_getReadAdapter()->fetchAll($select);
         foreach ($result as $row) {
             $row['id'] = $row['entity_id'];
@@ -6171,6 +6374,17 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
     }
 
     /**
+     * Return children categories of category with inactive
+     *
+     * @param Mage_Catalog_Model_Category $category
+     * @return array
+     */
+    public function getChildrenCategoriesWithInactive($category)
+    {
+        return $this->_loadNodes($category, 1, $category->getStoreId(), false);
+    }
+
+    /**
      * Check is category in list of store categories
      *
      * @param Mage_Catalog_Model_Category $category
@@ -6186,8 +6400,8 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
      * Return children ids of category
      *
      * @param Mage_Catalog_Model_Category $category
-     * @param unknown_type $recursive
-     * @param unknown_type $isActive
+     * @param bool $recursive
+     * @param bool $isActive
      * @return array
      */
     public function getChildren($category, $recursive = true, $isActive = true)
@@ -6348,6 +6562,7 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
     /**
      * Transactional rebuild flat data from eav
      *
+     * @throws Exception
      * @return Mage_Catalog_Model_Resource_Category_Flat
      */
     public function reindexAll()
@@ -6373,6 +6588,18 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
         }
         return $this;
     }
+
+    /**
+     * Check if Catalog Category Flat Data has been initialized
+     *
+     * @deprecated use Mage_Catalog_Model_Resource_Category_Flat::isBuilt() instead
+     *
+     * @return bool
+     */
+    public function isRebuilt()
+    {
+        return $this->isBuilt();
+    }
 }
 /**
  * Magento
@@ -6385,18 +6612,18 @@ class Mage_Catalog_Model_Resource_Category_Flat extends Mage_Index_Model_Resourc
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -7405,8 +7632,6 @@ abstract class Mage_Eav_Model_Entity_Collection_Abstract extends Varien_Data_Col
      */
     public function _loadEntities($printQuery = false, $logQuery = false)
     {
-        $entity = $this->getEntity();
-
         if ($this->_pageSize) {
             $this->getSelect()->limitPage($this->getCurPage(), $this->_pageSize);
         }
@@ -7887,18 +8112,18 @@ abstract class Mage_Eav_Model_Entity_Collection_Abstract extends Varien_Data_Col
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -8106,18 +8331,18 @@ class Mage_Catalog_Model_Resource_Collection_Abstract extends Mage_Eav_Model_Ent
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -8257,18 +8482,18 @@ class Mage_Catalog_Model_Resource_Config extends Mage_Core_Model_Resource_Db_Abs
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -8397,9 +8622,6 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
          */
         Mage::getSingleton('eav/config')->clear();
 
-        Mage::getSingleton('index/indexer')->processEntityAction(
-            $this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE
-        );
         return parent::_afterSave();
     }
 
@@ -8634,6 +8856,22 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
 
         return 'source';
     }
+
+    /**
+     * Callback function which called after transaction commit in resource model
+     *
+     * @return Mage_Catalog_Model_Resource_Eav_Attribute
+     */
+    public function afterCommitCallback()
+    {
+        parent::afterCommitCallback();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+        $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
+
+        return $this;
+    }
 }
 /**
  * Magento
@@ -8646,18 +8884,18 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -9350,18 +9588,18 @@ class Mage_Catalog_Model_Resource_Product extends Mage_Catalog_Model_Resource_Ab
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -9549,6 +9787,25 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
     protected $_catalogPreparePriceSelect = null;
 
     /**
+     * Catalog factory instance
+     *
+     * @var Mage_Catalog_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * Initialize factory
+     *
+     * @param Mage_Core_Model_Resource_Abstract $resource
+     * @param array $args
+     */
+    public function __construct($resource = null, array $args = array())
+    {
+        parent::__construct($resource);
+        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('catalog/factory');
+    }
+
+    /**
      * Get cloned Select after dispatching 'catalog_prepare_price_select' event
      *
      * @return Varien_Db_Select
@@ -9644,20 +9901,22 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
 
     /**
      * Retrieve is flat enabled flag
-     * Return alvays false if magento run admin
+     * Return always false if magento run admin
      *
      * @return bool
      */
     public function isEnabledFlat()
     {
+        // Flat Data can be used only on frontend
         if (Mage::app()->getStore()->isAdmin()) {
             return false;
         }
-        if (!isset($this->_flatEnabled[$this->getStoreId()])) {
-            $this->_flatEnabled[$this->getStoreId()] = $this->getFlatHelper()
-                ->isEnabled($this->getStoreId());
+        $storeId = $this->getStoreId();
+        if (!isset($this->_flatEnabled[$storeId])) {
+            $flatHelper = $this->getFlatHelper();
+            $this->_flatEnabled[$storeId] = $flatHelper->isAvailable() && $flatHelper->isBuilt($storeId);
         }
-        return $this->_flatEnabled[$this->getStoreId()];
+        return $this->_flatEnabled[$storeId];
     }
 
     /**
@@ -9860,8 +10119,6 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
            $this->_addUrlRewrite($this->_urlRewriteCategory);
         }
 
-        $this->_prepareUrlDataObject();
-
         if (count($this) > 0) {
             Mage::dispatchEvent('catalog_product_collection_load_after', array('collection' => $this));
         }
@@ -9879,6 +10136,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
      * Prepare Url Data object
      *
      * @return Mage_Catalog_Model_Resource_Product_Collection
+     * @deprecated after 1.7.0.2
      */
     protected function _prepareUrlDataObject()
     {
@@ -9993,7 +10251,6 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $store = Mage::app()->getStore($store);
 
         if (!$store->isAdmin()) {
-            $this->setStoreId($store);
             $this->_productLimitationFilters['store_id'] = $store->getId();
             $this->_applyProductLimitations();
         }
@@ -10227,6 +10484,8 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $countSelect = (is_null($select)) ?
             $this->_getClearSelect() :
             $this->_buildClearSelect($select);
+        // Clear GROUP condition for count method
+        $countSelect->reset(Zend_Db_Select::GROUP);
         $countSelect->columns('COUNT(DISTINCT e.entity_id)');
         if ($resetLeftJoins) {
             $countSelect->resetJoinLeft();
@@ -10245,9 +10504,11 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $priceExpression = $this->getPriceExpression($select) . ' ' . $this->getAdditionalPriceExpression($select);
         $sqlEndPart = ') * ' . $this->getCurrencyRate() . ', 2)';
         $select = $this->_getSelectCountSql($select, false);
-        $select->columns('ROUND(MAX(' . $priceExpression . $sqlEndPart);
-        $select->columns('ROUND(MIN(' . $priceExpression . $sqlEndPart);
-        $select->columns($this->getConnection()->getStandardDeviationSql('ROUND((' . $priceExpression . $sqlEndPart));
+        $select->columns(array(
+            'max' => 'ROUND(MAX(' . $priceExpression . $sqlEndPart,
+            'min' => 'ROUND(MIN(' . $priceExpression . $sqlEndPart,
+            'std' => $this->getConnection()->getStandardDeviationSql('ROUND((' . $priceExpression . $sqlEndPart)
+        ));
         $select->where($this->getPriceExpression($select) . ' IS NOT NULL');
         $row = $this->getConnection()->fetchRow($select, $this->_bindParams, Zend_Db::FETCH_NUM);
         $this->_pricesCount = (int)$row[0];
@@ -10431,6 +10692,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
     /**
      * Joins url rewrite rules to collection
      *
+     * @deprecated after 1.7.0.2. Method is not used anywhere in the code.
      * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     public function joinUrlRewrite()
@@ -10450,7 +10712,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
      * Add URL rewrites data to product
      * If collection loadded - run processing else set flag
      *
-     * @param int $categoryId
+     * @param int|string $categoryId
      * @return Mage_Catalog_Model_Resource_Product_Collection
      */
     public function addUrlRewrite($categoryId = '')
@@ -10493,15 +10755,10 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
                 return;
             }
 
-            $select = $this->getConnection()->select()
-                ->from($this->getTable('core/url_rewrite'), array('product_id', 'request_path'))
-                ->where('store_id = ?', Mage::app()->getStore()->getId())
-                ->where('is_system = ?', 1)
-                ->where('category_id = ? OR category_id IS NULL', $this->_urlRewriteCategory)
-                ->where('product_id IN(?)', $productIds)
-                ->order('category_id ' . self::SORT_ORDER_DESC); // more priority is data with category id
-            $urlRewrites = array();
+            $select = $this->_factory->getProductUrlRewriteHelper()
+                ->getTableSelect($productIds, $this->_urlRewriteCategory, Mage::app()->getStore()->getId());
 
+            $urlRewrites = array();
             foreach ($this->getConnection()->fetchAll($select) as $row) {
                 if (!isset($urlRewrites[$row['product_id']])) {
                     $urlRewrites[$row['product_id']] = $row['request_path'];
@@ -10519,6 +10776,9 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         }
 
         foreach($this->getItems() as $item) {
+            if (empty($this->_urlRewriteCategory)) {
+                $item->setDoNotUseCategoryId(true);
+            }
             if (isset($urlRewrites[$item->getEntityId()])) {
                 $item->setData('request_path', $urlRewrites[$item->getEntityId()]);
             } else {
@@ -11156,6 +11416,12 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
      */
     protected function _applyProductLimitations()
     {
+        Mage::dispatchEvent('catalog_product_collection_apply_limitations_before', array(
+            'collection'  => $this,
+            'category_id' => isset($this->_productLimitationFilters['category_id'])
+                ? $this->_productLimitationFilters['category_id']
+                : null,
+        ));
         $this->_prepareProductLimitationFilters();
         $this->_productLimitationJoinWebsite();
         $this->_productLimitationJoinPrice();
@@ -11173,8 +11439,11 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
             $conditions[] = $this->getConnection()
                 ->quoteInto('cat_index.visibility IN(?)', $filters['visibility']);
         }
-        $conditions[] = $this->getConnection()
-            ->quoteInto('cat_index.category_id=?', $filters['category_id']);
+
+        if (!$this->getFlag('disable_root_category_filter')) {
+            $conditions[] = $this->getConnection()->quoteInto('cat_index.category_id = ?', $filters['category_id']);
+        }
+
         if (isset($filters['category_is_anchor'])) {
             $conditions[] = $this->getConnection()
                 ->quoteInto('cat_index.is_parent=?', $filters['category_is_anchor']);
@@ -11197,7 +11466,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         $this->_productLimitationJoinStore();
 
         Mage::dispatchEvent('catalog_product_collection_apply_limitations_after', array(
-            'collection'    => $this
+            'collection' => $this
         ));
 
         return $this;

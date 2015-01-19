@@ -11,18 +11,18 @@
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -236,7 +236,13 @@ abstract class Mage_Core_Helper_Abstract
      */
     public function removeTags($html)
     {
-        $html = preg_replace("# <(?![/a-z]) | (?<=\s)>(?![a-z]) #exi", "htmlentities('$0')", $html);
+        $html = preg_replace_callback(
+            "# <(?![/a-z]) | (?<=\s)>(?![a-z]) #xi",
+            function ($matches) {
+                return htmlentities($matches[0]);
+            },
+            $html
+        );
         $html =  strip_tags($html);
         return htmlspecialchars_decode($html);
     }
@@ -368,6 +374,21 @@ abstract class Mage_Core_Helper_Abstract
     }
 
     /**
+     *  base64_decode() and escape quotes in url
+     *
+     *  @param    string $url
+     *  @return   string
+     */
+    public function urlDecodeAndEscape($url)
+    {
+        $url = $this->urlDecode($url);
+        $quote = array ('\'', '"');
+        $replace = array('%27', '%22');
+        $url = str_replace($quote, $replace, $url);
+        return $url;
+    }
+
+    /**
      *   Translate array
      *
      *  @param    array $arr
@@ -397,18 +418,18 @@ abstract class Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_CatalogSearch
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -418,7 +439,14 @@ abstract class Mage_Core_Helper_Abstract
  */
 class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * Query variable name
+     */
     const QUERY_VAR_NAME = 'q';
+
+    /*
+     * Maximum query length
+     */
     const MAX_QUERY_LEN  = 200;
 
     /**
@@ -553,7 +581,7 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return $this->_getUrl('catalogsearch/result', array(
             '_query' => array(self::QUERY_VAR_NAME => $query),
-            '_secure' => Mage::app()->getFrontController()->getRequest()->isSecure()
+            '_secure' => $this->_getApp()->getFrontController()->getRequest()->isSecure()
         ));
     }
 
@@ -565,8 +593,18 @@ class Mage_CatalogSearch_Helper_Data extends Mage_Core_Helper_Abstract
     public function getSuggestUrl()
     {
         return $this->_getUrl('catalogsearch/ajax/suggest', array(
-            '_secure' => Mage::app()->getFrontController()->getRequest()->isSecure()
+            '_secure' => $this->_getApp()->getStore()->isCurrentlySecure()
         ));
+    }
+
+    /**
+     * Get App
+     *
+     * @return Mage_Core_Model_App
+     */
+    protected function _getApp()
+    {
+        return Mage::app();
     }
 
     /**
@@ -1048,7 +1086,7 @@ class Varien_Object implements ArrayAccess
     public function unsetOldData($key=null)
     {
         if (is_null($key)) {
-            foreach ($this->_syncFieldsMap as $key => $newFieldName) {
+            foreach ($this->_oldFieldsMap as $key => $newFieldName) {
                 unset($this->_data[$key]);
             }
         } else {
@@ -1118,7 +1156,8 @@ class Varien_Object implements ArrayAccess
                 return null;
             } elseif (is_string($value)) {
                 $arr = explode("\n", $value);
-                return (isset($arr[$index]) && (!empty($arr[$index]) || strlen($arr[$index]) > 0)) ? $arr[$index] : null;
+                return (isset($arr[$index]) && (!empty($arr[$index]) || strlen($arr[$index]) > 0))
+                    ? $arr[$index] : null;
             } elseif ($value instanceof Varien_Object) {
                 return $value->getData($index);
             }
@@ -1665,20 +1704,19 @@ class Varien_Object implements ArrayAccess
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
 
 /**
  * Base Content Block class
@@ -1688,7 +1726,7 @@ class Varien_Object implements ArrayAccess
  *
  * @category   Mage
  * @package    Mage_Core
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Core_Block_Abstract extends Varien_Object
 {
@@ -1696,6 +1734,12 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      * Cache group Tag
      */
     const CACHE_GROUP = 'block_html';
+
+    /**
+     * Cache tags data key
+     */
+    const CACHE_TAGS_DATA_KEY = 'cache_tags';
+
     /**
      * Block name in layout
      *
@@ -1736,28 +1780,28 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      *
      * @var array
      */
-    protected $_children                    = array();
+    protected $_children = array();
 
     /**
      * Sorted children list
      *
      * @var array
      */
-    protected $_sortedChildren              = array();
+    protected $_sortedChildren = array();
 
     /**
      * Children blocks HTML cache array
      *
      * @var array
      */
-    protected $_childrenHtmlCache           = array();
+    protected $_childrenHtmlCache = array();
 
     /**
      * Arbitrary groups of child blocks
      *
      * @var array
      */
-    protected $_childGroups                 = array();
+    protected $_childGroups = array();
 
     /**
      * Request object
@@ -1771,14 +1815,14 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      *
      * @var Mage_Core_Block_Messages
      */
-    protected $_messagesBlock               = null;
+    protected $_messagesBlock = null;
 
     /**
      * Whether this block was not explicitly named
      *
      * @var boolean
      */
-    protected $_isAnonymous                 = false;
+    protected $_isAnonymous = false;
 
     /**
      * Parent block
@@ -1819,6 +1863,36 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
     protected $_sortInstructions = array();
 
     /**
+     * Factory instance
+     *
+     * @var Mage_Core_Model_Factory
+     */
+    protected $_factory;
+
+    /**
+     * Application instance
+     *
+     * @var Mage_Core_Model_App
+     */
+    protected $_app;
+
+    /**
+     * Initialize factory instance
+     *
+     * @param array $args
+     */
+    public function __construct(array $args = array())
+    {
+        if (!empty($args['core_factory']) && ($args['core_factory'] instanceof Mage_Core_Model_Factory)) {
+            $this->_factory = $args['core_factory'];
+        }
+        if (!empty($args['app']) && ($args['app'] instanceof Mage_Core_Model_App)) {
+            $this->_app = $args['app'];
+        }
+        parent::__construct($args);
+    }
+
+    /**
      * Internal constructor, that is called from real constructor
      *
      * Please override this one instead of overriding real __construct constructor
@@ -1832,6 +1906,26 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
     }
 
     /**
+     * Retrieve factory instance
+     *
+     * @return Mage_Core_Model_Factory
+     */
+    protected function _getFactory()
+    {
+        return is_null($this->_factory) ? Mage::getSingleton('core/factory') : $this->_factory;
+    }
+
+    /**
+     * Retrieve application instance
+     *
+     * @return Mage_Core_Model_App
+     */
+    protected function _getApp()
+    {
+        return is_null($this->_app) ? Mage::app() : $this->_app;
+    }
+
+    /**
      * Retrieve request object
      *
      * @return Mage_Core_Controller_Request_Http
@@ -1839,7 +1933,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     public function getRequest()
     {
-        $controller = Mage::app()->getFrontController();
+        $controller = $this->_getApp()->getFrontController();
         if ($controller) {
             $this->_request = $controller->getRequest();
         } else {
@@ -1877,7 +1971,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     public function getAction()
     {
-        return Mage::app()->getFrontController()->getAction();
+        return $this->_getApp()->getFrontController()->getAction();
     }
 
     /**
@@ -2110,10 +2204,10 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
     {
         $child = $this->getChild($alias);
         if ($child) {
-            $args     = func_get_args();
-            $alias    = array_shift($args);
+            $args = func_get_args();
+            $alias = array_shift($args);
             $callback = array_shift($args);
-            $result   = (string)array_shift($args);
+            $result = (string)array_shift($args);
             if (!is_array($params)) {
                 $params = $args;
             }
@@ -2132,7 +2226,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     public function unsetChildren()
     {
-        $this->_children       = array();
+        $this->_children = array();
         $this->_sortedChildren = array();
         return $this;
     }
@@ -2287,7 +2381,8 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
              * if we don't have block - don't throw exception because
              * block can simply removed using layout method remove
              */
-            //Mage::throwException(Mage::helper('core')->__('Invalid block name to set child %s: %s', $alias, $block));
+            //Mage::throwException(Mage::helper('core')
+            // ->__('Invalid block name to set child %s: %s', $alias, $block));
             return $this;
         }
         if ($block->getIsAnonymous()) {
@@ -2343,7 +2438,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
             }
             $this->_sortInstructions[$name][2] = true;
 
-            $index      = array_search($name, $this->_sortedChildren);
+            $index = array_search($name, $this->_sortedChildren);
             $siblingKey = array_search($siblingName, $this->_sortedChildren);
 
             if ($index === false || $siblingKey === false) {
@@ -2528,7 +2623,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
          * Check framing options
          */
         if ($this->_frameOpenTag) {
-            $html = '<'.$this->_frameOpenTag.'>'.$html.'<'.$this->_frameCloseTag.'>';
+            $html = '<' . $this->_frameOpenTag . '>' . $html . '<' . $this->_frameCloseTag . '>';
         }
 
         /**
@@ -2539,7 +2634,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
         }
         self::$_transportObject->setHtml($html);
         Mage::dispatchEvent('core_block_abstract_to_html_after',
-                array('block' => $this, 'transport' => self::$_transportObject));
+            array('block' => $this, 'transport' => self::$_transportObject));
         $html = self::$_transportObject->getHtml();
 
         return $html;
@@ -2692,7 +2787,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      * @param   bool $showTime
      * @return  string
      */
-    public function formatDate($date = null, $format =  Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, $showTime = false)
+    public function formatDate($date = null, $format = Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, $showTime = false)
     {
         return $this->helper('core')->formatDate($date, $format, $showTime);
     }
@@ -2705,7 +2800,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      * @param   bool $showDate
      * @return  string
      */
-    public function formatTime($time = null, $format =  Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, $showDate = false)
+    public function formatTime($time = null, $format = Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, $showDate = false)
     {
         return $this->helper('core')->formatTime($time, $format, $showDate);
     }
@@ -2736,7 +2831,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
         $args = func_get_args();
         $expr = new Mage_Core_Model_Translate_Expr(array_shift($args), $this->getModuleName());
         array_unshift($args, $expr);
-        return Mage::app()->getTranslator()->translate($args);
+        return $this->_getApp()->getTranslator()->translate($args);
     }
 
     /**
@@ -2794,6 +2889,19 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
     }
 
     /**
+     * Escape quotes inside html attributes
+     * Use $addSlashes = false for escaping js that inside html attribute (onClick, onSubmit etc)
+     *
+     * @param  string $data
+     * @param  bool $addSlashes
+     * @return string
+     */
+    public function quoteEscape($data, $addSlashes = false)
+    {
+        return $this->helper('core')->quoteEscape($data, $addSlashes);
+    }
+
+    /**
      * Escape quotes in java scripts
      *
      * @param mixed $data
@@ -2831,8 +2939,8 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     protected function _beforeCacheUrl()
     {
-        if (Mage::app()->useCache(self::CACHE_GROUP)) {
-            Mage::app()->setUseSessionVar(true);
+        if ($this->_getApp()->useCache(self::CACHE_GROUP)) {
+            $this->_getApp()->setUseSessionVar(true);
         }
         return $this;
     }
@@ -2845,8 +2953,8 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     protected function _afterCacheUrl($html)
     {
-        if (Mage::app()->useCache(self::CACHE_GROUP)) {
-            Mage::app()->setUseSessionVar(false);
+        if ($this->_getApp()->useCache(self::CACHE_GROUP)) {
+            $this->_getApp()->setUseSessionVar(false);
             Varien_Profiler::start('CACHE_URL');
             $html = Mage::getSingleton($this->_getUrlModelClass())->sessionUrlVar($html);
             Varien_Profiler::stop('CACHE_URL');
@@ -2883,7 +2991,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
          */
         $key = $this->getCacheKeyInfo();
         //ksort($key);  // ignore order
-        $key = array_values($key);  // ignore array keys
+        $key = array_values($key); // ignore array keys
         $key = implode('|', $key);
         $key = sha1($key);
         return $key;
@@ -2896,14 +3004,49 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     public function getCacheTags()
     {
-        if (!$this->hasData('cache_tags')) {
-            $tags = array();
-        } else {
-            $tags = $this->getData('cache_tags');
+        $tagsCache = $this->_getApp()->loadCache($this->_getTagsCacheKey());
+        if ($tagsCache) {
+            $tags = json_decode($tagsCache);
         }
-        $tags[] = self::CACHE_GROUP;
-        return $tags;
+        if (!isset($tags) || !is_array($tags) || empty($tags)) {
+            $tags = !$this->hasData(self::CACHE_TAGS_DATA_KEY) ? array() : $this->getData(self::CACHE_TAGS_DATA_KEY);
+            if (!in_array(self::CACHE_GROUP, $tags)) {
+                $tags[] = self::CACHE_GROUP;
+            }
+        }
+        return array_unique($tags);
     }
+
+    /**
+     * Add tag to block
+     *
+     * @param string|array $tag
+     * @return Mage_Core_Block_Abstract
+     */
+    public function addCacheTag($tag)
+    {
+        $tag = is_array($tag) ? $tag : array($tag);
+        $tags = !$this->hasData(self::CACHE_TAGS_DATA_KEY) ?
+            $tag : array_merge($this->getData(self::CACHE_TAGS_DATA_KEY), $tag);
+        $this->setData(self::CACHE_TAGS_DATA_KEY, $tags);
+        return $this;
+    }
+
+    /**
+     * Add tags from specified model to current block
+     *
+     * @param Mage_Core_Model_Abstract $model
+     * @return Mage_Core_Block_Abstract
+     */
+    public function addModelTags(Mage_Core_Model_Abstract $model)
+    {
+        $cacheTags = $model->getCacheIdTags();
+        if (false !== $cacheTags) {
+            $this->addCacheTag($cacheTags);
+        }
+        return $this;
+    }
+
 
     /**
      * Get block cache life time
@@ -2925,13 +3068,13 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     protected function _loadCache()
     {
-        if (is_null($this->getCacheLifetime()) || !Mage::app()->useCache(self::CACHE_GROUP)) {
+        if (is_null($this->getCacheLifetime()) || !$this->_getApp()->useCache(self::CACHE_GROUP)) {
             return false;
         }
         $cacheKey = $this->getCacheKey();
         /** @var $session Mage_Core_Model_Session */
         $session = Mage::getSingleton('core/session');
-        $cacheData = Mage::app()->loadCache($cacheKey);
+        $cacheData = $this->_getApp()->loadCache($cacheKey);
         if ($cacheData) {
             $cacheData = str_replace(
                 $this->_getSidPlaceholder($cacheKey),
@@ -2950,7 +3093,7 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
      */
     protected function _saveCache($data)
     {
-        if (is_null($this->getCacheLifetime()) || !Mage::app()->useCache(self::CACHE_GROUP)) {
+        if (is_null($this->getCacheLifetime()) || !$this->_getApp()->useCache(self::CACHE_GROUP)) {
             return false;
         }
         $cacheKey = $this->getCacheKey();
@@ -2962,8 +3105,29 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
             $data
         );
 
-        Mage::app()->saveCache($data, $cacheKey, $this->getCacheTags(), $this->getCacheLifetime());
+        $tags = $this->getCacheTags();
+
+        $this->_getApp()->saveCache($data, $cacheKey, $tags, $this->getCacheLifetime());
+        $this->_getApp()->saveCache(
+            json_encode($tags),
+            $this->_getTagsCacheKey($cacheKey),
+            $tags,
+            $this->getCacheLifetime()
+        );
         return $this;
+    }
+
+    /**
+     * Get cache key for tags
+     *
+     * @param string $cacheKey
+     * @return string
+     */
+    protected function _getTagsCacheKey($cacheKey = null)
+    {
+        $cacheKey = !empty($cacheKey) ? $cacheKey : $this->getCacheKey();
+        $cacheKey = md5($cacheKey . '_tags');
+        return $cacheKey;
     }
 
     /**
@@ -2980,6 +3144,27 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
 
         return '<!--SID=' . $cacheKey . '-->';
     }
+
+    /**
+     * Collect and retrieve items tags.
+     * Item should implements Mage_Core_Model_Abstract::getCacheIdTags method
+     *
+     * @param array|Varien_Data_Collection $items
+     * @return array
+     */
+    public function getItemsTags($items)
+    {
+        $tags = array();
+        /** @var $item Mage_Core_Model_Abstract */
+        foreach ($items as $item) {
+            $itemTags = $item->getCacheIdTags();
+            if (false === $itemTags) {
+                continue;
+            }
+            $tags = array_merge($tags, $itemTags);
+        }
+        return $tags;
+    }
 }
 /**
  * Magento
@@ -2992,18 +3177,18 @@ abstract class Mage_Core_Block_Abstract extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -3349,18 +3534,18 @@ HTML;
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -3373,7 +3558,12 @@ HTML;
  */
 class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
 {
-    protected $_categoryInstance = null;
+    /**
+     * Category instance
+     *
+     * @var Mage_Catalog_Model_Category
+     */
+    protected $_categoryInstance;
 
     /**
      * Current category key
@@ -3389,11 +3579,22 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
      */
     protected $_itemLevelPositions = array();
 
+    /**
+     * Current child categories collection
+     *
+     * @var Mage_Catalog_Model_Resource_Category_Collection
+     */
+    protected $_currentChildCategories;
+
+    /**
+     * Set cache data
+     */
     protected function _construct()
     {
-        $this->addData(array(
-            'cache_lifetime'    => false,
-            'cache_tags'        => array(Mage_Catalog_Model_Category::CACHE_TAG, Mage_Core_Model_Store_Group::CACHE_TAG),
+        $this->addData(array('cache_lifetime' => false));
+        $this->addCacheTag(array(
+            Mage_Catalog_Model_Category::CACHE_TAG,
+            Mage_Core_Model_Store_Group::CACHE_TAG
         ));
     }
 
@@ -3446,7 +3647,7 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
     }
 
     /**
-     * Get catagories of current store
+     * Get categories of current store
      *
      * @return Varien_Data_Tree_Node_Collection
      */
@@ -3459,34 +3660,38 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
     /**
      * Retrieve child categories of current category
      *
-     * @return Varien_Data_Tree_Node_Collection
+     * @return Mage_Catalog_Model_Resource_Category_Collection
      */
     public function getCurrentChildCategories()
     {
-        $layer = Mage::getSingleton('catalog/layer');
-        $category   = $layer->getCurrentCategory();
-        /* @var $category Mage_Catalog_Model_Category */
-        $categories = $category->getChildrenCategories();
-        $productCollection = Mage::getResourceModel('catalog/product_collection');
-        $layer->prepareProductCollection($productCollection);
-        $productCollection->addCountToCategories($categories);
-        return $categories;
+        if (null === $this->_currentChildCategories) {
+            $layer = Mage::getSingleton('catalog/layer');
+            $category = $layer->getCurrentCategory();
+            $this->_currentChildCategories = $category->getChildrenCategories();
+            $productCollection = Mage::getResourceModel('catalog/product_collection');
+            $layer->prepareProductCollection($productCollection);
+            $productCollection->addCountToCategories($this->_currentChildCategories);
+        }
+        return $this->_currentChildCategories;
     }
 
     /**
-     * Checkin activity of category
+     * Check whether specified category is active
      *
-     * @param   Varien_Object $category
-     * @return  bool
+     * @param Varien_Object $category
+     * @return bool
      */
     public function isCategoryActive($category)
     {
-        if ($this->getCurrentCategory()) {
-            return in_array($category->getId(), $this->getCurrentCategory()->getPathIds());
-        }
-        return false;
+        return $this->getCurrentCategory()
+            ? in_array($category->getId(), $this->getCurrentCategory()->getPathIds()) : false;
     }
 
+    /**
+     * Retrieve category instance
+     *
+     * @return Mage_Catalog_Model_Category
+     */
     protected function _getCategoryInstance()
     {
         if (is_null($this->_categoryInstance)) {
@@ -3563,7 +3768,9 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
         $html = array();
 
         // get all children
-        if (Mage::helper('catalog/category_flat')->isEnabled()) {
+        // If Flat Data enabled then use it but only on frontend
+        $flatHelper = Mage::helper('catalog/category_flat');
+        if ($flatHelper->isAvailable() && $flatHelper->isBuilt(true) && !Mage::app()->getStore()->isAdmin()) {
             $children = (array)$category->getChildrenNodes();
             $childrenCount = count($children);
         } else {
@@ -3712,33 +3919,33 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
             return $html;
         }
 
-        $html.= '<li';
+        $html .= '<li';
 
         if ($this->isCategoryActive($category)) {
-            $html.= ' class="active"';
+            $html .= ' class="active"';
         }
 
-        $html.= '>'."\n";
-        $html.= '<a href="'.$this->getCategoryUrl($category).'"><span>'.$this->htmlEscape($category->getName()).'</span></a>'."\n";
+        $html .= '>' . "\n";
+        $html .= '<a href="'.$this->getCategoryUrl($category).'">'
+            . '<span>' . $this->escapeHtml($category->getName()) . '</span></a>' . "\n";
 
-        if (in_array($category->getId(), $this->getCurrentCategoryPath())){
+        if (in_array($category->getId(), $this->getCurrentCategoryPath())) {
             $children = $category->getChildren();
             $hasChildren = $children && $children->count();
 
             if ($hasChildren) {
                 $htmlChildren = '';
                 foreach ($children as $child) {
-                    $htmlChildren.= $this->drawOpenCategoryItem($child);
+                    $htmlChildren .= $this->drawOpenCategoryItem($child);
                 }
 
                 if (!empty($htmlChildren)) {
-                    $html.= '<ul>'."\n"
-                            .$htmlChildren
-                            .'</ul>';
+                    $html .= '<ul>' . "\n" . $htmlChildren . '</ul>';
                 }
             }
         }
-        $html.= '</li>'."\n";
+        $html .= '</li>'."\n";
+
         return $html;
     }
 
@@ -3783,7 +3990,6 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
 
         return $html;
     }
-
 }
 /**
  * Magento
@@ -3796,18 +4002,18 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -3820,6 +4026,11 @@ class Mage_Catalog_Block_Navigation extends Mage_Core_Block_Template
  */
 abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Template
 {
+    /**
+     * Price block array
+     *
+     * @var array
+     */
     protected $_priceBlock = array();
 
     /**
@@ -3829,10 +4040,25 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
      */
     protected $_block = 'catalog/product_price';
 
+    /**
+     * Price template
+     *
+     * @var string
+     */
     protected $_priceBlockDefaultTemplate = 'catalog/product/price.phtml';
 
-    protected $_tierPriceDefaultTemplate  = 'catalog/product/view/tierprices.phtml';
+    /**
+     * Tier price template
+     *
+     * @var string
+     */
+    protected $_tierPriceDefaultTemplate = 'catalog/product/view/tierprices.phtml';
 
+    /**
+     * Price types
+     *
+     * @var array
+     */
     protected $_priceBlockTypes = array();
 
     /**
@@ -3842,6 +4068,11 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
      */
     protected $_useLinkForAsLowAs = true;
 
+    /**
+     * Review block instance
+     *
+     * @var null|Mage_Review_Block_Helper
+     */
     protected $_reviewsHelperBlock;
 
     /**
@@ -3875,18 +4106,33 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
      */
     public function getAddToCartUrl($product, $additional = array())
     {
-        if ($product->getTypeInstance(true)->hasRequiredOptions($product)) {
-            if (!isset($additional['_escape'])) {
-                $additional['_escape'] = true;
-            }
-            if (!isset($additional['_query'])) {
-                $additional['_query'] = array();
-            }
-            $additional['_query']['options'] = 'cart';
-
-            return $this->getProductUrl($product, $additional);
+        if (!$product->getTypeInstance(true)->hasRequiredOptions($product)) {
+            return $this->helper('checkout/cart')->getAddUrl($product, $additional);
         }
-        return $this->helper('checkout/cart')->getAddUrl($product, $additional);
+        $additional = array_merge(
+            $additional,
+            array(Mage_Core_Model_Url::FORM_KEY => $this->_getSingletonModel('core/session')->getFormKey())
+        );
+        if (!isset($additional['_escape'])) {
+            $additional['_escape'] = true;
+        }
+        if (!isset($additional['_query'])) {
+            $additional['_query'] = array();
+        }
+        $additional['_query']['options'] = 'cart';
+        return $this->getProductUrl($product, $additional);
+    }
+
+    /**
+     * Return model instance
+     *
+     * @param string $className
+     * @param array $arguments
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _getSingletonModel($className, $arguments = array())
+    {
+        return Mage::getSingleton($className, $arguments);
     }
 
     /**
@@ -3912,7 +4158,7 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
     }
 
     /**
-     * Enter description here...
+     * Return link to Add to Wishlist
      *
      * @param Mage_Catalog_Model_Product $product
      * @return string
@@ -3933,14 +4179,28 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
         return $this->helper('catalog/product_compare')->getAddUrl($product);
     }
 
+    /**
+     * Gets minimal sales quantity
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return int|null
+     */
     public function getMinimalQty($product)
     {
-        if ($stockItem = $product->getStockItem()) {
-            return ($stockItem->getMinSaleQty() && $stockItem->getMinSaleQty() > 0 ? $stockItem->getMinSaleQty() * 1 : null);
+        $stockItem = $product->getStockItem();
+        if ($stockItem) {
+            return ($stockItem->getMinSaleQty()
+            && $stockItem->getMinSaleQty() > 0 ? $stockItem->getMinSaleQty() * 1 : null);
         }
         return null;
     }
 
+    /**
+     * Return price block
+     *
+     * @param string $productTypeId
+     * @return mixed
+     */
     protected function _getPriceBlock($productTypeId)
     {
         if (!isset($this->_priceBlock[$productTypeId])) {
@@ -3955,6 +4215,12 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
         return $this->_priceBlock[$productTypeId];
     }
 
+    /**
+     * Return Block template
+     *
+     * @param string $productTypeId
+     * @return string
+     */
     protected function _getPriceBlockTemplate($productTypeId)
     {
         if (isset($this->_priceBlockTypes[$productTypeId])) {
@@ -4090,6 +4356,11 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
         return $this->getData('product');
     }
 
+    /**
+     * Return tier price template
+     *
+     * @return mixed|string
+     */
     public function getTierPriceTemplate()
     {
         if (!$this->hasData('tier_price_template')) {
@@ -4098,13 +4369,15 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
 
         return $this->getData('tier_price_template');
     }
+
     /**
      * Returns product tier price block html
      *
-     * @param Mage_Catalog_Model_Product $product
+     * @param null|Mage_Catalog_Model_Product $product
+     * @param null|Mage_Catalog_Model_Product $parent
      * @return string
      */
-    public function getTierPriceHtml($product = null)
+    public function getTierPriceHtml($product = null, $parent = null)
     {
         if (is_null($product)) {
             $product = $this->getProduct();
@@ -4112,8 +4385,22 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
         return $this->_getPriceBlock($product->getTypeId())
             ->setTemplate($this->getTierPriceTemplate())
             ->setProduct($product)
-            ->setInGrouped($this->getProduct()->isGrouped())
-            ->toHtml();
+            ->setInGrouped($product->isGrouped())
+            ->setParent($parent)
+            ->callParentToHtml();
+    }
+
+    /*
+     * Calls the object's to Html method.
+     * This method exists to make the code more testable.
+     * By having a protected wrapper for the final method toHtml, we can 'mock' out this method
+     * when unit testing
+     *
+     *  @return string
+     */
+    protected function callParentToHtml()
+    {
+        return $this->toHtml();
     }
 
     /**
@@ -4127,7 +4414,7 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
         if (is_null($product)) {
             $product = $this->getProduct();
         }
-        $prices  = $product->getFormatedTierPrice();
+        $prices = $product->getFormatedTierPrice();
 
         $res = array();
         if (is_array($prices)) {
@@ -4205,13 +4492,13 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
      *
      * @return string
      */
-    public function getImageLabel($product=null, $mediaAttributeCode='image')
+    public function getImageLabel($product = null, $mediaAttributeCode = 'image')
     {
         if (is_null($product)) {
             $product = $this->getProduct();
         }
 
-        $label = $product->getData($mediaAttributeCode.'_label');
+        $label = $product->getData($mediaAttributeCode . '_label');
         if (empty($label)) {
             $label = $product->getName();
         }
@@ -4234,7 +4521,6 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
             }
             return $product->getUrlModel()->getUrl($product, $additional);
         }
-
         return '#';
     }
 
@@ -4243,18 +4529,13 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
      *
      * @param Mage_Catalog_Model_Product $product
      * @return bool
+     *
      */
     public function hasProductUrl($product)
     {
         if ($product->getVisibleInSiteVisibilities()) {
             return true;
         }
-        if ($product->hasUrlDataObject()) {
-            if (in_array($product->hasUrlDataObject()->getVisibility(), $product->getVisibleInSiteVisibilities())) {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -4345,6 +4626,18 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
     }
 
     /**
+     * Get if it is necessary to show product stock status
+     *
+     * @return bool
+     */
+    public function displayProductStockStatus()
+    {
+        $statusInfo = new Varien_Object(array('display_status' => true));
+        Mage::dispatchEvent('catalog_block_product_status_display', array('status' => $statusInfo));
+        return (boolean)$statusInfo->getDisplayStatus();
+    }
+
+    /**
      * If exists price template block, retrieve price blocks from it
      *
      * @return Mage_Catalog_Block_Product_Abstract
@@ -4375,18 +4668,18 @@ abstract class Mage_Catalog_Block_Product_Abstract extends Mage_Core_Block_Templ
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -4852,18 +5145,18 @@ class Mage_Catalog_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -4905,18 +5198,18 @@ class Mage_Catalog_Helper_Map extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -4960,7 +5253,13 @@ class Mage_Core_Helper_Url extends Mage_Core_Helper_Abstract
         return $this->urlEncode($this->getCurrentUrl());
     }
 
-    public function getEncodedUrl($url=null)
+    /**
+     * Return encoded url
+     *
+     * @param null|string $url
+     * @return string
+     */
+    public function getEncodedUrl($url = null)
     {
         if (!$url) {
             $url = $this->getCurrentUrl();
@@ -4978,6 +5277,12 @@ class Mage_Core_Helper_Url extends Mage_Core_Helper_Abstract
         return Mage::getBaseUrl();
     }
 
+    /**
+     * Formatting string
+     *
+     * @param string $string
+     * @return string
+     */
     protected function _prepareString($string)
     {
         $string = preg_replace('#[^0-9a-z]+#i', '-', $string);
@@ -4999,7 +5304,7 @@ class Mage_Core_Helper_Url extends Mage_Core_Helper_Abstract
         $startDelimiter = (false === strpos($url,'?'))? '?' : '&';
 
         $arrQueryParams = array();
-        foreach($param as $key=>$value) {
+        foreach ($param as $key => $value) {
             if (is_numeric($key) || is_object($value)) {
                 continue;
             }
@@ -5023,6 +5328,7 @@ class Mage_Core_Helper_Url extends Mage_Core_Helper_Abstract
      *
      * @param string $url
      * @param string $paramKey
+     * @param boolean $caseSensitive
      * @return string
      */
     public function removeRequestParam($url, $paramKey, $caseSensitive = false)
@@ -5038,6 +5344,18 @@ class Mage_Core_Helper_Url extends Mage_Core_Helper_Abstract
         }
         return $url;
     }
+
+    /**
+     * Return singleton model instance
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _getSingletonModel($name, $arguments = array())
+    {
+        return Mage::getSingleton($name, $arguments);
+    }
 }
 /**
  * Magento
@@ -5050,18 +5368,18 @@ class Mage_Core_Helper_Url extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -5119,17 +5437,17 @@ class Mage_Catalog_Helper_Product_Compare extends Mage_Core_Helper_Url
      */
     public function getListUrl()
     {
-         $itemIds = array();
-         foreach ($this->getItemCollection() as $item) {
-             $itemIds[] = $item->getId();
-         }
+        $itemIds = array();
+        foreach ($this->getItemCollection() as $item) {
+            $itemIds[] = $item->getId();
+        }
 
          $params = array(
-            'items'=>implode(',', $itemIds),
+            'items' => implode(',', $itemIds),
             Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->getEncodedUrl()
-         );
+        );
 
-         return $this->_getUrl('catalog/product_compare', $params);
+        return $this->_getUrl('catalog/product_compare', $params);
     }
 
     /**
@@ -5142,7 +5460,8 @@ class Mage_Catalog_Helper_Product_Compare extends Mage_Core_Helper_Url
     {
         return array(
             'product' => $product->getId(),
-            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->getEncodedUrl()
+            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->getEncodedUrl(),
+            Mage_Core_Model_Url::FORM_KEY => $this->_getSingletonModel('core/session')->getFormKey()
         );
     }
 
@@ -5168,7 +5487,8 @@ class Mage_Catalog_Helper_Product_Compare extends Mage_Core_Helper_Url
         $beforeCompareUrl = Mage::getSingleton('catalog/session')->getBeforeCompareUrl();
 
         $params = array(
-            'product'=>$product->getId(),
+            'product' => $product->getId(),
+            Mage_Core_Model_Url::FORM_KEY => $this->_getSingletonModel('core/session')->getFormKey(),
             Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->getEncodedUrl($beforeCompareUrl)
         );
 
@@ -5183,10 +5503,11 @@ class Mage_Catalog_Helper_Product_Compare extends Mage_Core_Helper_Url
      */
     public function getAddToCartUrl($product)
     {
-        $beforeCompareUrl = Mage::getSingleton('catalog/session')->getBeforeCompareUrl();
+        $beforeCompareUrl = $this->_getSingletonModel('catalog/session')->getBeforeCompareUrl();
         $params = array(
-            'product'=>$product->getId(),
-            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->getEncodedUrl($beforeCompareUrl)
+            'product' => $product->getId(),
+            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->getEncodedUrl($beforeCompareUrl),
+            Mage_Core_Model_Url::FORM_KEY => $this->_getSingletonModel('core/session')->getFormKey()
         );
 
         return $this->_getUrl('checkout/cart/add', $params);
@@ -5201,7 +5522,7 @@ class Mage_Catalog_Helper_Product_Compare extends Mage_Core_Helper_Url
     public function getRemoveUrl($item)
     {
         $params = array(
-            'product'=>$item->getId(),
+            'product' => $item->getId(),
             Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->getEncodedUrl()
         );
         return $this->_getUrl('catalog/product_compare/remove', $params);
@@ -5363,18 +5684,18 @@ class Mage_Catalog_Helper_Product_Compare extends Mage_Core_Helper_Url
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -5775,7 +6096,7 @@ abstract class Mage_Core_Model_Abstract extends Varien_Object
     /**
      * Get cahce tags associated with object id
      *
-     * @return array
+     * @return array|bool
      */
     public function getCacheIdTags()
     {
@@ -5955,18 +6276,18 @@ abstract class Mage_Core_Model_Abstract extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -6316,18 +6637,18 @@ abstract class Mage_Catalog_Model_Abstract extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -6417,12 +6738,24 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
     protected $_treeModel = null;
 
     /**
+     * Category Url instance
+     *
+     * @var Mage_Catalog_Model_Category_Url
+     */
+    protected $_urlModel;
+
+    /**
      * Initialize resource mode
      *
+     * @return void
      */
     protected function _construct()
     {
-        if (Mage::helper('catalog/category_flat')->isEnabled()) {
+        // If Flat Data enabled then use it but only on frontend
+        $flatHelper = Mage::helper('catalog/category_flat');
+        if ($flatHelper->isAvailable() && !Mage::app()->getStore()->isAdmin() && $flatHelper->isBuilt(true)
+            && !$this->getDisableFlat()
+        ) {
             $this->_init('catalog/category_flat');
             $this->_useFlatResource = true;
         } else {
@@ -6451,7 +6784,7 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
     public function getUrlRewrite()
     {
         if (!self::$_urlRewrite) {
-            self::$_urlRewrite = Mage::getModel('core/url_rewrite');
+            self::$_urlRewrite = Mage::getSingleton('core/factory')->getUrlRewriteInstance();
         }
         return self::$_urlRewrite;
     }
@@ -6724,37 +7057,20 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
      */
     public function getUrl()
     {
-        $url = $this->_getData('url');
-        if (is_null($url)) {
-            Varien_Profiler::start('REWRITE: '.__METHOD__);
+        return $this->getUrlModel()->getCategoryUrl($this);
+    }
 
-            if ($this->hasData('request_path') && $this->getRequestPath() != '') {
-                $this->setData('url', $this->getUrlInstance()->getDirectUrl($this->getRequestPath()));
-                Varien_Profiler::stop('REWRITE: '.__METHOD__);
-                return $this->getData('url');
-            }
-
-            Varien_Profiler::stop('REWRITE: '.__METHOD__);
-
-            $rewrite = $this->getUrlRewrite();
-            if ($this->getStoreId()) {
-                $rewrite->setStoreId($this->getStoreId());
-            }
-            $idPath = 'category/' . $this->getId();
-            $rewrite->loadByIdPath($idPath);
-
-            if ($rewrite->getId()) {
-                $this->setData('url', $this->getUrlInstance()->getDirectUrl($rewrite->getRequestPath()));
-                Varien_Profiler::stop('REWRITE: '.__METHOD__);
-                return $this->getData('url');
-            }
-
-            Varien_Profiler::stop('REWRITE: '.__METHOD__);
-
-            $this->setData('url', $this->getCategoryIdUrl());
-            return $this->getData('url');
+    /**
+     * Get product url model
+     *
+     * @return Mage_Catalog_Model_Category_Url
+     */
+    public function getUrlModel()
+    {
+        if ($this->_urlModel === null) {
+            $this->_urlModel = Mage::getSingleton('catalog/factory')->getCategoryUrlInstance();
         }
-        return $url;
+        return $this->_urlModel;
     }
 
     /**
@@ -6782,7 +7098,7 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
      */
     public function formatUrlKey($str)
     {
-        $str = Mage::helper('core')->removeAccents($str);
+        $str = Mage::helper('catalog/product_url')->format($str);
         $urlKey = preg_replace('#[^0-9a-z]+#i', '-', $str);
         $urlKey = strtolower($urlKey);
         $urlKey = trim($urlKey, '-');
@@ -7039,6 +7355,9 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
      */
     public function getRequestPath()
     {
+        if (!$this->_getData('request_path')) {
+            $this->getUrl();
+        }
         return $this->_getData('request_path');
     }
 
@@ -7148,6 +7467,16 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
     }
 
     /**
+     * Return children categories of current category
+     *
+     * @return array
+     */
+    public function getChildrenCategoriesWithInactive()
+    {
+        return $this->getResource()->getChildrenCategoriesWithInactive($this);
+    }
+
+    /**
      * Return parent category of current category with own custom design settings
      *
      * @return Mage_Catalog_Model_Category
@@ -7240,17 +7569,19 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
     }
 
     /**
-     * Init indexing process after category save
+     * Callback function which called after transaction commit in resource model
      *
      * @return Mage_Catalog_Model_Category
      */
-    protected function _afterSave()
+    public function afterCommitCallback()
     {
-        $result = parent::_afterSave();
-        Mage::getSingleton('index/indexer')->processEntityAction(
-            $this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE
-        );
-        return $result;
+        parent::afterCommitCallback();
+
+        /** @var \Mage_Index_Model_Indexer $indexer */
+        $indexer = Mage::getSingleton('index/indexer');
+        $indexer->processEntityAction($this, self::ENTITY, Mage_Index_Model_Event::TYPE_SAVE);
+
+        return $this;
     }
 }
 /**
@@ -7264,18 +7595,18 @@ class Mage_Catalog_Model_Category extends Mage_Catalog_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -7286,6 +7617,14 @@ class Mage_Core_Model_Session_Abstract_Varien extends Varien_Object
     const VALIDATOR_HTTP_X_FORVARDED_FOR_KEY    = 'http_x_forwarded_for';
     const VALIDATOR_HTTP_VIA_KEY                = 'http_via';
     const VALIDATOR_REMOTE_ADDR_KEY             = 'remote_addr';
+    const SECURE_COOKIE_CHECK_KEY               = '_secure_cookie_check';
+
+    /**
+     * Map of session enabled hosts
+     * @example array('host.name' => true)
+     * @var array
+     */
+    protected $_sessionHosts = array();
 
     /**
      * Configure and start session
@@ -7295,35 +7634,37 @@ class Mage_Core_Model_Session_Abstract_Varien extends Varien_Object
      */
     public function start($sessionName=null)
     {
-        if (isset($_SESSION)) {
+        if (isset($_SESSION) && !$this->getSkipEmptySessionCheck()) {
             return $this;
         }
 
-        switch($this->getSessionSaveMethod()) {
+        // getSessionSaveMethod has to return correct version of handler in any case
+        $moduleName = $this->getSessionSaveMethod();
+        switch ($moduleName) {
+            /**
+             * backward compatibility with db argument (option is @deprecated after 1.12.0.2)
+             */
             case 'db':
-                ini_set('session.save_handler', 'user');
+                $moduleName = 'user';
+                /* @var $sessionResource Mage_Core_Model_Resource_Session */
                 $sessionResource = Mage::getResourceSingleton('core/session');
-                /* @var $sessionResource Mage_Core_Model_Mysql4_Session */
                 $sessionResource->setSaveHandler();
                 break;
-            case 'memcache':
-                ini_set('session.save_handler', 'memcache');
-                session_save_path($this->getSessionSavePath());
+            case 'user':
+                // getSessionSavePath represents static function for custom session handler setup
+                call_user_func($this->getSessionSavePath());
                 break;
-            case 'memcached':
-                ini_set('session.save_handler', 'memcached');
-                session_save_path($this->getSessionSavePath());
-                break;
-            case 'eaccelerator':
-                ini_set('session.save_handler', 'eaccelerator');
-                break;
-            default:
-                session_module_name($this->getSessionSaveMethod());
-                if (is_writable($this->getSessionSavePath())) {
-                    session_save_path($this->getSessionSavePath());
+            case 'files':
+                //don't change path if it's not writable
+                if (!is_writable($this->getSessionSavePath())) {
+                    break;
                 }
+            default:
+                session_save_path($this->getSessionSavePath());
                 break;
         }
+        session_module_name($moduleName);
+
         $cookie = $this->getCookie();
         if (Mage::app()->getStore()->isAdmin()) {
             $sessionMaxLifetime = Mage_Core_Model_Resource_Session::SEESION_MAX_COOKIE_LIFETIME;
@@ -7376,6 +7717,30 @@ class Mage_Core_Model_Session_Abstract_Varien extends Varien_Object
 
         session_start();
 
+        if (Mage::app()->getFrontController()->getRequest()->isSecure() && empty($cookieParams['secure'])) {
+            // secure cookie check to prevent MITM attack
+            $secureCookieName = $sessionName . '_cid';
+            if (isset($_SESSION[self::SECURE_COOKIE_CHECK_KEY])
+                && $_SESSION[self::SECURE_COOKIE_CHECK_KEY] !== md5($cookie->get($secureCookieName))
+            ) {
+                session_regenerate_id(false);
+                $sessionHosts = $this->getSessionHosts();
+                $currentCookieDomain = $cookie->getDomain();
+                foreach (array_keys($sessionHosts) as $host) {
+                    // Delete cookies with the same name for parent domains
+                    if (strpos($currentCookieDomain, $host) > 0) {
+                        $cookie->delete($this->getSessionName(), null, $host);
+                    }
+                }
+                $_SESSION = array();
+            }
+            if (!isset($_SESSION[self::SECURE_COOKIE_CHECK_KEY])) {
+                $checkId = Mage::helper('core')->getRandomString(16);
+                $cookie->set($secureCookieName, $checkId, null, null, null, true);
+                $_SESSION[self::SECURE_COOKIE_CHECK_KEY] = md5($checkId);
+            }
+        }
+
         /**
         * Renew cookie expiration time if session id did not change
         */
@@ -7384,6 +7749,28 @@ class Mage_Core_Model_Session_Abstract_Varien extends Varien_Object
         }
         Varien_Profiler::stop(__METHOD__.'/start');
 
+        return $this;
+    }
+
+    /**
+     * Get session hosts
+     *
+     * @return array
+     */
+    public function getSessionHosts()
+    {
+        return $this->_sessionHosts;
+    }
+
+    /**
+     * Set session hosts
+     *
+     * @param array $hosts
+     * @return Mage_Core_Model_Session_Abstract_Varien
+     */
+    public function setSessionHosts(array $hosts)
+    {
+        $this->_sessionHosts = $hosts;
         return $this;
     }
 
@@ -7702,18 +8089,18 @@ class Mage_Core_Model_Session_Abstract_Varien extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -8220,7 +8607,7 @@ class Mage_Core_Model_Session_Abstract extends Mage_Core_Model_Session_Abstract_
      */
     public function getSessionHosts()
     {
-        return $this->getData('session_hosts');
+        return parent::getSessionHosts();
     }
 
     /**
@@ -8284,18 +8671,18 @@ class Mage_Core_Model_Session_Abstract extends Mage_Core_Model_Session_Abstract_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -8329,18 +8716,18 @@ class Mage_Catalog_Model_Session extends Mage_Core_Model_Session_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -8530,18 +8917,66 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+
+/**
+ * Minicart block
+ *
+ * @category    Mage
+ * @package     Mage_Checkout
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
+class Mage_Checkout_Block_Cart_Minicart extends Mage_Checkout_Block_Cart_Abstract
+{
+    /**
+     * Get shopping cart items qty based on configuration (summary qty or items qty)
+     *
+     * @return int | float
+     */
+    public function getSummaryCount()
+    {
+        if ($this->getData('summary_qty')) {
+            return $this->getData('summary_qty');
+        }
+        return Mage::getSingleton('checkout/cart')->getSummaryQty();
+    }
+}
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Mage
+ * @package     Mage_Checkout
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -8552,9 +8987,10 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
  * @package     Mage_Checkout
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Checkout_Block_Cart_Sidebar extends Mage_Checkout_Block_Cart_Abstract
+class Mage_Checkout_Block_Cart_Sidebar extends Mage_Checkout_Block_Cart_Minicart
 {
-    const XML_PATH_CHECKOUT_SIDEBAR_COUNT   = 'checkout/sidebar/count';
+    const XML_PATH_CHECKOUT_SIDEBAR_COUNT                  = 'checkout/sidebar/count';
+    const XML_PATH_CHECKOUT_MINICART_VISIBLE_ITEMS_COUNT   = 'checkout/cart/minicart_visible_items';
 
     /**
      * Class constructor
@@ -8583,41 +9019,18 @@ class Mage_Checkout_Block_Cart_Sidebar extends Mage_Checkout_Block_Cart_Abstract
     /**
      * Get array of last added items
      *
+     * @param null $count
      * @return array
      */
     public function getRecentItems($count = null)
     {
+        if (!$this->getSummaryCount()) {
+            return array();
+        }
         if ($count === null) {
             $count = $this->getItemCount();
         }
-
-        $items = array();
-        if (!$this->getSummaryCount()) {
-            return $items;
-        }
-
-        $i = 0;
-        $allItems = array_reverse($this->getItems());
-        foreach ($allItems as $item) {
-            /* @var $item Mage_Sales_Model_Quote_Item */
-            if (!$item->getProduct()->isVisibleInSiteVisibility()) {
-                $productId = $item->getProduct()->getId();
-                $products  = Mage::getResourceSingleton('catalog/url')
-                    ->getRewriteByProductStore(array($productId => $item->getStoreId()));
-                if (!isset($products[$productId])) {
-                    continue;
-                }
-                $urlDataObject = new Varien_Object($products[$productId]);
-                $item->getProduct()->setUrlDataObject($urlDataObject);
-            }
-
-            $items[] = $item;
-            if (++$i == $count) {
-                break;
-            }
-        }
-
-        return $items;
+        return array_slice(array_reverse($this->getItems()), 0, $count);
     }
 
     /**
@@ -8694,19 +9107,6 @@ class Mage_Checkout_Block_Cart_Sidebar extends Mage_Checkout_Block_Cart_Abstract
     {
         $quote = $this->getCustomQuote() ? $this->getCustomQuote() : $this->getQuote();
         return $quote->getShippingAddress()->getShippingTaxAmount();
-    }
-
-    /**
-     * Get shopping cart items qty based on configuration (summary qty or items qty)
-     *
-     * @return int | float
-     */
-    public function getSummaryCount()
-    {
-        if ($this->getData('summary_qty')) {
-            return $this->getData('summary_qty');
-        }
-        return Mage::getSingleton('checkout/cart')->getSummaryQty();
     }
 
     /**
@@ -8830,6 +9230,38 @@ class Mage_Checkout_Block_Cart_Sidebar extends Mage_Checkout_Block_Cart_Abstract
 
         return $this;
     }
+
+    /**
+     * Retrieve block cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        $quoteTags = $this->getQuote()->getCacheIdTags();
+
+        $items = array();
+        /** @var $item Mage_Sales_Model_Quote_Item */
+        foreach ($this->getItems() as $item) {
+            $items[] = $item->getProduct();
+       }
+
+        return array_merge(
+            parent::getCacheTags(),
+            (!$quoteTags)? array() : $quoteTags,
+            $this->getItemsTags($items)
+        );
+    }
+
+    /**
+     * Get form key
+     *
+     * @return string
+     */
+    public function getFormKey()
+    {
+        return Mage::getSingleton('core/session')->getFormKey();
+    }
 }
 /**
  * Magento
@@ -8931,18 +9363,18 @@ class Mage_Checkout_Block_Links extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -8952,7 +9384,15 @@ class Mage_Checkout_Block_Links extends Mage_Core_Block_Template
  */
 class Mage_Checkout_Helper_Cart extends Mage_Core_Helper_Url
 {
-    const XML_PATH_REDIRECT_TO_CART         = 'checkout/cart/redirect_to_cart';
+    /**
+     * XML path for redirect to cart value
+     */
+    const XML_PATH_REDIRECT_TO_CART = 'checkout/cart/redirect_to_cart';
+
+    /**
+     * Maximal coupon code length according to database table definitions (longer codes are truncated)
+     */
+    const COUPON_CODE_MAX_LENGTH = 255;
 
     /**
      * Retrieve cart instance
@@ -8967,17 +9407,17 @@ class Mage_Checkout_Helper_Cart extends Mage_Core_Helper_Url
     /**
      * Retrieve url for add product to cart
      *
-     * @param   Mage_Catalog_Model_Product $product
-     * @return  string
+     * @param Mage_Catalog_Model_Product $product
+     * @param array $additional
+     * @return string
      */
     public function getAddUrl($product, $additional = array())
     {
-        $continueUrl    = Mage::helper('core')->urlEncode($this->getCurrentUrl());
-        $urlParamName   = Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED;
-
         $routeParams = array(
-            $urlParamName   => $continueUrl,
-            'product'       => $product->getEntityId()
+            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->_getHelperInstance('core')
+                ->urlEncode($this->getCurrentUrl()),
+            'product' => $product->getEntityId(),
+            Mage_Core_Model_Url::FORM_KEY => $this->_getSingletonModel('core/session')->getFormKey()
         );
 
         if (!empty($additional)) {
@@ -8998,6 +9438,17 @@ class Mage_Checkout_Helper_Cart extends Mage_Core_Helper_Url
     }
 
     /**
+     * Return helper instance
+     *
+     * @param  string $helperName
+     * @return Mage_Core_Helper_Abstract
+     */
+    protected function _getHelperInstance($helperName)
+    {
+        return Mage::helper($helperName);
+    }
+
+    /**
      * Retrieve url for remove product from cart
      *
      * @param   Mage_Sales_Quote_Item $item
@@ -9006,7 +9457,7 @@ class Mage_Checkout_Helper_Cart extends Mage_Core_Helper_Url
     public function getRemoveUrl($item)
     {
         $params = array(
-            'id'=>$item->getId(),
+            'id' => $item->getId(),
             Mage_Core_Controller_Front_Action::PARAM_NAME_BASE64_URL => $this->getCurrentBase64Url()
         );
         return $this->_getUrl('checkout/cart/delete', $params);
@@ -9094,18 +9545,18 @@ class Mage_Checkout_Helper_Cart extends Mage_Core_Helper_Url
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -9177,6 +9628,7 @@ class Mage_Checkout_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Get sales item (quote item, order item etc) price including tax based on row total and tax amount
+     * excluding weee tax
      *
      * @param   Varien_Object $item
      * @return  float
@@ -9187,9 +9639,9 @@ class Mage_Checkout_Helper_Data extends Mage_Core_Helper_Abstract
             return $item->getPriceInclTax();
         }
         $qty = ($item->getQty() ? $item->getQty() : ($item->getQtyOrdered() ? $item->getQtyOrdered() : 1));
-        $taxAmount = $item->getTaxAmount() + $item->getDiscountTaxCompensation();
-        $price = (floatval($qty)) ? ($item->getRowTotal() + $taxAmount)/$qty : 0;
-        return Mage::app()->getStore()->roundPrice($price);
+
+        //Unit price is rowtotal/qty
+        return $qty > 0 ? $this->getSubtotalInclTax($item)/$qty :0;
     }
 
     /**
@@ -9203,21 +9655,46 @@ class Mage_Checkout_Helper_Data extends Mage_Core_Helper_Abstract
         if ($item->getRowTotalInclTax()) {
             return $item->getRowTotalInclTax();
         }
-        $tax = $item->getTaxAmount() + $item->getDiscountTaxCompensation();
+        //Since tax amount contains weee tax
+        $tax = $item->getTaxAmount() + $item->getDiscountTaxCompensation()
+            - $this->_getWeeeHelper()->getTotalRowTaxAppliedForWeeeTax($item);;
+
         return $item->getRowTotal() + $tax;
     }
 
+    /**
+     * Returns the helper for weee
+     *
+     * @return Mage_Weee_Helper_Data
+     */
+    protected function _getWeeeHelper()
+    {
+        return Mage::helper('weee');
+    }
+
+    /**
+     * Get the base price of the item including tax , excluding weee
+     *
+     * @param Varien_Object $item
+     * @return float
+     */
     public function getBasePriceInclTax($item)
     {
         $qty = ($item->getQty() ? $item->getQty() : ($item->getQtyOrdered() ? $item->getQtyOrdered() : 1));
-        $taxAmount = $item->getBaseTaxAmount() + $item->getBaseDiscountTaxCompensation();
-        $price = (floatval($qty)) ? ($item->getBaseRowTotal() + $taxAmount)/$qty : 0;
-        return Mage::app()->getStore()->roundPrice($price);
+
+        return $qty > 0 ? $this->getBaseSubtotalInclTax($item) / $qty : 0;
     }
 
+    /**
+     * Get sales item (quote item, order item etc) row total price including tax excluding wee
+     *
+     * @param Varien_Object $item
+     * @return float
+     */
     public function getBaseSubtotalInclTax($item)
     {
-        $tax = $item->getBaseTaxAmount() + $item->getBaseDiscountTaxCompensation();
+        $tax = $item->getBaseTaxAmount() + $item->getBaseDiscountTaxCompensation()
+            - $this->_getWeeeHelper()->getBaseTotalRowTaxAppliedForWeeeTax($item);
         return $item->getBaseRowTotal()+$tax;
     }
 
@@ -9277,32 +9754,32 @@ class Mage_Checkout_Helper_Data extends Mage_Core_Helper_Abstract
         foreach ($checkout->getAllVisibleItems() as $_item) {
             /* @var $_item Mage_Sales_Model_Quote_Item */
             $items .= $_item->getProduct()->getName() . '  x '. $_item->getQty() . '  '
-                    . $checkout->getStoreCurrencyCode() . ' '
-                    . $_item->getProduct()->getFinalPrice($_item->getQty()) . "\n";
+                . $checkout->getStoreCurrencyCode() . ' '
+                . $_item->getProduct()->getFinalPrice($_item->getQty()) . "\n";
         }
         $total = $checkout->getStoreCurrencyCode() . ' ' . $checkout->getGrandTotal();
 
         foreach ($sendTo as $recipient) {
             $mailTemplate->setDesignConfig(array('area'=>'frontend', 'store'=>$checkout->getStoreId()))
                 ->sendTransactional(
-                    $template,
-                    Mage::getStoreConfig('checkout/payment_failed/identity', $checkout->getStoreId()),
-                    $recipient['email'],
-                    $recipient['name'],
-                    array(
-                        'reason' => $message,
-                        'checkoutType' => $checkoutType,
-                        'dateAndTime' => Mage::app()->getLocale()->date(),
-                        'customer' => $checkout->getCustomerFirstname() . ' ' . $checkout->getCustomerLastname(),
-                        'customerEmail' => $checkout->getCustomerEmail(),
-                        'billingAddress' => $checkout->getBillingAddress(),
-                        'shippingAddress' => $checkout->getShippingAddress(),
-                        'shippingMethod' => Mage::getStoreConfig('carriers/'.$shippingMethod.'/title'),
-                        'paymentMethod' => Mage::getStoreConfig('payment/'.$paymentMethod.'/title'),
-                        'items' => nl2br($items),
-                        'total' => $total
-                    )
-                );
+                $template,
+                Mage::getStoreConfig('checkout/payment_failed/identity', $checkout->getStoreId()),
+                $recipient['email'],
+                $recipient['name'],
+                array(
+                    'reason' => $message,
+                    'checkoutType' => $checkoutType,
+                    'dateAndTime' => Mage::app()->getLocale()->date(),
+                    'customer' => $checkout->getCustomerFirstname() . ' ' . $checkout->getCustomerLastname(),
+                    'customerEmail' => $checkout->getCustomerEmail(),
+                    'billingAddress' => $checkout->getBillingAddress(),
+                    'shippingAddress' => $checkout->getShippingAddress(),
+                    'shippingMethod' => Mage::getStoreConfig('carriers/'.$shippingMethod.'/title'),
+                    'paymentMethod' => Mage::getStoreConfig('payment/'.$paymentMethod.'/title'),
+                    'items' => nl2br($items),
+                    'total' => $total
+                )
+            );
         }
 
         $translate->setTranslateInline(true);
@@ -9339,7 +9816,7 @@ class Mage_Checkout_Helper_Data extends Mage_Core_Helper_Abstract
             && (($quote->getItemsSummaryQty() - $quote->getItemVirtualQty()) > 0)
             && ($quote->getItemsSummaryQty() <= $maximunQty)
             && !$quote->hasNominalItems()
-        ;
+            ;
     }
 
     /**
@@ -9403,18 +9880,18 @@ class Mage_Checkout_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -9471,18 +9948,18 @@ interface Mage_Checkout_Model_Cart_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -9601,21 +10078,15 @@ class Mage_Checkout_Model_Cart extends Varien_Object implements Mage_Checkout_Mo
      */
     public function init()
     {
-        $this->getQuote()->setCheckoutMethod('');
+        $quote = $this->getQuote()->setCheckoutMethod('');
 
-        /**
-         * If user try do checkout, reset shipping and payment data
-         */
         if ($this->getCheckoutSession()->getCheckoutState() !== Mage_Checkout_Model_Session::CHECKOUT_STATE_BEGIN) {
-            $this->getQuote()
-                ->removeAllAddresses()
-                ->removePayment();
+            $quote->removeAllAddresses()->removePayment();
             $this->getCheckoutSession()->resetCheckout();
         }
 
-        if (!$this->getQuote()->hasItems()) {
-            $this->getQuote()->getShippingAddress()
-                ->setCollectShippingRates(false)
+        if (!$quote->hasItems()) {
+            $quote->getShippingAddress()->setCollectShippingRates(false)
                 ->removeAllShippingRates();
         }
 
@@ -10082,18 +10553,18 @@ class Mage_Checkout_Model_Cart extends Varien_Object implements Mage_Checkout_Mo
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10121,6 +10592,13 @@ class Mage_Checkout_Model_Session extends Mage_Core_Model_Session_Abstract
      * @var bool
      */
     protected $_loadInactive = false;
+
+    /**
+     * Loaded order instance
+     *
+     * @var Mage_Sales_Model_Order
+     */
+    protected $_order;
 
     /**
      * Class constructor. Initialize checkout session namespace
@@ -10463,6 +10941,34 @@ class Mage_Checkout_Model_Session extends Mage_Core_Model_Session_Abstract
         $this->setQuoteId($quote->getId());
         return $this;
     }
+
+    /**
+     * Get order instance based on last order ID
+     *
+     * @return Mage_Sales_Model_Order
+     */
+    public function getLastRealOrder()
+    {
+        $orderId = $this->getLastRealOrderId();
+        if ($this->_order !== null && $orderId == $this->_order->getIncrementId()) {
+            return $this->_order;
+        }
+        $this->_order = $this->_getOrderModel();
+        if ($orderId) {
+            $this->_order->loadByIncrementId($orderId);
+        }
+        return $this->_order;
+    }
+
+    /**
+     * Get order model
+     *
+     * @return Mage_Sales_Model_Order
+     */
+    protected function _getOrderModel()
+    {
+        return Mage::getModel('sales/order');
+    }
 }
 /**
  * Magento
@@ -10475,18 +10981,18 @@ class Mage_Checkout_Model_Session extends Mage_Core_Model_Session_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10517,6 +11023,7 @@ class Mage_Cms_Block_Block extends Mage_Core_Block_Abstract
                 $helper = Mage::helper('cms');
                 $processor = $helper->getBlockTemplateProcessor();
                 $html = $processor->filter($block->getContent());
+                $this->addModelTags($block);
             }
         }
         return $html;
@@ -10533,18 +11040,18 @@ class Mage_Cms_Block_Block extends Mage_Core_Block_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10572,6 +11079,7 @@ class Mage_Cms_Block_Page extends Mage_Core_Block_Abstract
             } else {
                 $page = Mage::getSingleton('cms/page');
             }
+            $this->addModelTags($page);
             $this->setData('page', $page);
         }
         return $this->getData('page');
@@ -10636,18 +11144,18 @@ class Mage_Cms_Block_Page extends Mage_Core_Block_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 abstract class Mage_Core_Controller_Varien_Router_Abstract
@@ -10688,18 +11196,18 @@ abstract class Mage_Core_Controller_Varien_Router_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10793,18 +11301,18 @@ class Mage_Cms_Controller_Router extends Mage_Core_Controller_Varien_Router_Abst
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -10972,18 +11480,18 @@ class Mage_Cms_Helper_Page extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -11047,18 +11555,18 @@ class Mage_Cms_Model_Block extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -11202,18 +11710,18 @@ class Mage_Cms_Model_Page extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -11314,6 +11822,12 @@ abstract class Mage_Core_Model_Resource_Abstract
     public function rollBack()
     {
         $this->_getWriteAdapter()->rollBack();
+        if ($this->_getWriteAdapter()->getTransactionLevel() === 0) {
+            $adapterKey = spl_object_hash($this->_getWriteAdapter());
+            if (isset(self::$_commitCallbacks[$adapterKey])) {
+                self::$_commitCallbacks[$adapterKey] = array();
+            }
+        }
         return $this;
     }
 
@@ -11441,18 +11955,18 @@ abstract class Mage_Core_Model_Resource_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -12216,18 +12730,18 @@ abstract class Mage_Core_Model_Resource_Db_Abstract extends Mage_Core_Model_Reso
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Cms
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -12352,6 +12866,9 @@ class Mage_Cms_Model_Resource_Page extends Mage_Core_Model_Resource_Db_Abstract
 
             $this->_getWriteAdapter()->insertMultiple($table, $data);
         }
+
+        //Mark layout cache as invalidated
+        Mage::app()->getCacheInstance()->invalidateType('layout');
 
         return parent::_afterSave($object);
     }
@@ -12631,18 +13148,18 @@ class Mage_Cms_Model_Resource_Page extends Mage_Core_Model_Resource_Db_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Contacts
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -12691,18 +13208,18 @@ class Mage_Contacts_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -12894,7 +13411,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
         $html = '<' . $this->_messagesFirstLevelTagName . ' id="admin_messages">';
         foreach ($this->getMessages($type) as $message) {
             $html.= '<' . $this->_messagesSecondLevelTagName . ' class="'.$message->getType().'-msg">'
-                . ($this->_escapeMessageFlag) ? $this->htmlEscape($message->getText()) : $message->getText()
+                . ($this->_escapeMessageFlag) ? $this->escapeHtml($message->getText()) : $message->getText()
                 . '</' . $this->_messagesSecondLevelTagName . '>';
         }
         $html .= '</' . $this->_messagesFirstLevelTagName . '>';
@@ -12927,7 +13444,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
                 foreach ( $messages as $message ) {
                     $html.= '<' . $this->_messagesSecondLevelTagName . '>';
                     $html.= '<' . $this->_messagesContentWrapperTagName . '>';
-                    $html.= ($this->_escapeMessageFlag) ? $this->htmlEscape($message->getText()) : $message->getText();
+                    $html.= ($this->_escapeMessageFlag) ? $this->escapeHtml($message->getText()) : $message->getText();
                     $html.= '</' . $this->_messagesContentWrapperTagName . '>';
                     $html.= '</' . $this->_messagesSecondLevelTagName . '>';
                 }
@@ -12999,18 +13516,18 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -13070,18 +13587,18 @@ class Mage_Core_Block_Profiler extends Mage_Core_Block_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -13134,18 +13651,18 @@ class Mage_Core_Block_Text extends Mage_Core_Block_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -13180,18 +13697,18 @@ class Mage_Core_Block_Text_List extends Mage_Core_Block_Text
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -13321,7 +13838,7 @@ abstract class Mage_Core_Controller_Varien_Action
 
     public function hasAction($action)
     {
-        return is_callable(array($this, $this->getActionMethodName($action)));
+        return method_exists($this, $this->getActionMethodName($action));
     }
 
     /**
@@ -13569,8 +14086,7 @@ abstract class Mage_Core_Controller_Varien_Action
     {
         try {
             $actionMethodName = $this->getActionMethodName($action);
-
-            if (!is_callable(array($this, $actionMethodName))) {
+            if (!method_exists($this, $actionMethodName)) {
                 $actionMethodName = 'norouteAction';
             }
 
@@ -13952,13 +14468,11 @@ abstract class Mage_Core_Controller_Varien_Action
             $refererUrl = $url;
         }
         if ($url = $this->getRequest()->getParam(self::PARAM_NAME_BASE64_URL)) {
-            $refererUrl = Mage::helper('core')->urlDecode($url);
+            $refererUrl = Mage::helper('core')->urlDecodeAndEscape($url);
         }
         if ($url = $this->getRequest()->getParam(self::PARAM_NAME_URL_ENCODED)) {
-            $refererUrl = Mage::helper('core')->urlDecode($url);
+            $refererUrl = Mage::helper('core')->urlDecodeAndEscape($url);
         }
-
-        $refererUrl = Mage::helper('core')->escapeUrl($refererUrl);
 
         if (!$this->_isUrlInternal($refererUrl)) {
             $refererUrl = Mage::app()->getStore()->getBaseUrl();
@@ -14277,18 +14791,18 @@ abstract class Mage_Core_Controller_Varien_Action
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -14442,15 +14956,15 @@ class Mage_Core_Controller_Front_Action extends Mage_Core_Controller_Varien_Acti
  *
  * @category   Zend
  * @package    Zend_Controller
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Abstract.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 /**
  * @category   Zend
  * @package    Zend_Controller
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Controller_Request_Abstract
@@ -14740,7 +15254,7 @@ abstract class Zend_Controller_Request_Abstract
     {
         $this->_params = $this->_params + (array) $array;
 
-        foreach ($this->_params as $key => $value) {
+        foreach ($array as $key => $value) {
             if (null === $value) {
                 unset($this->_params[$key]);
             }
@@ -14797,9 +15311,9 @@ abstract class Zend_Controller_Request_Abstract
  *
  * @category   Zend
  * @package    Zend_Controller
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Http.php 23414 2010-11-20 10:56:11Z bittarman $
+ * @version    $Id$
  */
 
 /** @see Zend_Controller_Request_Abstract */
@@ -15173,7 +15687,11 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
     public function setRequestUri($requestUri = null)
     {
         if ($requestUri === null) {
-            if (isset($_SERVER['HTTP_X_REWRITE_URL'])) { // check this first so IIS will catch
+            if (isset($_SERVER['HTTP_X_ORIGINAL_URL'])) { 
+                // IIS with Microsoft Rewrite Module
+                $requestUri = $_SERVER['HTTP_X_ORIGINAL_URL'];
+            } elseif (isset($_SERVER['HTTP_X_REWRITE_URL'])) { 
+                // IIS with ISAPI_Rewrite
                 $requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
             } elseif (
                 // IIS7 with URL Rewrite: make sure we get the unencoded url (double slash problem)
@@ -15328,13 +15846,13 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
      *
      * @return string
      */
-    public function getBaseUrl()
+    public function getBaseUrl($raw = false)
     {
         if (null === $this->_baseUrl) {
             $this->setBaseUrl();
         }
 
-        return urldecode($this->_baseUrl);
+        return (($raw == false) ? urldecode($this->_baseUrl) : $this->_baseUrl);
     }
 
     /**
@@ -15395,31 +15913,33 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
     public function setPathInfo($pathInfo = null)
     {
         if ($pathInfo === null) {
-            $baseUrl = $this->getBaseUrl();
-
+            $baseUrl = $this->getBaseUrl(); // this actually calls setBaseUrl() & setRequestUri()
+            $baseUrlRaw = $this->getBaseUrl(false);
+            $baseUrlEncoded = urlencode($baseUrlRaw);
+        
             if (null === ($requestUri = $this->getRequestUri())) {
                 return $this;
             }
-
+        
             // Remove the query string from REQUEST_URI
             if ($pos = strpos($requestUri, '?')) {
                 $requestUri = substr($requestUri, 0, $pos);
             }
             
-            $requestUri = urldecode($requestUri);
-
-            if (null !== $baseUrl
-                && ((!empty($baseUrl) && 0 === strpos($requestUri, $baseUrl)) 
-                    || empty($baseUrl))
-                    && false === ($pathInfo = substr($requestUri, strlen($baseUrl)))
-            ){ 
-                // If substr() returns false then PATH_INFO is set to an empty string 
-                $pathInfo = '';
-            } elseif (null === $baseUrl 
-                    || (!empty($baseUrl) && false === strpos($requestUri, $baseUrl))
-            ) { 
-                $pathInfo = $requestUri; 
+            if (!empty($baseUrl) || !empty($baseUrlRaw)) {
+                if (strpos($requestUri, $baseUrl) === 0) {
+                    $pathInfo = substr($requestUri, strlen($baseUrl));
+                } elseif (strpos($requestUri, $baseUrlRaw) === 0) {
+                    $pathInfo = substr($requestUri, strlen($baseUrlRaw));
+                } elseif (strpos($requestUri, $baseUrlEncoded) === 0) {
+                    $pathInfo = substr($requestUri, strlen($baseUrlEncoded));
+                } else {
+                    $pathInfo = $requestUri;
+                }
+            } else {
+                $pathInfo = $requestUri;
             }
+        
         }
 
         $this->_pathInfo = (string) $pathInfo;
@@ -15856,18 +16376,18 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -16098,9 +16618,13 @@ class Mage_Core_Controller_Request_Http extends Zend_Controller_Request_Http
         return $path;
     }
 
-    public function getBaseUrl()
+    /**
+     * @param bool $raw
+     * @return string
+     */
+    public function getBaseUrl($raw = false)
     {
-        $url = parent::getBaseUrl();
+        $url = parent::getBaseUrl($raw);
         $url = str_replace('\\', '/', $url);
         return $url;
     }
@@ -16392,9 +16916,9 @@ class Mage_Core_Controller_Request_Http extends Zend_Controller_Request_Http
  *
  * @category   Zend
  * @package    Zend_Controller
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Abstract.php 21301 2010-03-02 23:01:19Z yoshida@zend.co.jp $
+ * @version    $Id$
  */
 
 /**
@@ -16404,7 +16928,7 @@ class Mage_Core_Controller_Request_Http extends Zend_Controller_Request_Http
  *
  * @package Zend_Controller
  * @subpackage Response
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Controller_Response_Abstract
@@ -16635,7 +17159,9 @@ abstract class Zend_Controller_Response_Abstract
         }
 
         $key = array_search($headerRaw, $this->_headersRaw);
-        unset($this->_headersRaw[$key]);
+        if ($key !== false) {
+            unset($this->_headersRaw[$key]);
+        }
 
         return $this;
     }
@@ -17185,9 +17711,9 @@ abstract class Zend_Controller_Response_Abstract
  *
  * @category   Zend
  * @package    Zend_Controller
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Http.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 
@@ -17218,18 +17744,18 @@ class Zend_Controller_Response_Http extends Zend_Controller_Response_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -17282,6 +17808,7 @@ class Mage_Core_Controller_Response_Http extends Zend_Controller_Response_Http
                 }
             }
         }
+
         return parent::sendHeaders();
     }
 
@@ -17313,6 +17840,15 @@ class Mage_Core_Controller_Response_Http extends Zend_Controller_Response_Http
 
         return parent::setRedirect(self::$_transportObject->getUrl(), self::$_transportObject->getCode());
     }
+
+    /**
+     * Method send already collected headers and exit from script
+     */
+    public function sendHeadersAndExit()
+    {
+        $this->sendHeaders();
+        exit;
+    }
 }
 /**
  * Magento
@@ -17325,18 +17861,18 @@ class Mage_Core_Controller_Response_Http extends Zend_Controller_Response_Http
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -17476,19 +18012,15 @@ class Mage_Core_Controller_Varien_Front extends Varien_Object
         $this->_checkBaseUrl($request);
 
         $request->setPathInfo()->setDispatched(false);
-        if (!$request->isStraight()) {
-            Varien_Profiler::start('mage::dispatch::db_url_rewrite');
-            Mage::getModel('core/url_rewrite')->rewrite();
-            Varien_Profiler::stop('mage::dispatch::db_url_rewrite');
-        }
-        Varien_Profiler::start('mage::dispatch::config_url_rewrite');
-        $this->rewrite();
-        Varien_Profiler::stop('mage::dispatch::config_url_rewrite');
+
+        $this->_getRequestRewriteController()->rewrite();
+
         Varien_Profiler::start('mage::dispatch::routers_match');
         $i = 0;
-        while (!$request->isDispatched() && $i++<100) {
+        while (!$request->isDispatched() && $i++ < 100) {
             foreach ($this->_routers as $router) {
-                if ($router->match($this->getRequest())) {
+                /** @var $router Mage_Core_Controller_Varien_Router_Abstract */
+                if ($router->match($request)) {
                     break;
                 }
             }
@@ -17506,6 +18038,27 @@ class Mage_Core_Controller_Varien_Front extends Varien_Object
         return $this;
     }
 
+    /**
+     * Returns request rewrite instance.
+     * Class name alias is declared in the configuration
+     *
+     * @return Mage_Core_Model_Url_Rewrite_Request
+     */
+    protected function _getRequestRewriteController()
+    {
+        $className = (string)Mage::getConfig()->getNode('global/request_rewrite/model');
+
+        return Mage::getSingleton('core/factory')->getModel($className, array(
+            'routers' => $this->getRouters(),
+        ));
+    }
+
+    /**
+     * Returns router instance by route name
+     *
+     * @param string $routeName
+     * @return Mage_Core_Controller_Varien_Router_Abstract
+     */
     public function getRouterByRoute($routeName)
     {
         // empty route supplied - return base url
@@ -17552,6 +18105,7 @@ class Mage_Core_Controller_Varien_Front extends Varien_Object
      * Apply configuration rewrites to current url
      *
      * @return Mage_Core_Controller_Varien_Front
+     * @deprecated since 1.7.0.2. Refactored and moved to Mage_Core_Controller_Request_Rewrite
      */
     public function rewrite()
     {
@@ -17584,6 +18138,7 @@ class Mage_Core_Controller_Varien_Front extends Varien_Object
      *
      * @param   string $url
      * @return  string
+     * @deprecated since 1.7.0.2. Refactored and moved to Mage_Core_Controller_Request_Rewrite
      */
     protected function _processRewriteUrl($url)
     {
@@ -17608,7 +18163,7 @@ class Mage_Core_Controller_Varien_Front extends Varien_Object
      */
     protected function _checkBaseUrl($request)
     {
-        if (!Mage::isInstalled() || $request->getPost()) {
+        if (!Mage::isInstalled() || $request->getPost() || strtolower($request->getMethod()) == 'post') {
             return;
         }
 
@@ -17694,18 +18249,18 @@ class Mage_Core_Controller_Varien_Front extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 class Mage_Core_Controller_Varien_Router_Standard extends Mage_Core_Controller_Varien_Router_Abstract
@@ -17727,7 +18282,7 @@ class Mage_Core_Controller_Varien_Router_Standard extends Mage_Core_Controller_V
                 $modules = array((string)$routerConfig->args->module);
                 if ($routerConfig->args->modules) {
                     foreach ($routerConfig->args->modules->children() as $customModule) {
-                        if ($customModule) {
+                        if ((string)$customModule) {
                             if ($before = $customModule->getAttribute('before')) {
                                 $position = array_search($before, $modules);
                                 if ($position === false) {
@@ -18161,18 +18716,18 @@ class Mage_Core_Controller_Varien_Router_Standard extends Mage_Core_Controller_V
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -18292,18 +18847,18 @@ class Mage_Core_Controller_Varien_Router_Admin extends Mage_Core_Controller_Vari
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 class Mage_Core_Controller_Varien_Router_Default extends Mage_Core_Controller_Varien_Router_Abstract
@@ -18318,12 +18873,12 @@ class Mage_Core_Controller_Varien_Router_Default extends Mage_Core_Controller_Va
      */
     public function match(Zend_Controller_Request_Http $request)
     {
-        $noRoute        = explode('/', Mage::app()->getStore()->getConfig('web/default/no_route'));
-        $moduleName     = isset($noRoute[0]) ? $noRoute[0] : 'core';
-        $controllerName = isset($noRoute[1]) ? $noRoute[1] : 'index';
-        $actionName     = isset($noRoute[2]) ? $noRoute[2] : 'index';
+        $noRoute        = explode('/', $this->_getNoRouteConfig());
+        $moduleName     = isset($noRoute[0]) && $noRoute[0] ? $noRoute[0] : 'core';
+        $controllerName = isset($noRoute[1]) && $noRoute[1] ? $noRoute[1] : 'index';
+        $actionName     = isset($noRoute[2]) && $noRoute[2] ? $noRoute[2] : 'index';
 
-        if (Mage::app()->getStore()->isAdmin()) {
+        if ($this->_isAdmin()) {
             $adminFrontName = (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
             if ($adminFrontName != $moduleName) {
                 $moduleName     = 'core';
@@ -18339,6 +18894,26 @@ class Mage_Core_Controller_Varien_Router_Default extends Mage_Core_Controller_Va
 
         return true;
     }
+
+    /**
+     * Retrieve default router config
+     *
+     * @return string
+     */
+    protected function _getNoRouteConfig()
+    {
+        return Mage::app()->getStore()->getConfig('web/default/no_route');
+    }
+
+    /**
+     * Check if store is admin store
+     *
+     * @return boolean
+     */
+    protected function _isAdmin()
+    {
+        return Mage::app()->getStore()->isAdmin();
+    }
 }
 /**
  * Magento
@@ -18351,18 +18926,18 @@ class Mage_Core_Controller_Varien_Router_Default extends Mage_Core_Controller_Va
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -18594,7 +19169,6 @@ class Mage_Core_Helper_Data extends Mage_Core_Helper_Abstract
         if (is_null($chars)) {
             $chars = self::CHARS_LOWERS . self::CHARS_UPPERS . self::CHARS_DIGITS;
         }
-        mt_srand(10000000*(double)microtime());
         for ($i = 0, $str = '', $lc = strlen($chars)-1; $i < $len; $i++) {
             $str .= $chars[mt_rand(0, $lc)];
         }
@@ -19230,18 +19804,18 @@ XML;
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -19419,18 +19993,18 @@ class Mage_Core_Helper_Js extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -19441,6 +20015,11 @@ class Mage_Core_Helper_Js extends Mage_Core_Helper_Abstract
 class Mage_Core_Helper_String extends Mage_Core_Helper_Abstract
 {
     const ICONV_CHARSET = 'UTF-8';
+
+    /**
+     * @var Mage_Core_Helper_Array
+     */
+    protected $_arrayHelper;
 
     /**
      * Truncate a string to a certain length if necessary, appending the $etc string.
@@ -19712,6 +20291,174 @@ class Mage_Core_Helper_String extends Mage_Core_Helper_Abstract
         return $sort;
     }
 
+    /**
+     * Parse query string to array
+     *
+     * @param string $str
+     * @return array
+     */
+    public function parseQueryStr($str)
+    {
+        $argSeparator = '&';
+        $result = array();
+        $partsQueryStr = explode($argSeparator, $str);
+
+        foreach ($partsQueryStr as $partQueryStr) {
+            if ($this->_validateQueryStr($partQueryStr)) {
+                $param = $this->_explodeAndDecodeParam($partQueryStr);
+                $param = $this->_handleRecursiveParamForQueryStr($param);
+                $result = $this->_appendParam($result, $param);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Validate query pair string
+     *
+     * @param string $str
+     * @return bool
+     */
+    protected function _validateQueryStr($str)
+    {
+        if (!$str || (strpos($str, '=') === false)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Prepare param
+     *
+     * @param string $str
+     * @return array
+     */
+    protected function _explodeAndDecodeParam($str)
+    {
+        $preparedParam = array();
+        $param = explode('=', $str);
+        $preparedParam['key'] = urldecode(array_shift($param));
+        $preparedParam['value'] = urldecode(array_shift($param));
+
+        return $preparedParam;
+    }
+
+    /**
+     * Append param to general result
+     *
+     * @param array $result
+     * @param array $param
+     * @return array
+     */
+    protected function _appendParam(array $result, array $param)
+    {
+        $key   = $param['key'];
+        $value = $param['value'];
+
+        if ($key) {
+            if (is_array($value) && array_key_exists($key, $result)) {
+                $helper = $this->getArrayHelper();
+                $result[$key] = $helper->mergeRecursiveWithoutOverwriteNumKeys($result[$key], $value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Handle param recursively
+     *
+     * @param array $param
+     * @return array
+     */
+    protected function _handleRecursiveParamForQueryStr(array $param)
+    {
+        $value = $param['value'];
+        $key = $param['key'];
+
+        $subKeyBrackets = $this->_getLastSubkey($key);
+        $subKey = $this->_getLastSubkey($key, false);
+        if ($subKeyBrackets) {
+            if ($subKey) {
+                $param['value'] = array($subKey => $value);
+            } else {
+                $param['value'] = array($value);
+            }
+            $param['key'] = $this->_removeSubkeyPartFromKey($key, $subKeyBrackets);
+            $param = $this->_handleRecursiveParamForQueryStr($param);
+        }
+
+        return $param;
+    }
+
+    /**
+     * Remove subkey part from key
+     *
+     * @param string $key
+     * @param string $subKeyBrackets
+     * @return string
+     */
+    protected function _removeSubkeyPartFromKey($key, $subKeyBrackets)
+    {
+        return substr($key, 0, strrpos($key, $subKeyBrackets));
+    }
+
+    /**
+     * Get last part key from query array
+     *
+     * @param string $key
+     * @param bool $withBrackets
+     * @return string
+     */
+    protected function _getLastSubkey($key, $withBrackets = true)
+    {
+        $subKey = '';
+        $leftBracketSymbol  = '[';
+        $rightBracketSymbol = ']';
+
+        $firstPos = strrpos($key, $leftBracketSymbol);
+        $lastPos  = strrpos($key, $rightBracketSymbol);
+
+        if (($firstPos !== false || $lastPos !== false)
+            && $firstPos < $lastPos
+        ) {
+            $keyLenght = $lastPos - $firstPos + 1;
+            $subKey = substr($key, $firstPos, $keyLenght);
+            if (!$withBrackets) {
+                $subKey = ltrim($subKey, $leftBracketSymbol);
+                $subKey = rtrim($subKey, $rightBracketSymbol);
+            }
+        }
+        return $subKey;
+    }
+
+    /**
+     * Set array helper
+     *
+     * @param Mage_Core_Helper_Abstract $helper
+     * @return Mage_Core_Helper_String
+     */
+    public function setArrayHelper(Mage_Core_Helper_Abstract $helper)
+    {
+        $this->_arrayHelper = $helper;
+        return $this;
+    }
+
+    /**
+     * Get Array Helper
+     *
+     * @return Mage_Core_Helper_Array
+     */
+    public function getArrayHelper()
+    {
+        if (!$this->_arrayHelper) {
+            $this->_arrayHelper = Mage::helper('core/array');
+        }
+        return $this->_arrayHelper;
+    }
+
 }
 /**
  * Magento
@@ -19724,18 +20471,18 @@ class Mage_Core_Helper_String extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -21287,18 +22034,18 @@ class Mage_Core_Model_App
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -22058,18 +22805,18 @@ class Varien_Simplexml_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -22106,18 +22853,18 @@ class Mage_Core_Model_Config_Base extends Varien_Simplexml_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -23332,7 +24079,7 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
              * In MMDB release resource nodes <..._mysql4> were renamed to <..._resource>. So <deprecatedNode> is left
              * to keep name of previously used nodes, that still may be used by non-updated extensions.
              */
-            if ($config->deprecatedNode) {
+            if (isset($config->deprecatedNode)) {
                 $deprecatedNode = $config->deprecatedNode;
                 $configOld = $this->_xml->global->{$groupType.'s'}->$deprecatedNode;
                 if (isset($configOld->rewrite->$class)) {
@@ -23739,18 +24486,18 @@ class Mage_Core_Model_Config extends Mage_Core_Model_Config_Base
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -24177,7 +24924,11 @@ class Varien_Simplexml_Element extends SimpleXMLElement
         }
         $value = (string)$value;
 
-        $value = str_replace(array('&', '"', "'", '<', '>'), array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'), $value);
+        $value = str_replace(
+            array('&', '"', "'", '<', '>'),
+            array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;'),
+            $value
+        );
 
         return $value;
     }
@@ -24262,7 +25013,7 @@ class Varien_Simplexml_Element extends SimpleXMLElement
             // handle string node
             if (isset($this->$sourceName)) {
                 // if target already has children return without regard
-                if ($this->$sourceName->children()) {
+                if ($this->$sourceName->hasChildren()) {
                     return $this;
                 }
                 if ($overwrite) {
@@ -24490,18 +25241,18 @@ class Varien_Simplexml_Element extends SimpleXMLElement
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -24566,18 +25317,18 @@ class Mage_Core_Model_Config_Element extends Varien_Simplexml_Element
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -24798,18 +25549,18 @@ class Mage_Core_Model_Config_Options extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -25108,18 +25859,18 @@ class Mage_Core_Model_Cookie
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -25183,18 +25934,18 @@ class Mage_Core_Model_Design extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -25255,7 +26006,15 @@ class Mage_Core_Model_Design_Package
      */
     protected $_callbackFileDir;
 
+    /**
+     * @var Mage_Core_Model_Design_Config
+     */
     protected $_config = null;
+
+    /**
+     * @var Mage_Core_Model_Design_Fallback
+     */
+    protected $_fallback = null;
 
     /**
      * Whether theme/skin hierarchy should be checked via fallback mechanism
@@ -25263,6 +26022,18 @@ class Mage_Core_Model_Design_Package
      * @var bool
      */
     protected $_shouldFallback = true;
+
+    public function __construct()
+    {
+        if (is_null($this->_config)) {
+            $this->_config = Mage::getSingleton('core/design_config');
+        }
+        if (is_null($this->_fallback)) {
+            $this->_fallback = Mage::getSingleton('core/design_fallback', array(
+                'config' => $this->_config,
+            ));
+        }
+    }
 
     /**
      * Set store
@@ -25272,6 +26043,9 @@ class Mage_Core_Model_Design_Package
      */
     public function setStore($store)
     {
+        if ($this->_fallback) {
+            $this->_fallback->setStore($store);
+        }
         $this->_store = $store;
         return $this;
     }
@@ -25591,22 +26365,17 @@ class Mage_Core_Model_Design_Package
     {
         Varien_Profiler::start(__METHOD__);
         $this->updateParamDefaults($params);
-        $result = $this->_fallback($file, $params, array(
-            array(),
-            array('_theme' => $this->getFallbackTheme()),
-            array('_theme' => self::DEFAULT_THEME),
-        ));
+        $result = $this->_fallback(
+            $file,
+            $params,
+            $this->_fallback->getFallbackScheme(
+                $params['_area'],
+                $params['_package'],
+                $params['_theme']
+            )
+        );
         Varien_Profiler::stop(__METHOD__);
         return $result;
-    }
-
-    /**
-     * Default theme getter
-     * @return string
-     */
-    public function getFallbackTheme()
-    {
-        return Mage::getStoreConfig('design/theme/default', $this->getStore());
     }
 
     public function getLayoutFilename($file, array $params=array())
@@ -25645,11 +26414,15 @@ class Mage_Core_Model_Design_Package
         }
         $this->updateParamDefaults($params);
         if (!empty($file)) {
-            $result = $this->_fallback($file, $params, array(
-                array(),
-                array('_theme' => $this->getFallbackTheme()),
-                array('_theme' => self::DEFAULT_THEME),
-            ));
+            $result = $this->_fallback(
+                $file,
+                $params,
+                $this->_fallback->getFallbackScheme(
+                    $params['_area'],
+                    $params['_package'],
+                    $params['_theme']
+                )
+            );
         }
         $result = $this->getSkinBaseUrl($params) . (empty($file) ? '' : $file);
         Varien_Profiler::stop(__METHOD__);
@@ -25992,6 +26765,9 @@ class Mage_Core_Model_Design_Package
             $pathParts = explode(DS, $uri);
             $fileDirParts = explode(DS, $this->_callbackFileDir);
             $store = $this->getStore();
+            if (is_int($store)) {
+                $store = Mage::app()->getStore($store);
+            }
             if ($store->isAdmin()) {
                 $secure = $store->isAdminUrlSecure();
             } else {
@@ -26025,6 +26801,16 @@ class Mage_Core_Model_Design_Package
         }
         return $uri;
     }
+
+    /**
+     * Default theme getter
+     * @return string
+     * @deprecated since 1.8.2.0
+     */
+    public function getFallbackTheme()
+    {
+        return Mage::getStoreConfig('design/theme/default', $this->getStore());
+    }
 }
 
 /**
@@ -26042,16 +26828,16 @@ class Mage_Core_Model_Design_Package
  *
  * @category   Zend
  * @package    Zend_Filter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Interface.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 
 /**
  * @category   Zend
  * @package    Zend_Filter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Filter_Interface
@@ -26119,6 +26905,13 @@ class Varien_Filter_Template implements Zend_Filter_Interface
     protected $_templateVars = array();
 
     /**
+     * Template processor
+     *
+     * @var array|string|null
+     */
+    protected $_templateProcessor = null;
+
+    /**
      * Include processor
      *
      * @var array|string|null
@@ -26136,6 +26929,28 @@ class Varien_Filter_Template implements Zend_Filter_Interface
             $this->_templateVars[$name] = $value;
         }
         return $this;
+    }
+
+    /**
+     * Sets the proccessor of templates. Templates are directives that include email templates based on system
+     * configuration path.
+     *
+     * @param array $callback it must return string
+     */
+    public function setTemplateProcessor(array $callback)
+    {
+        $this->_templateProcessor = $callback;
+        return $this;
+    }
+
+    /**
+     * Sets the proccessor of templates.
+     *
+     * @return array|null
+     */
+    public function getTemplateProcessor()
+    {
+        return is_callable($this->_templateProcessor) ? $this->_templateProcessor : null;
     }
 
     /**
@@ -26197,9 +27012,9 @@ class Varien_Filter_Template implements Zend_Filter_Interface
                     continue;
                 }
                 try {
-					$replacedValue = call_user_func($callback, $construction);
+                    $replacedValue = call_user_func($callback, $construction);
                 } catch (Exception $e) {
-                	throw $e;
+                    throw $e;
                 }
                 $value = str_replace($construction[0], $replacedValue, $value);
             }
@@ -26215,8 +27030,8 @@ class Varien_Filter_Template implements Zend_Filter_Interface
             return $construction[0];
         }
 
-    	$replacedValue = $this->_getVariable($construction[2], '');
-    	return $replacedValue;
+        $replacedValue = $this->_getVariable($construction[2], '');
+        return $replacedValue;
     }
 
     public function includeDirective($construction)
@@ -26232,6 +27047,32 @@ class Varien_Filter_Template implements Zend_Filter_Interface
             unset($includeParameters['template']);
             $includeParameters = array_merge_recursive($includeParameters, $this->_templateVars);
             $replacedValue = call_user_func($this->getIncludeProcessor(), $templateCode, $includeParameters);
+        }
+        return $replacedValue;
+    }
+
+    /**
+     * This directive allows email templates to be included inside other email templates using the following syntax:
+     * {{template config_path="<PATH>"}}, where <PATH> equals the XPATH to the system configuration value that contains
+     * the value of the email template. For example "sales_email/order/template", which is stored in the
+     * Mage_Sales_Model_Order::sales_email/order/template. This directive is useful to include things like a global
+     * header/footer.
+     *
+     * @param $construction
+     * @return mixed|string
+     */
+    public function templateDirective($construction)
+    {
+        // Processing of {template config_path=... [...]} statement
+        $templateParameters = $this->_getIncludeParameters($construction[2]);
+        if (!isset($templateParameters['config_path']) or !$this->getTemplateProcessor()) {
+            $replacedValue = '{Error in template processing}';
+        } else {
+            // Including of template
+            $configPath = $templateParameters['config_path'];
+            unset($templateParameters['config_path']);
+            $templateParameters = array_merge_recursive($templateParameters, $this->_templateVars);
+            $replacedValue = call_user_func($this->getTemplateProcessor(), $configPath, $templateParameters);
         }
         return $replacedValue;
     }
@@ -26278,9 +27119,9 @@ class Varien_Filter_Template implements Zend_Filter_Interface
         $tokenizer->setString($value);
         $params = $tokenizer->tokenize();
         foreach ($params as $key => $value) {
-        	if (substr($value, 0, 1) === '$') {
-        	    $params[$key] = $this->_getVariable(substr($value, 1), null);
-        	}
+            if (substr($value, 0, 1) === '$') {
+                $params[$key] = $this->_getVariable(substr($value, 1), null);
+            }
         }
         return $params;
     }
@@ -26304,24 +27145,22 @@ class Varien_Filter_Template implements Zend_Filter_Interface
             if ($i == 0 && isset($this->_templateVars[$stackVars[$i]['name']])) {
                 // Getting of template value
                 $stackVars[$i]['variable'] =& $this->_templateVars[$stackVars[$i]['name']];
-            } else if (isset($stackVars[$i-1]['variable'])
-                       && $stackVars[$i-1]['variable'] instanceof Varien_Object) {
+            } elseif (isset($stackVars[$i-1]['variable']) && $stackVars[$i-1]['variable'] instanceof Varien_Object) {
                 // If object calling methods or getting properties
-                if($stackVars[$i]['type'] == 'property') {
-                    $caller = "get" . uc_words($stackVars[$i]['name'], '');
-                    if(is_callable(array($stackVars[$i-1]['variable'], $caller))) {
-                        // If specified getter for this property
-                        $stackVars[$i]['variable'] = $stackVars[$i-1]['variable']->$caller();
-                    } else {
-                        $stackVars[$i]['variable'] = $stackVars[$i-1]['variable']
-                                                        ->getData($stackVars[$i]['name']);
-                    }
-                } else if ($stackVars[$i]['type'] == 'method') {
+                if ($stackVars[$i]['type'] == 'property') {
+                    $caller = 'get' . uc_words($stackVars[$i]['name'], '');
+                    $stackVars[$i]['variable'] = method_exists($stackVars[$i-1]['variable'], $caller)
+                        ? $stackVars[$i-1]['variable']->$caller()
+                        : $stackVars[$i-1]['variable']->getData($stackVars[$i]['name']);
+                } elseif ($stackVars[$i]['type'] == 'method') {
                     // Calling of object method
-                    if (is_callable(array($stackVars[$i-1]['variable'], $stackVars[$i]['name'])) || substr($stackVars[$i]['name'],0,3) == 'get') {
-                        $stackVars[$i]['variable'] = call_user_func_array(array($stackVars[$i-1]['variable'],
-                                                                                $stackVars[$i]['name']),
-                                                                          $stackVars[$i]['args']);
+                    if (method_exists($stackVars[$i-1]['variable'], $stackVars[$i]['name'])
+                        || substr($stackVars[$i]['name'], 0, 3) == 'get'
+                    ) {
+                        $stackVars[$i]['variable'] = call_user_func_array(
+                            array($stackVars[$i-1]['variable'], $stackVars[$i]['name']),
+                            $stackVars[$i]['args']
+                        );
                     }
                 }
                 $last = $i;
@@ -26347,18 +27186,18 @@ class Varien_Filter_Template implements Zend_Filter_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -26401,6 +27240,11 @@ class Mage_Core_Model_Email_Template_Filter extends Varien_Filter_Template
     protected $_storeId = null;
 
     protected $_plainTemplateMode = false;
+
+    /**
+     * @var bool|string
+     */
+    protected $_inlineCssFile = false;
 
     /**
      * Setup callbacks for filters
@@ -26522,7 +27366,7 @@ class Mage_Core_Model_Email_Template_Filter extends Varien_Filter_Template
         if (isset($blockParameters['output'])) {
             $method = $blockParameters['output'];
         }
-        if (!isset($method) || !is_string($method) || !is_callable(array($block, $method))) {
+        if (!isset($method) || !is_string($method) || !method_exists($block, $method)) {
             $method = 'toHtml';
         }
         return $block->$method();
@@ -26678,7 +27522,7 @@ class Mage_Core_Model_Email_Template_Filter extends Varien_Filter_Template
             $allowedTags = preg_split('/\s*\,\s*/', $params['allowed_tags'], 0, PREG_SPLIT_NO_EMPTY);
         }
 
-        return Mage::helper('core')->htmlEscape($params['var'], $allowedTags);
+        return Mage::helper('core')->escapeHtml($params['var'], $allowedTags);
     }
 
     /**
@@ -26818,12 +27662,53 @@ class Mage_Core_Model_Email_Template_Filter extends Varien_Filter_Template
             $variable = Mage::getModel('core/variable')
                 ->setStoreId($this->getStoreId())
                 ->loadByCode($params['code']);
-            $mode = $this->getPlainTemplateMode()?Mage_Core_Model_Variable::TYPE_TEXT:Mage_Core_Model_Variable::TYPE_HTML;
+            $mode = $this->getPlainTemplateMode()
+                ? Mage_Core_Model_Variable::TYPE_TEXT
+                : Mage_Core_Model_Variable::TYPE_HTML;
             if ($value = $variable->getValue($mode)) {
                 $customVarValue = $value;
             }
         }
         return $customVarValue;
+    }
+
+    /**
+     * This directive will allow CSS files to be applied inline to the HTML in the email template.
+     * Syntax: {{inlinecss file=""}}  If this directive is used, the file will be stored on this object so that
+     * it can be retrieved later
+     *
+     * @param $construction
+     * @return string
+     */
+    public function inlinecssDirective($construction)
+    {
+        $params = $this->_getIncludeParameters($construction[2]);
+        if (isset($params['file'])) {
+            $this->_setInlineCssFile($params['file']);
+        }
+        return '';
+    }
+
+    /**
+     * Set filename of CSS file to inline
+     *
+     * @param $filename
+     * @return $this
+     */
+    protected function _setInlineCssFile($filename)
+    {
+        $this->_inlineCssFile = $filename;
+        return $this;
+    }
+
+    /**
+     * Get filename of CSS file to inline
+     *
+     * @return bool|string
+     */
+    public function getInlineCssFile()
+    {
+        return $this->_inlineCssFile;
     }
 
     /**
@@ -26855,18 +27740,18 @@ class Mage_Core_Model_Email_Template_Filter extends Varien_Filter_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -27501,18 +28386,18 @@ class Mage_Core_Model_Layout extends Varien_Simplexml_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -27614,18 +28499,18 @@ class Mage_Core_Model_Layout_Element extends Varien_Simplexml_Element
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -28021,14 +28906,20 @@ class Mage_Core_Model_Layout_Update
         $elementClass = $this->getElementClass();
         $updatesRoot = Mage::app()->getConfig()->getNode($area.'/layout/updates');
         Mage::dispatchEvent('core_layout_update_updates_get_after', array('updates' => $updatesRoot));
+        $updates = $updatesRoot->asArray();
+        $themeUpdates = Mage::getSingleton('core/design_config')->getNode("$area/$package/$theme/layout/updates");
+        if ($themeUpdates && is_array($themeUpdates->asArray())) {
+            //array_values() to ensure that theme-specific layouts don't override, but add to module layouts
+            $updates = array_merge($updates, array_values($themeUpdates->asArray()));
+        }
         $updateFiles = array();
-        foreach ($updatesRoot->children() as $updateNode) {
-            if ($updateNode->file) {
-                $module = $updateNode->getAttribute('module');
+        foreach ($updates as $updateNode) {
+            if (!empty($updateNode['file'])) {
+                $module = isset($updateNode['@']['module']) ? $updateNode['@']['module'] : false;
                 if ($module && Mage::getStoreConfigFlag('advanced/modules_disable_output/' . $module, $storeId)) {
                     continue;
                 }
-                $updateFiles[] = (string)$updateNode->file;
+                $updateFiles[] = $updateNode['file'];
             }
         }
         // custom local layout updates file - load always last
@@ -28066,18 +28957,18 @@ class Mage_Core_Model_Layout_Update
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -28287,13 +29178,29 @@ class Mage_Core_Model_Locale
      */
     protected function _getOptionLocales($translatedName=false)
     {
-        $options    = array();
-        $locales    = $this->getLocale()->getLocaleList();
-        $languages  = $this->getLocale()->getTranslationList('language', $this->getLocale());
-        $countries  = $this->getCountryTranslationList();
+        $options = array();
+        $zendLocales = $this->getLocale()->getLocaleList();
+        $languages = $this->getLocale()->getTranslationList('language', $this->getLocale());
+        $countries = $this->getCountryTranslationList();
 
-        $allowed    = $this->getAllowLocales();
-        foreach ($locales as $code=>$active) {
+        //Zend locale codes for internal allowed locale codes
+        $allowed = $this->getAllowLocales();
+        $allowedAliases = array();
+        foreach ($allowed as $code) {
+            $allowedAliases[Zend_Locale::getAlias($code)] = $code;
+        }
+
+        //Internal locale codes translated from Zend locale codes
+        $locales = array();
+        foreach ($zendLocales as $code => $active) {
+            if (array_key_exists($code, $allowedAliases)) {
+                $locales[$allowedAliases[$code]] = $active;
+            } else {
+                $locales[$code] = $active;
+            }
+        }
+
+        foreach ($locales as $code => $active) {
             if (strstr($code, '_')) {
                 if (!in_array($code, $allowed)) {
                     continue;
@@ -28330,10 +29237,20 @@ class Mage_Core_Model_Locale
         ksort($zones);
         foreach ($zones as $code=>$name) {
             $name = trim($name);
-            $options[] = array(
-               'label' => empty($name) ? $code : $name . ' (' . $code . ')',
-               'value' => $code,
-            );
+            $zonesList = explode(' ', $code);
+            if (count($zonesList) == 1) {
+                $options[] = array(
+                    'label' => empty($name) ? $code : $name . ' (' . $code . ')',
+                    'value' => $code,
+                );
+            } else {
+                foreach ($zonesList as $zoneCode) {
+                    $options[] = array(
+                        'label' => empty($name) ? $zoneCode : $name . ' (' . $zoneCode . ')',
+                        'value' => $zoneCode,
+                    );
+                }
+            }
         }
         return $this->_sortOptionArray($options);
     }
@@ -28341,16 +29258,20 @@ class Mage_Core_Model_Locale
     /**
      * Retrieve days of week option list
      *
+     * @param bool $preserveCodes
+     * @param bool $ucFirstCode
+     *
      * @return array
      */
-    public function getOptionWeekdays()
+    public function getOptionWeekdays($preserveCodes = false, $ucFirstCode = false)
     {
         $options= array();
         $days = $this->getTranslationList('days');
-        foreach (array_values($days['format']['wide']) as $code => $name) {
+        $days = $preserveCodes ? $days['format']['wide']  : array_values($days['format']['wide']);
+        foreach ($days as $code => $name) {
             $options[] = array(
                'label' => $name,
-               'value' => $code,
+               'value' => $ucFirstCode ? ucfirst($code) : $code,
             );
         }
         return $options;
@@ -28463,13 +29384,14 @@ class Mage_Core_Model_Locale
 
     /**
      * Retrieve ISO date format
+     * and filter for 2 digit year format, it must be 4 digits
      *
      * @param   string $type
      * @return  string
      */
     public function getDateFormat($type=null)
     {
-        return $this->getTranslation($type, 'date');
+        return preg_replace('/(?<!y)yy(?!y)/', 'yyyy', $this->getTranslation($type, 'date'));
     }
 
     /**
@@ -28482,7 +29404,6 @@ class Mage_Core_Model_Locale
         return preg_replace('/(?<!y)yy(?!y)/', 'yyyy',
             $this->getTranslation(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, 'date'));
     }
-
 
     /**
      * Retrieve ISO time format
@@ -28563,12 +29484,13 @@ class Mage_Core_Model_Locale
      * @param   mixed $store Information about store
      * @param   string|integer|Zend_Date|array|null $date date in UTC
      * @param   boolean $includeTime flag for including time to date
+     * @param   string|null $format
      * @return  Zend_Date
      */
-    public function storeDate($store=null, $date=null, $includeTime=false)
+    public function storeDate($store=null, $date=null, $includeTime=false, $format = null)
     {
         $timezone = Mage::app()->getStore($store)->getConfig(self::XML_PATH_DEFAULT_TIMEZONE);
-        $date = new Zend_Date($date, null, $this->getLocale());
+        $date = new Zend_Date($date, $format, $this->getLocale());
         $date->setTimezone($timezone);
         if (!$includeTime) {
             $date->setHour(0)
@@ -28628,7 +29550,15 @@ class Mage_Core_Model_Locale
             try {
                 $currencyObject = new Zend_Currency($currency, $this->getLocale());
             } catch (Exception $e) {
-                $currencyObject = new Zend_Currency($this->getCurrency(), $this->getLocale());
+                /**
+                 * catch specific exceptions like "Currency 'USD' not found"
+                 * - back end falls with specific locals as Malaysia and etc.
+                 *
+                 * as we can see from Zend framework ticket
+                 * http://framework.zend.com/issues/browse/ZF-10038
+                 * zend team is not going to change it behaviour in the near time
+                 */
+                $currencyObject = new Zend_Currency($currency);
                 $options['name'] = $currency;
                 $options['currency'] = $currency;
                 $options['symbol'] = $currency;
@@ -28805,7 +29735,18 @@ class Mage_Core_Model_Locale
         return $this->getLocale()->getTranslation($value, $path, $this->getLocale());
     }
 
-/**
+    /**
+     * Replace all yy date format to yyyy
+     *
+     * @param $currentFormat
+     * @return mixed
+     */
+    protected function _convertYearTwoDigitTo4($currentFormat)
+    {
+        return preg_replace('/(\byy\b)/', 'yyyy', $currentFormat);
+    }
+
+    /**
      * Returns the localized country name
      *
      * @param  string             $value  Name to get detailed information about
@@ -28871,18 +29812,18 @@ class Mage_Core_Model_Locale
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -28952,18 +29893,18 @@ class Mage_Core_Model_Message
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -29150,18 +30091,18 @@ class Mage_Core_Model_Message_Collection
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -29262,6 +30203,16 @@ class Mage_Core_Model_Resource
         }
 
         return $connection;
+    }
+
+    /**
+     * Get Instances of actual connections
+     *
+     * @return array
+     */
+    public function getConnections()
+    {
+        return $this->_connections;
     }
 
     /**
@@ -31215,18 +32166,18 @@ class Varien_Data_Collection_Db extends Varien_Data_Collection
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -31933,18 +32884,18 @@ abstract class Mage_Core_Model_Resource_Db_Collection_Abstract extends Varien_Da
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -31975,27 +32926,22 @@ class Mage_Core_Model_Resource_Design extends Mage_Core_Model_Resource_Db_Abstra
      */
     public function _beforeSave(Mage_Core_Model_Abstract $object)
     {
-        if ($date = $object->getDateFrom()) {
-            $object->setDateFrom($this->formatDate($date));
-        } else {
-            $object->setDateFrom(null);
-        }
-
-        if ($date = $object->getDateTo()) {
-            $object->setDateTo($this->formatDate($date));
-        } else {
-            $object->setDateTo(null);
-        }
-
-        if (!is_null($object->getDateFrom()) && !is_null($object->getDateTo())
-                && Varien_Date::toTimestamp($object->getDateFrom()) > Varien_Date::toTimestamp($object->getDateTo())) {
-            Mage::throwException(Mage::helper('core')->__('Start date cannot be greater than end date.'));
+        $dateFrom = $object->getDateFrom();
+        $dateTo = $object->getDateTo();
+        if (!empty($dateFrom) && !empty($dateTo)) {
+            $validator = new Zend_Validate_Date();
+            if (!$validator->isValid($dateFrom) || !$validator->isValid($dateTo)) {
+                Mage::throwException(Mage::helper('core')->__('Invalid date'));
+            }
+            if (Varien_Date::toTimestamp($dateFrom) > Varien_Date::toTimestamp($dateTo)) {
+                Mage::throwException(Mage::helper('core')->__('Start date cannot be greater than end date.'));
+            }
         }
 
         $check = $this->_checkIntersection(
             $object->getStoreId(),
-            $object->getDateFrom(),
-            $object->getDateTo(),
+            $dateFrom,
+            $dateTo,
             $object->getId()
         );
 
@@ -32003,11 +32949,6 @@ class Mage_Core_Model_Resource_Design extends Mage_Core_Model_Resource_Db_Abstra
             Mage::throwException(
                 Mage::helper('core')->__('Your design change for the specified store intersects with another one, please specify another date range.'));
         }
-
-        if ($object->getDateFrom() === null)
-            $object->setDateFrom(new Zend_Db_Expr('null'));
-        if ($object->getDateTo() === null)
-            $object->setDateTo(new Zend_Db_Expr('null'));
 
         parent::_beforeSave($object);
     }
@@ -32032,7 +32973,7 @@ class Mage_Core_Model_Resource_Design extends Mage_Core_Model_Resource_Db_Abstra
 
         $dateConditions = array('date_to IS NULL AND date_from IS NULL');
 
-        if (!is_null($dateFrom)) {
+        if (!empty($dateFrom)) {
             $dateConditions[] = ':date_from BETWEEN date_from AND date_to';
             $dateConditions[] = ':date_from >= date_from and date_to IS NULL';
             $dateConditions[] = ':date_from <= date_to and date_from IS NULL';
@@ -32040,7 +32981,7 @@ class Mage_Core_Model_Resource_Design extends Mage_Core_Model_Resource_Db_Abstra
             $dateConditions[] = 'date_from IS NULL';
         }
 
-        if (!is_null($dateTo)) {
+        if (!empty($dateTo)) {
             $dateConditions[] = ':date_to BETWEEN date_from AND date_to';
             $dateConditions[] = ':date_to >= date_from AND date_to IS NULL';
             $dateConditions[] = ':date_to <= date_to AND date_from IS NULL';
@@ -32048,18 +32989,18 @@ class Mage_Core_Model_Resource_Design extends Mage_Core_Model_Resource_Db_Abstra
             $dateConditions[] = 'date_to IS NULL';
         }
 
-        if (is_null($dateFrom) && !is_null($dateTo)) {
+        if (empty($dateFrom) && !empty($dateTo)) {
             $dateConditions[] = 'date_to <= :date_to OR date_from <= :date_to';
         }
 
-        if (!is_null($dateFrom) && is_null($dateTo)) {
+        if (!empty($dateFrom) && empty($dateTo)) {
             $dateConditions[] = 'date_to >= :date_from OR date_from >= :date_from';
         }
 
-        if (!is_null($dateFrom) && !is_null($dateTo)) {
+        if (!empty($dateFrom) && !empty($dateTo)) {
             $dateConditions[] = 'date_from BETWEEN :date_from AND :date_to';
             $dateConditions[] = 'date_to BETWEEN :date_from AND :date_to';
-        } elseif (is_null($dateFrom) && is_null($dateTo)) {
+        } elseif (empty($dateFrom) && empty($dateTo)) {
             $dateConditions = array();
         }
 
@@ -32074,10 +33015,10 @@ class Mage_Core_Model_Resource_Design extends Mage_Core_Model_Resource_Db_Abstra
             'current_id' => (int)$currentId,
         );
 
-        if (!is_null($dateTo)) {
+        if (!empty($dateTo)) {
             $bind['date_to'] = $dateTo;
         }
-        if (!is_null($dateFrom)) {
+        if (!empty($dateFrom)) {
             $bind['date_from'] = $dateFrom;
         }
 
@@ -32123,18 +33064,18 @@ class Mage_Core_Model_Resource_Design extends Mage_Core_Model_Resource_Db_Abstra
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -32297,18 +33238,18 @@ class Mage_Core_Model_Resource_Store extends Mage_Core_Model_Resource_Db_Abstrac
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -32505,18 +33446,18 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -32640,18 +33581,18 @@ class Mage_Core_Model_Resource_Store_Group extends Mage_Core_Model_Resource_Db_A
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -32771,18 +33712,18 @@ class Mage_Core_Model_Resource_Store_Group_Collection extends Mage_Core_Model_Re
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -32843,18 +33784,18 @@ abstract class Mage_Core_Model_Resource_Type_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 abstract class Mage_Core_Model_Resource_Type_Db extends Mage_Core_Model_Resource_Type_Abstract 
@@ -32878,18 +33819,18 @@ abstract class Mage_Core_Model_Resource_Type_Db extends Mage_Core_Model_Resource
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -32936,7 +33877,7 @@ class Mage_Core_Model_Resource_Type_Db_Pdo_Mysql extends Mage_Core_Model_Resourc
      */
     protected function _getDbAdapterClassName()
     {
-        return 'Varien_Db_Adapter_Pdo_Mysql';
+        return 'Magento_Db_Adapter_Pdo_Mysql';
     }
 
 }
@@ -32951,18 +33892,18 @@ class Mage_Core_Model_Resource_Type_Db_Pdo_Mysql extends Mage_Core_Model_Resourc
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -33026,8 +33967,8 @@ class Mage_Core_Model_Resource_Url_Rewrite extends Mage_Core_Model_Resource_Db_A
         $select = parent::_getLoadSelect($field, $value, $object);
 
         if (!is_null($object->getStoreId())) {
-            $select->where('store_id IN(?)', array(Mage_Core_Model_App::ADMIN_STORE_ID, $object->getStoreId()));
-            $select->order('store_id ' . Varien_Db_Select::SQL_DESC);
+            $select->where('store_id = ?', $object->getStoreId());
+            $select->order('is_system ' . Varien_Db_Select::SQL_DESC);
             $select->limit(1);
         }
 
@@ -33132,18 +34073,18 @@ class Mage_Core_Model_Resource_Url_Rewrite extends Mage_Core_Model_Resource_Db_A
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -33267,18 +34208,18 @@ class Mage_Core_Model_Resource_Website extends Mage_Core_Model_Resource_Db_Abstr
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -33453,18 +34394,18 @@ class Mage_Core_Model_Resource_Website_Collection extends Mage_Core_Model_Resour
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -33509,18 +34450,18 @@ class Mage_Core_Model_Session extends Mage_Core_Model_Session_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -33551,38 +34492,96 @@ class Mage_Core_Model_Store extends Mage_Core_Model_Abstract
      * Configuration pathes
      */
     const XML_PATH_STORE_STORE_NAME       = 'general/store_information/name';
+    /**
+     *
+     */
     const XML_PATH_STORE_STORE_PHONE      = 'general/store_information/phone';
+    /**
+     *
+     */
+    const XML_PATH_STORE_STORE_HOURS      = 'general/store_information/hours';
+    /**
+     *
+     */
     const XML_PATH_STORE_IN_URL           = 'web/url/use_store';
+    /**
+     *
+     */
     const XML_PATH_USE_REWRITES           = 'web/seo/use_rewrites';
+    /**
+     *
+     */
     const XML_PATH_UNSECURE_BASE_URL      = 'web/unsecure/base_url';
+    /**
+     *
+     */
     const XML_PATH_SECURE_BASE_URL        = 'web/secure/base_url';
+    /**
+     *
+     */
     const XML_PATH_SECURE_IN_FRONTEND     = 'web/secure/use_in_frontend';
+    /**
+     *
+     */
     const XML_PATH_SECURE_IN_ADMINHTML    = 'web/secure/use_in_adminhtml';
+    /**
+     *
+     */
     const XML_PATH_SECURE_BASE_LINK_URL   = 'web/secure/base_link_url';
+    /**
+     *
+     */
     const XML_PATH_UNSECURE_BASE_LINK_URL = 'web/unsecure/base_link_url';
+    /**
+     *
+     */
     const XML_PATH_OFFLOADER_HEADER       = 'web/secure/offloader_header';
+    /**
+     *
+     */
     const XML_PATH_PRICE_SCOPE            = 'catalog/price/scope';
 
     /**
      * Price scope constants
      */
     const PRICE_SCOPE_GLOBAL              = 0;
+    /**
+     *
+     */
     const PRICE_SCOPE_WEBSITE             = 1;
 
     /**
      * Possible URL types
      */
     const URL_TYPE_LINK                   = 'link';
+    /**
+     *
+     */
     const URL_TYPE_DIRECT_LINK            = 'direct_link';
+    /**
+     *
+     */
     const URL_TYPE_WEB                    = 'web';
+    /**
+     *
+     */
     const URL_TYPE_SKIN                   = 'skin';
+    /**
+     *
+     */
     const URL_TYPE_JS                     = 'js';
+    /**
+     *
+     */
     const URL_TYPE_MEDIA                  = 'media';
 
     /**
      * Code constants
      */
     const DEFAULT_CODE                    = 'default';
+    /**
+     *
+     */
     const ADMIN_CODE                      = 'admin';
 
     /**
@@ -33758,7 +34757,7 @@ class Mage_Core_Model_Store extends Mage_Core_Model_Abstract
      * @param   string $field
      * @return  Mage_Core_Model_Store
      */
-    public function load($id, $field=null)
+    public function load($id, $field = null)
     {
         if (!is_numeric($id) && is_null($field)) {
             $this->_getResource()->load($this, $id, 'code');
@@ -34080,15 +35079,8 @@ class Mage_Core_Model_Store extends Mage_Core_Model_Abstract
      */
     protected function _updatePathUseRewrites($url)
     {
-        if ($this->isAdmin()
-            || !$this->getConfig(self::XML_PATH_USE_REWRITES)
-            || !Mage::isInstalled()
-        ) {
-            if ($this->_isCustomEntryPoint()) {
-                $indexFileName = 'index.php';
-            } else {
-                $indexFileName = basename($_SERVER['SCRIPT_FILENAME']);
-            }
+        if ($this->isAdmin() || !$this->getConfig(self::XML_PATH_USE_REWRITES) || !Mage::isInstalled()) {
+            $indexFileName = $this->_isCustomEntryPoint() ? 'index.php' : basename($_SERVER['SCRIPT_FILENAME']);
             $url .= $indexFileName . '/';
         }
         return $url;
@@ -34470,13 +35462,11 @@ class Mage_Core_Model_Store extends Mage_Core_Model_Abstract
                 $this->_priceFilter = $this->getCurrentCurrency()->getFilter();
                 $this->_priceFilter->setRate($this->getBaseCurrency()->getRate($this->getCurrentCurrency()));
             }
-            elseif($this->getDefaultCurrency()) {
+            } elseif ($this->getDefaultCurrency()) {
                 $this->_priceFilter = $this->getDefaultCurrency()->getFilter();
-            }
-            else {
+            } else {
                 $this->_priceFilter = new Varien_Filter_Sprintf('%s', 2);
             }
-        }
         return $this->_priceFilter;
     }
 
@@ -34722,18 +35712,18 @@ class Mage_Core_Model_Store extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -35065,18 +36055,18 @@ class Mage_Core_Model_Store_Group extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -35095,6 +36085,11 @@ class Mage_Core_Model_Translate
     const CONFIG_KEY_STORE  = 'store';
     const CONFIG_KEY_DESIGN_PACKAGE = 'package';
     const CONFIG_KEY_DESIGN_THEME   = 'theme';
+
+    /**
+     * Default translation string
+     */
+    const DEFAULT_STRING = 'Translate String';
 
     /**
      * Locale name
@@ -35636,18 +36631,18 @@ class Mage_Core_Model_Translate
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
  
 /**
@@ -35720,18 +36715,18 @@ class Mage_Core_Model_Translate_Expr
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -35820,10 +36815,7 @@ class Mage_Core_Model_Translate_Inline
         'blockquote'    => 'Long quotation',
         'q'             => 'Short quotation',
         'cite'          => 'Citation',
-        'dt'            => 'Item in a definition list',
-        'dd'            => 'Item description in a definition list.',
         'caption'       => 'Table caption',
-        'th'            => 'Header cell in a table',
         'abbr'          => 'Abbreviated phrase',
         'acronym'       => 'An acronym',
         'var'           => 'Variable part of a text',
@@ -35837,10 +36829,10 @@ class Mage_Core_Model_Translate_Inline
         'h4'            => 'Heading level 4',
         'h5'            => 'Heading level 5',
         'h6'            => 'Heading level 6',
-        'p'             => 'Paragraph',
-        'pre'           => 'Preformatted text',
         'center'        => 'Centered text',
         'select'        => 'List options',
+        'img'           => 'Image',
+        'input'         => 'Form element',
     );
 
     /**
@@ -35868,8 +36860,8 @@ class Mage_Core_Model_Translate_Inline
             $this->_isAllowed = $active && Mage::helper('core')->isDevAllowed($store);
         }
 
-        $translate = Mage::getSingleton('core/translate');
         /* @var $translate Mage_Core_Model_Translate */
+        $translate = Mage::getSingleton('core/translate');
 
         return $translate->getTranslateInline() && $this->_isAllowed;
     }
@@ -36076,6 +37068,7 @@ class Mage_Core_Model_Translate_Inline
      * Prepare tags inline translates for the content
      *
      * @param string $content
+     * @return void
      */
     protected function _prepareTagAttributesForContent(&$content)
     {
@@ -36087,12 +37080,11 @@ class Mage_Core_Model_Translate_Inline
 
         $tagMatch   = array();
         $nextTag    = 0;
-        $tagRegExp  = '#<([a-z]+)\s*?[^>]+?((' . $this->_tokenRegex . ')[^>]*?)+/?>#i';
+        $tagRegExp = '#<([a-z]+)\s*?[^>]+?((' . $this->_tokenRegex . ')[^>]*?)+\\\\?/?>#iS';
         while (preg_match($tagRegExp, $content, $tagMatch, PREG_OFFSET_CAPTURE, $nextTag)) {
-            $next       = 0;
             $tagHtml    = $tagMatch[0][0];
             $m          = array();
-            $attrRegExp = '#' . $this->_tokenRegex . '#';
+            $attrRegExp = '#' . $this->_tokenRegex . '#S';
             $trArr = $this->_getTranslateData($attrRegExp, $tagHtml, array($this, '_getAttributeLocation'));
             if ($trArr) {
                 $transRegExp = '# translate=' . $quoteHtml . '\[([^'.preg_quote($quoteHtml).']*)]' . $quoteHtml . '#i';
@@ -36104,6 +37096,7 @@ class Mage_Core_Model_Translate_Inline
                     $trAttr  = ' translate=' . $quoteHtml
                         . htmlspecialchars('[' . join(',', $trArr) . ']') . $quoteHtml;
                 }
+                $tagHtml = substr_replace($tagHtml , $trAttr, strlen($tagMatch[1][0])+1, 1);
                 $content = substr_replace($content, $tagHtml, $tagMatch[0][1], strlen($tagMatch[0][0]));
             }
             $nextTag = $tagMatch[0][1] + strlen($tagHtml);
@@ -36170,28 +37163,26 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Prepare simple tags
      *
-     * @param string $body
+     * @param string $content
      * @param array $tagsList
      * @param string|array $formatCallback
      * @param bool $isNeedTranslateAttributes
      */
-    protected function _translateTags(&$body, $tagsList, $formatCallback, $isNeedTranslateAttributes)
+    protected function _translateTags(&$content, $tagsList, $formatCallback, $isNeedTranslateAttributes)
     {
-        if ($this->getIsJson()) {
-            $quoteHtml   = '\"';
-        } else {
-            $quoteHtml   = '"';
-        }
-
         $nextTag = 0;
 
         $tags = implode('|', array_keys($tagsList));
-        $tagRegExp  = '#<(' . $tags . ')(\s*[^>]*>)#i';
-
+        $tagRegExp  = '#<(' . $tags . ')(/?>| \s*[^>]*+/?>)#iSU';
         $tagMatch = array();
-        while (preg_match($tagRegExp, $body, $tagMatch, PREG_OFFSET_CAPTURE, $nextTag)) {
+        while (preg_match($tagRegExp, $content, $tagMatch, PREG_OFFSET_CAPTURE, $nextTag)) {
             $tagName  = strtolower($tagMatch[1][0]);
-            $tagClosurePos = $this->findEndOfTag($body, $tagName, $tagMatch[0][1]);
+            if (substr($tagMatch[0][0], -2) == '/>') {
+                $tagClosurePos = $tagMatch[0][1] + strlen($tagMatch[0][0]);
+            } else {
+                $tagClosurePos = $this->findEndOfTag($content, $tagName, $tagMatch[0][1]);
+            }
+
             if ($tagClosurePos === false) {
                 $nextTag += strlen($tagMatch[0][0]);
                 continue;
@@ -36201,23 +37192,12 @@ class Mage_Core_Model_Translate_Inline
 
             $tagStartLength = strlen($tagMatch[0][0]);
 
-            $tagHtml = $tagMatch[0][0] ;
-            $tagEnd = substr($body, $tagMatch[0][1] + $tagStartLength, $tagLength - $tagStartLength);
-
-            if ($isNeedTranslateAttributes
-                && preg_match_all('#' . $this->_tokenRegex . '#', $tagEnd, $m)
-                && count($m[0]) > $this->_maxTranslateBlocks
-            ) {
-                $this->_translateTags($tagEnd, $tagsList, $formatCallback, $isNeedTranslateAttributes);
-            }
-
-            if ($isNeedTranslateAttributes) {
-                $this->_prepareTagAttributesForContent($tagEnd);
-            }
-            $tagHtml .= $tagEnd;
+            $tagHtml = $tagMatch[0][0]
+                . substr($content, $tagMatch[0][1] + $tagStartLength, $tagLength - $tagStartLength);
+            $tagClosurePos = $tagMatch[0][1] + strlen($tagHtml);
 
             $trArr = $this->_getTranslateData(
-                '#' . $this->_tokenRegex . '#i',
+                '#' . $this->_tokenRegex . '#iS',
                 $tagHtml,
                 array($this, '_getTagLocation'),
                 array(
@@ -36229,8 +37209,8 @@ class Mage_Core_Model_Translate_Inline
             if (!empty($trArr)) {
                 $trArr = array_unique($trArr);
                 $tagHtml = call_user_func(array($this, $formatCallback), $tagHtml, $tagName, $trArr);
-
-                $body = substr_replace($body, $tagHtml, $tagMatch[0][1], $tagLength);
+                $tagClosurePos = $tagMatch[0][1] + strlen($tagHtml);
+                $content = substr_replace($content, $tagHtml, $tagMatch[0][1], $tagLength);
             }
             $nextTag = $tagClosurePos;
         }
@@ -36247,17 +37227,18 @@ class Mage_Core_Model_Translate_Inline
     private function findEndOfTag($body, $tagName, $from)
     {
         $openTag = '<' . $tagName;
-        $closeTag = '</' . $tagName;
-        $end = $from + strlen($openTag);
-        $length = $end - $from;
+        $closeTag =  ($this->getIsJson() ? '<\\/' : '</') . $tagName;
+        $tagLength = strlen($tagName);
+        $length = $tagLength + 1;
+        $end = $from + 1;
         while (substr_count($body, $openTag, $from, $length) != substr_count($body, $closeTag, $from, $length)) {
-            $end = strpos($body, $closeTag, $end + strlen($closeTag) - 1);
+            $end = strpos($body, $closeTag, $end + $tagLength + 1);
             if ($end === false) {
                 return false;
             }
-            $length = $end - $from  + strlen($closeTag);
+            $length = $end - $from  + $tagLength + 3;
         }
-        if (preg_match('#<\/' . $tagName .'\s*?>#i', $body, $tagMatch, null, $end)) {
+        if (preg_match('#<\\\\?\/' . $tagName .'\s*?>#i', $body, $tagMatch, null, $end)) {
             return $end + strlen($tagMatch[0]);
         } else {
             return false;
@@ -36351,18 +37332,18 @@ class Mage_Core_Model_Translate_Inline
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -36430,12 +37411,29 @@ class Mage_Core_Model_Url extends Varien_Object
     const DEFAULT_ACTION_NAME       = 'index';
 
     /**
-     * Configuration paths
+     * XML base url path unsecure
      */
     const XML_PATH_UNSECURE_URL     = 'web/unsecure/base_url';
+
+    /**
+     * XML base url path secure
+     */
     const XML_PATH_SECURE_URL       = 'web/secure/base_url';
+
+    /**
+     * XML path for using in adminhtml
+     */
     const XML_PATH_SECURE_IN_ADMIN  = 'default/web/secure/use_in_adminhtml';
+
+    /**
+     * XML path for using in frontend
+     */
     const XML_PATH_SECURE_IN_FRONT  = 'web/secure/use_in_frontend';
+
+    /**
+     * Param name for form key functionality
+     */
+    const FORM_KEY = 'form_key';
 
     /**
      * Configuration data cache
@@ -36824,7 +37822,7 @@ class Mage_Core_Model_Url extends Varien_Object
             }
             $routePath = $this->getActionPath();
             if ($this->getRouteParams()) {
-                foreach ($this->getRouteParams() as $key=>$value) {
+                foreach ($this->getRouteParams() as $key => $value) {
                     if (is_null($value) || false === $value || '' === $value || !is_scalar($value)) {
                         continue;
                     }
@@ -37280,8 +38278,8 @@ class Mage_Core_Model_Url extends Varien_Object
     /**
      * Build url by requested path and parameters
      *
-     * @param   string|null $routePath
-     * @param   array|null $routeParams
+     * @param string|null $routePath
+     * @param array|null $routeParams
      * @return  string
      */
     public function getUrl($routePath = null, $routeParams = null)
@@ -37315,6 +38313,7 @@ class Mage_Core_Model_Url extends Varien_Object
             $noSid = (bool)$routeParams['_nosid'];
             unset($routeParams['_nosid']);
         }
+
         $url = $this->getRouteUrl($routePath, $routeParams);
         /**
          * Apply query params, need call after getRouteUrl for rewrite _current values
@@ -37345,6 +38344,18 @@ class Mage_Core_Model_Url extends Varien_Object
         }
 
         return $this->escape($url);
+    }
+
+    /**
+     * Return singleton model instance
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _getSingletonModel($name, $arguments = array())
+    {
+        return Mage::getSingleton($name, $arguments);
     }
 
     /**
@@ -37560,18 +38571,60 @@ class Mage_Core_Model_Url extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * Url rewrite interface
+ *
+ * @category Mage
+ * @package Mage_Core
+ * @author Magento Core Team <core@magentocommerce.com>
+ */
+interface Mage_Core_Model_Url_Rewrite_Interface
+{
+    /**
+     * Load rewrite information for request
+     *
+     * @param array|string $path
+     * @return Mage_Core_Model_Url_Rewrite_Interface
+     */
+    public function loadByRequestPath($path);
+}
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    Mage
+ * @package     Mage_Core
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -37602,7 +38655,7 @@ class Mage_Core_Model_Url extends Varien_Object
  * @package     Mage_Core
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-class Mage_Core_Model_Url_Rewrite extends Mage_Core_Model_Abstract
+class Mage_Core_Model_Url_Rewrite extends Mage_Core_Model_Abstract implements Mage_Core_Model_Url_Rewrite_Interface
 {
     const TYPE_CATEGORY = 1;
     const TYPE_PRODUCT  = 2;
@@ -37741,6 +38794,7 @@ class Mage_Core_Model_Url_Rewrite extends Mage_Core_Model_Abstract
      * @param   Zend_Controller_Request_Http $request
      * @param   Zend_Controller_Response_Http $response
      * @return  Mage_Core_Model_Url
+     * @deprecated since 1.7.0.2. Refactored and moved to Mage_Core_Controller_Request_Rewrite
      */
     public function rewrite(Zend_Controller_Request_Http $request=null, Zend_Controller_Response_Http $response=null)
     {
@@ -37844,6 +38898,12 @@ class Mage_Core_Model_Url_Rewrite extends Mage_Core_Model_Abstract
         return true;
     }
 
+    /**
+     * Prepare and return QUERY_STRING
+     *
+     * @return bool|string
+     * @deprecated since 1.7.0.2. Refactored and moved to Mage_Core_Controller_Request_Rewrite
+     */
     protected function _getQueryString()
     {
         if (!empty($_SERVER['QUERY_STRING'])) {
@@ -37876,6 +38936,7 @@ class Mage_Core_Model_Url_Rewrite extends Mage_Core_Model_Abstract
      *
      * @param string $url
      * @param bool $isPermanent
+     * @deprecated since 1.7.0.2. Refactored and moved to Mage_Core_Controller_Request_Rewrite
      */
     protected function _sendRedirectHeaders($url, $isPermanent = false)
     {
@@ -37900,18 +38961,18 @@ class Mage_Core_Model_Url_Rewrite extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -38457,18 +39518,18 @@ class Mage_Core_Model_Website extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -38525,6 +39586,12 @@ class Mage_Customer_Helper_Data extends Mage_Core_Helper_Abstract
      */
     const XML_PATH_CUSTOMER_RESET_PASSWORD_LINK_EXPIRATION_PERIOD
         = 'default/customer/password/reset_link_expiration_period';
+
+    /**
+     * Configuration path to require admin password on customer password change
+     */
+    const XML_PATH_CUSTOMER_REQUIRE_ADMIN_USER_TO_CHANGE_USER_PASSWORD
+        = 'customer/password/require_admin_user_to_change_user_password';
 
     /**
      * VAT class constants
@@ -38843,6 +39910,16 @@ class Mage_Customer_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Retrieve is require admin password on customer password change
+     *
+     * @return bool
+     */
+    public function getIsRequireAdminUserToChangeUserPassword()
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_CUSTOMER_REQUIRE_ADMIN_USER_TO_CHANGE_USER_PASSWORD);
+    }
+
+    /**
      * Get default customer group id
      *
      * @param Mage_Core_Model_Store|string|int $store
@@ -39077,18 +40154,18 @@ class Mage_Customer_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -39176,18 +40253,18 @@ class Mage_Customer_Model_Config_Share extends Mage_Core_Model_Config_Data
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -39332,18 +40409,18 @@ class Mage_Customer_Model_Group extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -39552,18 +40629,18 @@ class Mage_Customer_Model_Observer
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -39755,7 +40832,6 @@ class Mage_Customer_Model_Session extends Mage_Core_Model_Session_Abstract
 
         if ($customer->authenticate($username, $password)) {
             $this->setCustomerAsLoggedIn($customer);
-            $this->renewSession();
             return true;
         }
         return false;
@@ -39764,6 +40840,7 @@ class Mage_Customer_Model_Session extends Mage_Core_Model_Session_Abstract
     public function setCustomerAsLoggedIn($customer)
     {
         $this->setCustomer($customer);
+        $this->renewSession();
         Mage::dispatchEvent('customer_login', array('customer'=>$customer));
         return $this;
     }
@@ -39898,18 +40975,18 @@ class Mage_Customer_Model_Session extends Mage_Core_Model_Session_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -40605,18 +41682,18 @@ class Mage_Eav_Model_Config
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -40634,18 +41711,18 @@ interface Mage_Eav_Model_Entity_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -42360,18 +43437,18 @@ abstract class Mage_Eav_Model_Entity_Abstract extends Mage_Core_Model_Resource_A
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -42414,18 +43491,18 @@ class Mage_Eav_Model_Entity extends Mage_Eav_Model_Entity_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -42443,18 +43520,18 @@ interface Mage_Eav_Model_Entity_Attribute_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -43228,18 +44305,18 @@ abstract class Mage_Eav_Model_Entity_Attribute_Abstract extends Mage_Core_Model_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -43353,16 +44430,10 @@ class Mage_Eav_Model_Entity_Attribute extends Mage_Eav_Model_Entity_Attribute_Ab
      * Prepare data for save
      *
      * @return Mage_Eav_Model_Entity_Attribute
+     * @throws Mage_Eav_Exception
      */
     protected function _beforeSave()
     {
-        // prevent overriding product data
-        if (isset($this->_data['attribute_code'])
-            && Mage::getModel('catalog/product')->isReservedAttribute($this))
-        {
-            throw Mage::exception('Mage_Eav', Mage::helper('eav')->__('The attribute code \'%s\' is reserved by system. Please try another attribute code', $this->_data['attribute_code']));
-        }
-
         /**
          * Check for maximum attribute_code length
          */
@@ -43572,18 +44643,18 @@ class Mage_Eav_Model_Entity_Attribute extends Mage_Eav_Model_Entity_Attribute_Ab
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -43634,18 +44705,18 @@ interface Mage_Eav_Model_Entity_Attribute_Backend_Interface
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -43959,18 +45030,18 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 class Mage_Eav_Model_Entity_Attribute_Backend_Datetime extends Mage_Eav_Model_Entity_Attribute_Backend_Abstract
@@ -44051,18 +45122,18 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Datetime extends Mage_Eav_Model_En
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -44087,18 +45158,18 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Default extends Mage_Eav_Model_Ent
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -44110,8 +45181,22 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Default extends Mage_Eav_Model_Ent
  */
 class Mage_Eav_Model_Entity_Attribute_Backend_Time_Created extends Mage_Eav_Model_Entity_Attribute_Backend_Abstract
 {
+
+    /**
+     * Returns date format if it matches a certain mask.
+     * @param $date
+     * @return null|string
+     */
+    protected function _getFormat($date)
+    {
+        if (is_string($date) && preg_match('#^\d{4,4}-\d{2,2}-\d{2,2} \d{2,2}:\d{2,2}:\d{2,2}$#', $date)) {
+            return 'yyyy-MM-dd HH:mm:ss';
+        }
+        return null;
+    }
     /**
      * Set created date
+     * Set created date in UTC time zone
      *
      * @param Mage_Core_Model_Object $object
      * @return Mage_Eav_Model_Entity_Attribute_Backend_Time_Created
@@ -44119,9 +45204,35 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Time_Created extends Mage_Eav_Mode
     public function beforeSave($object)
     {
         $attributeCode = $this->getAttribute()->getAttributeCode();
-        if ($object->isObjectNew() && is_null($object->getData($attributeCode))) {
-            $object->setData($attributeCode, Varien_Date::now());
+        $date = $object->getData($attributeCode);
+        if (is_null($date)) {
+            if ($object->isObjectNew()) {
+                $object->setData($attributeCode, Varien_Date::now());
+            }
+        } else {
+            // convert to UTC
+            $zendDate = Mage::app()->getLocale()->utcDate(null, $date, true, $this->_getFormat($date));
+            $object->setData($attributeCode, $zendDate->getIso());
         }
+
+        return $this;
+    }
+
+    /**
+     * Convert create date from UTC to current store time zone
+     *
+     * @param Varien_Object $object
+     * @return Mage_Eav_Model_Entity_Attribute_Backend_Time_Created
+     */
+    public function afterLoad($object)
+    {
+        $attributeCode = $this->getAttribute()->getAttributeCode();
+        $date = $object->getData($attributeCode);
+
+        $zendDate = Mage::app()->getLocale()->storeDate(null, $date, true, $this->_getFormat($date));
+        $object->setData($attributeCode, $zendDate->getIso());
+
+        parent::afterLoad($object);
 
         return $this;
     }
@@ -44137,18 +45248,18 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Time_Created extends Mage_Eav_Mode
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -44183,18 +45294,18 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Time_Updated extends Mage_Eav_Mode
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -44336,6 +45447,7 @@ class Mage_Eav_Model_Entity_Type extends Mage_Core_Model_Abstract
      *
      * @param int $storeId
      * @return string
+     * @throws Exception
      */
     public function fetchNewIncrementId($storeId = null)
     {
@@ -44353,35 +45465,40 @@ class Mage_Eav_Model_Entity_Type extends Mage_Core_Model_Abstract
         // Start transaction to run SELECT ... FOR UPDATE
         $this->_getResource()->beginTransaction();
 
-        $entityStoreConfig = Mage::getModel('eav/entity_store')
-            ->loadByEntityStore($this->getId(), $storeId);
+        try {
+            $entityStoreConfig = Mage::getModel('eav/entity_store')
+                ->loadByEntityStore($this->getId(), $storeId);
 
-        if (!$entityStoreConfig->getId()) {
-            $entityStoreConfig
-                ->setEntityTypeId($this->getId())
-                ->setStoreId($storeId)
-                ->setIncrementPrefix($storeId)
-                ->save();
+            if (!$entityStoreConfig->getId()) {
+                $entityStoreConfig
+                    ->setEntityTypeId($this->getId())
+                    ->setStoreId($storeId)
+                    ->setIncrementPrefix($storeId)
+                    ->save();
+            }
+
+            $incrementInstance = Mage::getModel($this->getIncrementModel())
+                ->setPrefix($entityStoreConfig->getIncrementPrefix())
+                ->setPadLength($this->getIncrementPadLength())
+                ->setPadChar($this->getIncrementPadChar())
+                ->setLastId($entityStoreConfig->getIncrementLastId())
+                ->setEntityTypeId($entityStoreConfig->getEntityTypeId())
+                ->setStoreId($entityStoreConfig->getStoreId());
+
+            /**
+             * do read lock on eav/entity_store to solve potential timing issues
+             * (most probably already done by beginTransaction of entity save)
+             */
+            $incrementId = $incrementInstance->getNextId();
+            $entityStoreConfig->setIncrementLastId($incrementId);
+            $entityStoreConfig->save();
+
+            // Commit increment_last_id changes
+            $this->_getResource()->commit();
+        } catch (Exception $e) {
+            $this->_getResource()->rollBack();
+            throw $e;
         }
-
-        $incrementInstance = Mage::getModel($this->getIncrementModel())
-            ->setPrefix($entityStoreConfig->getIncrementPrefix())
-            ->setPadLength($this->getIncrementPadLength())
-            ->setPadChar($this->getIncrementPadChar())
-            ->setLastId($entityStoreConfig->getIncrementLastId())
-            ->setEntityTypeId($entityStoreConfig->getEntityTypeId())
-            ->setStoreId($entityStoreConfig->getStoreId());
-
-        /**
-         * do read lock on eav/entity_store to solve potential timing issues
-         * (most probably already done by beginTransaction of entity save)
-         */
-        $incrementId = $incrementInstance->getNextId();
-        $entityStoreConfig->setIncrementLastId($incrementId);
-        $entityStoreConfig->save();
-
-        // Commit increment_last_id changes
-        $this->_getResource()->commit();
 
         return $incrementId;
     }
@@ -44436,7 +45553,7 @@ class Mage_Eav_Model_Entity_Type extends Mage_Core_Model_Abstract
 
         return $tablePrefix;
     }
-    
+
     /**
      * Get default attribute set identifier for etity type
      *
@@ -44526,18 +45643,18 @@ class Mage_Eav_Model_Entity_Type extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -44947,7 +46064,7 @@ class Mage_Eav_Model_Resource_Entity_Attribute extends Mage_Core_Model_Resource_
     public function getFlatUpdateSelect(Mage_Eav_Model_Entity_Attribute_Abstract $attribute, $storeId)
     {
         $adapter = $this->_getReadAdapter();
-        $joinConditionTemplate = "%s.entity_id=%s.entity_id"
+        $joinConditionTemplate = "%s.entity_id = %s.entity_id"
             ." AND %s.entity_type_id = ".$attribute->getEntityTypeId()
             ." AND %s.attribute_id = ".$attribute->getId()
             ." AND %s.store_id = %d";
@@ -44968,7 +46085,7 @@ class Mage_Eav_Model_Resource_Entity_Attribute extends Mage_Core_Model_Resource_
                 array())
             ->joinLeft(
                 array('t2' => $attribute->getBackend()->getTable()),
-                sprintf($joinConditionTemplate, 't1', 't2', 't2', 't2', 't2', $storeId),
+                sprintf($joinConditionTemplate, 'e', 't2', 't2', 't2', 't2', $storeId),
                 array($attribute->getAttributeCode() => $valueExpr));
         if ($attribute->getFlatAddChildData()) {
             $select->where("e.is_child = ?", 0);
@@ -45076,18 +46193,18 @@ class Mage_Eav_Model_Resource_Entity_Attribute extends Mage_Core_Model_Resource_
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -45510,18 +46627,18 @@ class Mage_Eav_Model_Resource_Entity_Attribute_Collection extends Mage_Core_Mode
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -45582,18 +46699,18 @@ class Mage_Eav_Model_Resource_Entity_Type extends Mage_Core_Model_Resource_Db_Ab
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_GoogleAnalytics
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -45650,12 +46767,44 @@ class Mage_GoogleAnalytics_Block_Ga extends Mage_Core_Block_Template
      * Render regular page tracking javascript code
      * The custom "page name" may be set from layout or somewhere else. It must start from slash.
      *
+     * @param string $accountId
+     * @return string
+     */
+    protected function _getPageTrackingCode($accountId)
+    {
+        if ($this->helper('googleanalytics')->isUseUniversalAnalytics()) {
+            return $this->_getPageTrackingCodeUniversal($accountId);
+        } else {
+            return $this->_getPageTrackingCodeAnalytics($accountId);
+        }
+    }
+
+    /**
+     * Render regular page tracking javascript code
+     * The custom "page name" may be set from layout or somewhere else. It must start from slash.
+     *
+     * @param string $accountId
+     * @return string
+     */
+    protected function _getPageTrackingCodeUniversal($accountId)
+    {
+        return "
+ga('create', '{$this->jsQuoteEscape($accountId)}', 'auto');
+" . $this->_getAnonymizationCode() . "
+ga('send', 'pageview');
+";
+    }
+
+    /**
+     * Render regular page tracking javascript code
+     * The custom "page name" may be set from layout or somewhere else. It must start from slash.
+     *
      * @link http://code.google.com/apis/analytics/docs/gaJS/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._trackPageview
      * @link http://code.google.com/apis/analytics/docs/gaJS/gaJSApi_gaq.html
      * @param string $accountId
      * @return string
      */
-    protected function _getPageTrackingCode($accountId)
+    protected function _getPageTrackingCodeAnalytics($accountId)
     {
         $pageName   = trim($this->getPageName());
         $optPageURL = '';
@@ -45664,8 +46813,74 @@ class Mage_GoogleAnalytics_Block_Ga extends Mage_Core_Block_Template
         }
         return "
 _gaq.push(['_setAccount', '{$this->jsQuoteEscape($accountId)}']);
+" . $this->_getAnonymizationCode() . "
 _gaq.push(['_trackPageview'{$optPageURL}]);
 ";
+    }
+
+    /**
+     * Render information about specified orders and their items
+     *
+     * @return string
+     */
+    protected function _getOrdersTrackingCode()
+    {
+        if ($this->helper('googleanalytics')->isUseUniversalAnalytics()) {
+            return $this->_getOrdersTrackingCodeUniversal();
+        } else {
+            return $this->_getOrdersTrackingCodeAnalytics();
+        }
+    }
+
+    /**
+     * Render information about specified orders and their items
+     *
+     * @return string
+     */
+    protected function _getOrdersTrackingCodeUniversal()
+    {
+        $orderIds = $this->getOrderIds();
+        if (empty($orderIds) || !is_array($orderIds)) {
+            return;
+        }
+        $collection = Mage::getResourceModel('sales/order_collection')
+            ->addFieldToFilter('entity_id', array('in' => $orderIds));
+        $result = array();
+        $result[] = "ga('require', 'ecommerce')";
+        foreach ($collection as $order) {
+            $result[] = sprintf("ga('ecommerce:addTransaction', {
+'id': '%s',
+'affiliation': '%s',
+'revenue': '%s',
+'tax': '%s',
+'shipping': '%s'
+});",
+                $order->getIncrementId(),
+                $this->jsQuoteEscape(Mage::app()->getStore()->getFrontendName()),
+                $order->getBaseGrandTotal(),
+                $order->getBaseTaxAmount(),
+                $order->getBaseShippingAmount()
+            );
+            foreach ($order->getAllVisibleItems() as $item) {
+                $result[] = sprintf("ga('ecommerce:addItem', {
+'id': '%s',
+'sku': '%s',
+'name': '%s',
+'category': '%s',
+'price': '%s',
+'quantity': '%s'
+});",
+                    $order->getIncrementId(),
+                    $this->jsQuoteEscape($item->getSku()),
+                    $this->jsQuoteEscape($item->getName()),
+                    null, // there is no "category" defined for the order item
+                    $item->getBasePrice(),
+                    $item->getQtyOrdered()
+                );
+            }
+            $result[] = "ga('ecommerce:send');";
+        }
+        return implode("\n", $result);
     }
 
     /**
@@ -45674,15 +46889,14 @@ _gaq.push(['_trackPageview'{$optPageURL}]);
      * @link http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEcommerce.html#_gat.GA_Tracker_._addTrans
      * @return string
      */
-    protected function _getOrdersTrackingCode()
+    protected function _getOrdersTrackingCodeAnalytics()
     {
         $orderIds = $this->getOrderIds();
         if (empty($orderIds) || !is_array($orderIds)) {
             return;
         }
         $collection = Mage::getResourceModel('sales/order_collection')
-            ->addFieldToFilter('entity_id', array('in' => $orderIds))
-        ;
+            ->addFieldToFilter('entity_id', array('in' => $orderIds));
         $result = array();
         foreach ($collection as $order) {
             if ($order->getIsVirtual()) {
@@ -45714,6 +46928,43 @@ _gaq.push(['_trackPageview'{$optPageURL}]);
     }
 
     /**
+     * Render IP anonymization code for page tracking javascript code
+     *
+     * @return string
+     */
+    protected function _getAnonymizationCode()
+    {
+        if (!Mage::helper('googleanalytics')->isIpAnonymizationEnabled()) {
+            return '';
+        }
+        if ($this->helper('googleanalytics')->isUseUniversalAnalytics()) {
+            return $this->_getAnonymizationCodeUniversal();
+        } else {
+            return $this->_getAnonymizationCodeAnalytics();
+        }
+    }
+
+    /**
+     * Render IP anonymization code for page tracking javascript universal analytics code
+     *
+     * @return string
+     */
+    protected function _getAnonymizationCodeUniversal()
+    {
+        return "ga('set', 'anonymizeIp', true);";
+    }
+
+    /**
+     * Render IP anonymization code for page tracking javascript google analytics code
+     *
+     * @return string
+     */
+    protected function _getAnonymizationCodeAnalytics()
+    {
+        return "_gaq.push (['_gat._anonymizeIp']);";
+    }
+
+    /**
      * Render GA tracking scripts
      *
      * @return string
@@ -45723,7 +46974,6 @@ _gaq.push(['_trackPageview'{$optPageURL}]);
         if (!Mage::helper('googleanalytics')->isGoogleAnalyticsAvailable()) {
             return '';
         }
-
         return parent::_toHtml();
     }
 }
@@ -45738,18 +46988,18 @@ _gaq.push(['_trackPageview'{$optPageURL}]);
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Log
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -45859,7 +47109,7 @@ class Mage_Log_Model_Resource_Visitor extends Mage_Core_Model_Resource_Db_Abstra
         // Add information about quote to visitor
         $adapter = $this->_getReadAdapter();
         $select = $adapter->select()->from($this->getTable('log/quote_table'), 'quote_id')
-            ->where('visitor_id = ?', $object->getId())->limit(1);
+            ->where('visitor_id = ?', $object->getId())->order('quote_id DESC')->limit(1);
         $result = $adapter->query($select)->fetch();
         if (isset($result['quote_id'])) {
             $object->setQuoteId((int) $result['quote_id']);
@@ -46019,18 +47269,18 @@ class Mage_Log_Model_Resource_Visitor extends Mage_Core_Model_Resource_Db_Abstra
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Log
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -46170,13 +47420,31 @@ class Mage_Log_Model_Visitor extends Mage_Core_Model_Abstract
         $this->setData($this->_getSession()->getVisitorData());
         $this->initServerData();
 
-        if (!$this->getId()) {
+        $visitorId = $this->getId();
+        if (!$visitorId) {
             $this->setFirstVisitAt(now());
             $this->setIsNewVisitor(true);
             $this->save();
+        }
+        if (!$visitorId || $this->_isVisitorSessionNew()) {
             Mage::dispatchEvent('visitor_init', array('visitor' => $this));
         }
         return $this;
+    }
+
+    /**
+     * Check is session new
+     *
+     * @return bool
+     */
+    protected function _isVisitorSessionNew()
+    {
+        $visitorData = $this->_getSession()->getVisitorData();
+        $visitorSessionId = null;
+        if (is_array($visitorData) && isset($visitorData['session_id'])) {
+            $visitorSessionId = $visitorData['session_id'];
+        }
+        return $this->_getSession()->getSessionId() != $visitorSessionId;
     }
 
     /**
@@ -46315,18 +47583,18 @@ class Mage_Log_Model_Visitor extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Newsletter
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -46373,18 +47641,18 @@ class Mage_Newsletter_Block_Subscribe extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -46549,18 +47817,18 @@ class Mage_Page_Block_Html extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -46589,13 +47857,20 @@ class Mage_Page_Block_Html_Breadcrumbs extends Mage_Core_Block_Template
      */
     protected $_crumbs = null;
 
-    function __construct()
+    /**
+     * Cache key info
+     *
+     * @var null|array
+     */
+    protected $_cacheKeyInfo = null;
+
+    public function __construct()
     {
         parent::__construct();
         $this->setTemplate('page/html/breadcrumbs.phtml');
     }
 
-    function addCrumb($crumbName, $crumbInfo, $after = false)
+    public function addCrumb($crumbName, $crumbInfo, $after = false)
     {
         $this->_prepareArray($crumbInfo, array('label', 'title', 'link', 'first', 'last', 'readonly'));
         if ((!isset($this->_crumbs[$crumbName])) || (!$this->_crumbs[$crumbName]['readonly'])) {
@@ -46603,6 +47878,24 @@ class Mage_Page_Block_Html_Breadcrumbs extends Mage_Core_Block_Template
         }
         return $this;
     }
+
+    /**
+     * Get cache key informative items
+     *
+     * @return array
+     */
+    public function getCacheKeyInfo()
+    {
+        if (null === $this->_cacheKeyInfo) {
+            $this->_cacheKeyInfo = parent::getCacheKeyInfo() + array(
+                'crumbs' => base64_encode(serialize($this->_crumbs)),
+                'name'   => $this->getNameInLayout(),
+            );
+        }
+
+        return $this->_cacheKeyInfo;
+    }
+
 
     protected function _toHtml()
     {
@@ -46627,18 +47920,18 @@ class Mage_Page_Block_Html_Breadcrumbs extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -46655,9 +47948,10 @@ class Mage_Page_Block_Html_Footer extends Mage_Core_Block_Template
 
     protected function _construct()
     {
-        $this->addData(array(
-            'cache_lifetime'=> false,
-            'cache_tags'    => array(Mage_Core_Model_Store::CACHE_TAG, Mage_Cms_Model_Block::CACHE_TAG)
+        $this->addData(array('cache_lifetime' => false));
+        $this->addCacheTag(array(
+            Mage_Core_Model_Store::CACHE_TAG,
+            Mage_Cms_Model_Block::CACHE_TAG
         ));
     }
 
@@ -46717,18 +48011,18 @@ class Mage_Page_Block_Html_Footer extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -46898,11 +48192,16 @@ class Mage_Page_Block_Html_Head extends Mage_Core_Block_Template
                 continue;
             }
             if (!empty($if)) {
-                $html .= '<!--[if '.$if.']>'."\n";
+                // open !IE conditional using raw value
+                if (strpos($if, "><!-->") !== false) {
+                    $html .= $if . "\n";
+                } else {
+                    $html .= '<!--[if '.$if.']>' . "\n";
+                }
             }
 
             // static and skin css
-            $html .= $this->_prepareStaticAndSkinElements('<link rel="stylesheet" type="text/css" href="%s"%s />' . "\n",
+            $html .= $this->_prepareStaticAndSkinElements('<link rel="stylesheet" type="text/css" href="%s"%s />'."\n",
                 empty($items['js_css']) ? array() : $items['js_css'],
                 empty($items['skin_css']) ? array() : $items['skin_css'],
                 $shouldMergeCss ? array(Mage::getDesign(), 'getMergedCssUrl') : null
@@ -46921,7 +48220,12 @@ class Mage_Page_Block_Html_Head extends Mage_Core_Block_Template
             }
 
             if (!empty($if)) {
-                $html .= '<![endif]-->'."\n";
+                // close !IE conditional comments correctly
+                if (strpos($if, "><!-->") !== false) {
+                    $html .= '<!--<![endif]-->' . "\n";
+                } else {
+                    $html .= '<![endif]-->' . "\n";
+                }
             }
         }
         return $html;
@@ -46940,7 +48244,8 @@ class Mage_Page_Block_Html_Head extends Mage_Core_Block_Template
      * @param callback $mergeCallback
      * @return string
      */
-    protected function &_prepareStaticAndSkinElements($format, array $staticItems, array $skinItems, $mergeCallback = null)
+    protected function &_prepareStaticAndSkinElements($format, array $staticItems, array $skinItems,
+                                                      $mergeCallback = null)
     {
         $designPackage = Mage::getDesign();
         $baseJsUrl = Mage::getBaseUrl('js');
@@ -47231,18 +48536,18 @@ class Mage_Page_Block_Html_Head extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -47284,6 +48589,14 @@ class Mage_Page_Block_Html_Header extends Mage_Core_Block_Template
         return $this->getSkinUrl($this->_data['logo_src']);
     }
 
+    public function getLogoSrcSmall()
+    {
+        if (empty($this->_data['logo_src_small'])) {
+            $this->_data['logo_src_small'] = Mage::getStoreConfig('design/header/logo_src_small');
+        }
+        return $this->getSkinUrl($this->_data['logo_src_small']);
+    }
+
     public function getLogoAlt()
     {
         if (empty($this->_data['logo_alt'])) {
@@ -47292,6 +48605,13 @@ class Mage_Page_Block_Html_Header extends Mage_Core_Block_Template
         return $this->_data['logo_alt'];
     }
 
+    /**
+     * Retrieve page welcome message
+     *
+     * @deprecated after 1.7.0.2
+     * @see Mage_Page_Block_Html_Welcome
+     * @return mixed
+     */
     public function getWelcome()
     {
         if (empty($this->_data['welcome'])) {
@@ -47316,18 +48636,18 @@ class Mage_Page_Block_Html_Header extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -47473,18 +48793,18 @@ class Mage_Page_Block_Switch extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -47561,9 +48881,24 @@ class Mage_Page_Block_Template_Links extends Mage_Core_Block_Template
             'after_text'    => $afterText,
         ));
 
+        $this->_addIntoPosition($link, $position);
+
+        return $this;
+    }
+
+    /**
+     * Add link into collection
+     *
+     * @param Varien_Object $link
+     * @param int $position
+     * @return Mage_Page_Block_Template_Links
+     */
+    protected function _addIntoPosition($link, $position)
+    {
         $this->_links[$this->_getNewPosition($position)] = $link;
+
         if (intval($position) > 0) {
-             ksort($this->_links);
+            ksort($this->_links);
         }
 
         return $this;
@@ -47579,7 +48914,8 @@ class Mage_Page_Block_Template_Links extends Mage_Core_Block_Template
     {
         $block = $this->getLayout()->getBlock($blockName);
         if ($block) {
-            $this->_links[$this->_getNewPosition((int)$block->getPosition())] = $block;
+            $position = (int)$block->getPosition();
+            $this->_addIntoPosition($block, $position);
         }
         return $this;
     }
@@ -47701,6 +49037,19 @@ class Mage_Page_Block_Template_Links extends Mage_Core_Block_Template
         return $position;
     }
 
+    /**
+     * Get tags array for saving cache
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+            $this->addModelTags(Mage::getSingleton('customer/session')->getCustomer());
+        }
+
+        return parent::getCacheTags();
+    }
 }
 /**
  * Magento
@@ -47713,18 +49062,18 @@ class Mage_Page_Block_Template_Links extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Poll
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -47958,18 +49307,18 @@ class Mage_Poll_Block_ActivePoll extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Poll
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -48244,18 +49593,18 @@ class Mage_Poll_Model_Poll extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Poll
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -48322,18 +49671,18 @@ class Mage_Poll_Model_Poll_Answer extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Poll
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -48562,18 +49911,18 @@ class Mage_Poll_Model_Resource_Poll extends Mage_Core_Model_Resource_Db_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Poll
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -48620,18 +49969,18 @@ class Mage_Poll_Model_Resource_Poll_Answer extends Mage_Core_Model_Resource_Db_A
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Poll
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -48694,18 +50043,18 @@ class Mage_Poll_Model_Resource_Poll_Answer_Collection extends Mage_Core_Model_Re
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -48738,6 +50087,20 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
      * @var Mage_Reports_Model_Mysql4_Product_Index_Collection_Abstract
      */
     protected $_collection;
+
+    /**
+     * Defines whether specified products ids order should be used
+     *
+     * @var bool
+     */
+    protected $_useProductIdsOrder = false;
+
+    /**
+     * Default product amount per row
+     *
+     * @var int
+     */
+    protected $_defaultColumnCount = 5;
 
     /**
      * Retrieve page size
@@ -48823,12 +50186,27 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
                 $this->_collection->addFilterByIds($ids);
             }
             $this->_collection->setAddedAtOrder();
+            if ($this-> _useProductIdsOrder && is_array($ids)) {
+                $this->_collection->setSortIds($ids);
+            }
 
             Mage::getSingleton('catalog/product_visibility')
                 ->addVisibleInSiteFilterToCollection($this->_collection);
         }
 
         return $this->_collection;
+    }
+
+    /**
+     * Set flag that defines whether products ids order should be used
+     *
+     * @param bool $use
+     * @return Mage_Reports_Block_Product_Abstract
+     */
+    public function useProductIdsOrder($use = true)
+    {
+        $this->_useProductIdsOrder = $use;
+        return $this;
     }
 
     /**
@@ -48866,18 +50244,18 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -48896,7 +50274,7 @@ class Mage_Reports_Block_Product_Compared extends Mage_Reports_Block_Product_Abs
      *
      * @var string
      */
-    protected $_indexName       = 'reports/product_index_compared';
+    protected $_indexName = 'reports/product_index_compared';
 
     /**
      * Retrieve page size (count)
@@ -48927,6 +50305,19 @@ class Mage_Reports_Block_Product_Compared extends Mage_Reports_Block_Product_Abs
 
         return parent::_toHtml();
     }
+
+    /**
+     * Retrieve block cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return array_merge(
+            parent::getCacheTags(),
+            $this->getItemsTags($this->getItemsCollection())
+        );
+    }
 }
 /**
  * Magento
@@ -48939,18 +50330,18 @@ class Mage_Reports_Block_Product_Compared extends Mage_Reports_Block_Product_Abs
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -49010,6 +50401,19 @@ class Mage_Reports_Block_Product_Viewed extends Mage_Reports_Block_Product_Abstr
         $this->setRecentlyViewedProducts($this->getItemsCollection());
         return parent::_toHtml();
     }
+
+    /**
+     * Retrieve block cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        return array_merge(
+            parent::getCacheTags(),
+            $this->getItemsTags($this->getItemsCollection())
+        );
+    }
 }
 /**
  * Magento
@@ -49022,18 +50426,18 @@ class Mage_Reports_Block_Product_Viewed extends Mage_Reports_Block_Product_Abstr
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -49131,18 +50535,18 @@ class Mage_Reports_Model_Event extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -49175,18 +50579,18 @@ class Mage_Reports_Model_Session extends Mage_Core_Model_Session_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Rss
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -49199,6 +50603,11 @@ class Mage_Reports_Model_Session extends Mage_Core_Model_Session_Abstract
  */
 class Mage_Rss_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    /**
+     * Config path to RSS field
+     */
+    const XML_PATH_RSS_ACTIVE = 'rss/config/active';
+
     /**
      * Authenticate customer on frontend
      *
@@ -49234,7 +50643,7 @@ class Mage_Rss_Helper_Data extends Mage_Core_Helper_Abstract
         $adminSession = Mage::getSingleton('admin/session');
         $user = $adminSession->login($username, $password);
         //$user = Mage::getModel('admin/user')->login($username, $password);
-        if($user && $user->getId() && $user->getIsActive() == '1' && $adminSession->isAllowed($path)){
+        if ($user && $user->getId() && $user->getIsActive() == '1' && $adminSession->isAllowed($path)) {
             $session->setAdmin($user);
         } else {
             $this->authFailed();
@@ -49247,7 +50656,7 @@ class Mage_Rss_Helper_Data extends Mage_Core_Helper_Abstract
      * @param array $headers
      * @return array
      */
-    public function authValidate($headers=null)
+    public function authValidate($headers = null)
     {
         $userPass = Mage::helper('core/http')->authValidate($headers);
         return $userPass;
@@ -49272,13 +50681,23 @@ class Mage_Rss_Helper_Data extends Mage_Core_Helper_Abstract
     {
         /* @var $flatHelper Mage_Catalog_Helper_Product_Flat */
         $flatHelper = Mage::helper('catalog/product_flat');
-        if ($flatHelper->isEnabled()) {
+        if ($flatHelper->isAvailable()) {
             /* @var $emulationModel Mage_Core_Model_App_Emulation */
             $emulationModel = Mage::getModel('core/app_emulation');
             // Emulate admin environment to disable using flat model - otherwise we won't get global stats
             // for all stores
             $emulationModel->startEnvironmentEmulation(0, Mage_Core_Model_App_Area::AREA_ADMINHTML);
         }
+    }
+
+    /**
+     * Check if module was activated in system configurations
+     *
+     * @return bool
+     */
+    public function isRssEnabled()
+    {
+        return Mage::getStoreConfigFlag(self::XML_PATH_RSS_ACTIVE);
     }
 }
 /**
@@ -49292,18 +50711,18 @@ class Mage_Rss_Helper_Data extends Mage_Core_Helper_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tag
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -49385,18 +50804,18 @@ class Mage_Tag_Block_Popular extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tag
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -49510,18 +50929,18 @@ class Mage_Tag_Model_Resource_Popular_Collection extends Mage_Core_Model_Resourc
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tag
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -49943,18 +51362,18 @@ class Mage_Tag_Model_Resource_Tag extends Mage_Core_Model_Resource_Db_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Tag
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -50335,6 +51754,21 @@ class Mage_Tag_Model_Tag extends Mage_Core_Model_Abstract
         );
     }
 
+    /**
+     * Processing object after save data
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _afterSave()
+    {
+        if ($this->hasData('tag_assigned_products')) {
+            $tagRelationModel = Mage::getModel('tag/tag_relation');
+            $tagRelationModel->addRelations($this, $this->getData('tag_assigned_products'));
+        }
+
+        return parent::_afterSave();
+    }
+
 }
 /**
  * Magento
@@ -50347,18 +51781,18 @@ class Mage_Tag_Model_Tag extends Mage_Core_Model_Abstract
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Page
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -50547,18 +51981,18 @@ class Mage_Page_Block_Template_Links_Block extends Mage_Core_Block_Template
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Wishlist
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -50642,6 +52076,22 @@ class Mage_Wishlist_Block_Links extends Mage_Page_Block_Template_Links_Block
     {
         return $this;
     }
+
+    /**
+     * Retrieve block cache tags
+     *
+     * @return array
+     */
+    public function getCacheTags()
+    {
+        /** @var $wishlist Mage_Wishlist_Model_Wishlist */
+        $wishlist = $this->helper('wishlist')->getWishlist();
+        $this->addModelTags($wishlist);
+        foreach ($wishlist->getItemCollection() as $item) {
+            $this->addModelTags($item);
+        }
+        return parent::getCacheTags();
+    }
 }
 /**
  * Magento
@@ -50654,18 +52104,18 @@ class Mage_Wishlist_Block_Links extends Mage_Page_Block_Template_Links_Block
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
  * @package     Mage_Wishlist
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
@@ -50779,11 +52229,9 @@ class Mage_Wishlist_Helper_Data extends Mage_Core_Helper_Abstract
         if (is_null($this->_wishlist)) {
             if (Mage::registry('shared_wishlist')) {
                 $this->_wishlist = Mage::registry('shared_wishlist');
-            }
-            elseif (Mage::registry('wishlist')) {
+            } elseif (Mage::registry('wishlist')) {
                 $this->_wishlist = Mage::registry('wishlist');
-            }
-            else {
+            } else {
                 $this->_wishlist = Mage::getModel('wishlist/wishlist');
                 if ($this->getCustomer()) {
                     $this->_wishlist->loadByCustomer($this->getCustomer());
@@ -50904,8 +52352,7 @@ class Mage_Wishlist_Helper_Data extends Mage_Core_Helper_Abstract
         if ($product) {
             if ($product->isVisibleInSiteVisibility()) {
                 $storeId = $product->getStoreId();
-            }
-            else if ($product->hasUrlDataObject()) {
+            } else if ($product->hasUrlDataObject()) {
                 $storeId = $product->getUrlDataObject()->getStoreId();
             }
         }
@@ -51006,6 +52453,7 @@ class Mage_Wishlist_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($productId) {
             $params['product'] = $productId;
+            $params[Mage_Core_Model_Url::FORM_KEY] = $this->_getSingletonModel('core/session')->getFormKey();
             return $this->_getUrlStore($item)->getUrl('wishlist/index/add', $params);
         }
 
@@ -51013,28 +52461,49 @@ class Mage_Wishlist_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Retrieve URL for adding item to shoping cart
+     * Retrieve URL for adding item to shopping cart
      *
      * @param string|Mage_Catalog_Model_Product|Mage_Wishlist_Model_Item $item
      * @return  string
      */
     public function getAddToCartUrl($item)
     {
-        $urlParamName = Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED;
-        $continueUrl  = Mage::helper('core')->urlEncode(
-            Mage::getUrl('*/*/*', array(
+        $continueUrl  = $this->_getHelperInstance('core')->urlEncode(
+            $this->_getUrl('*/*/*', array(
                 '_current'      => true,
                 '_use_rewrite'  => true,
                 '_store_to_url' => true,
             ))
         );
-
-        $urlParamName = Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED;
         $params = array(
             'item' => is_string($item) ? $item : $item->getWishlistItemId(),
-            $urlParamName => $continueUrl
+            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $continueUrl,
+            Mage_Core_Model_Url::FORM_KEY => $this->_getSingletonModel('core/session')->getFormKey()
         );
         return $this->_getUrlStore($item)->getUrl('wishlist/index/cart', $params);
+    }
+
+    /**
+     * Return helper instance
+     *
+     * @param string $helperName
+     * @return Mage_Core_Helper_Abstract
+     */
+    protected function _getHelperInstance($helperName)
+    {
+        return Mage::helper($helperName);
+    }
+
+    /**
+     * Return model instance
+     *
+     * @param string $className
+     * @param array $arguments
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _getSingletonModel($className, $arguments = array())
+    {
+        return Mage::getSingleton($className, $arguments);
     }
 
     /**
@@ -51051,10 +52520,10 @@ class Mage_Wishlist_Helper_Data extends Mage_Core_Helper_Abstract
             '_store_to_url' => true,
         )));
 
-        $urlParamName = Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED;
         $params = array(
             'item' => is_string($item) ? $item : $item->getWishlistItemId(),
-            $urlParamName => $continueUrl
+            'code' => $this->getWishlist()->getSharingCode(),
+            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $continueUrl
         );
         return $this->_getUrlStore($item)->getUrl('wishlist/shared/cart', $params);
     }
@@ -51319,6 +52788,15 @@ interface Varien_Db_Adapter_Interface
     public function createTable(Varien_Db_Ddl_Table $table);
 
     /**
+     * Create temporary table from DDL object
+     *
+     * @param Varien_Db_Ddl_Table $table
+     * @throws Zend_Db_Exception
+     * @return Zend_Db_Statement_Interface
+     */
+    public function createTemporaryTable(Varien_Db_Ddl_Table $table);
+
+    /**
      * Drop table from database
      *
      * @param string $tableName
@@ -51326,6 +52804,15 @@ interface Varien_Db_Adapter_Interface
      * @return boolean
      */
     public function dropTable($tableName, $schemaName = null);
+
+    /**
+     * Drop temporary table from database
+     *
+     * @param string $tableName
+     * @param string $schemaName
+     * @return boolean
+     */
+    public function dropTemporaryTable($tableName, $schemaName = null);
 
     /**
      * Truncate a table
@@ -51414,6 +52901,16 @@ interface Varien_Db_Adapter_Interface
      * @return boolean
      */
     public function renameTable($oldTableName, $newTableName, $schemaName = null);
+
+    /**
+     * Rename several tables
+     *
+     * @param array $tablePairs array('oldName' => 'Name1', 'newName' => 'Name2')
+     *
+     * @return boolean
+     * @throws Zend_Db_Exception
+     */
+    public function renameTablesBatch(array $tablePairs);
 
     /**
      * Adds new column to the table.
@@ -51642,6 +53139,15 @@ interface Varien_Db_Adapter_Interface
      * @return int          The number of affected rows.
      */
     public function update($table, array $bind, $where = '');
+
+    /**
+     * Inserts a table row with specified data.
+     *
+     * @param mixed $table The table to insert data into.
+     * @param array $bind Column-value pairs.
+     * @return int The number of affected rows.
+     */
+    public function insertIgnore($table, array $bind);
 
     /**
      * Deletes table rows based on a WHERE clause.
@@ -51944,6 +53450,18 @@ interface Varien_Db_Adapter_Interface
     public function getCheckSql($condition, $true, $false);
 
     /**
+     * Generate fragment of SQL, that check value against multiple condition cases
+     * and return different result depends on them
+     *
+     * @param string $valueName Name of value to check
+     * @param array $casesResults Cases and results
+     * @param string $defaultValue value to use if value doesn't confirm to any cases
+     *
+     * @return Zend_Db_Expr
+     */
+    public function getCaseSql($valueName, $casesResults, $defaultValue = null);
+
+    /**
      * Returns valid IFNULL expression
      *
      * @param string $column
@@ -51962,6 +53480,12 @@ interface Varien_Db_Adapter_Interface
      * @return Zend_Db_Expr
      */
     public function getConcatSql(array $data, $separator = null);
+
+    /**
+     * Returns the configuration variables in this adapter.
+     * @return array
+     */
+    public function getConfig();
 
     /**
      * Generate fragment of SQL that returns length of character string
@@ -52127,10 +53651,20 @@ interface Varien_Db_Adapter_Interface
      * @param Varien_Db_Select $select
      * @param string $table     insert into table
      * @param array $fields
-     * @param int $mode
+     * @param bool|int $mode
      * @return string
      */
     public function insertFromSelect(Varien_Db_Select $select, $table, array $fields = array(), $mode = false);
+
+    /**
+     * Get insert queries in array for insert by range with step parameter
+     *
+     * @param string $rangeField
+     * @param Varien_Db_Select $select
+     * @param int $stepCount
+     * @return array
+     */
+    public function selectsByRange($rangeField, Varien_Db_Select $select, $stepCount = 100);
 
     /**
      * Get update table query using select object for join and update
@@ -52215,11 +53749,55 @@ interface Varien_Db_Adapter_Interface
     public function getSuggestedZeroDate();
 
     /**
+     * Drop trigger
+     *
+     * @param string $triggerName
+     * @return Varien_Db_Adapter_Interface
+     */
+    public function dropTrigger($triggerName);
+
+    /**
      * Get adapter transaction level state. Return 0 if all transactions are complete
      *
      * @return int
      */
     public function getTransactionLevel();
+
+    /**
+     * Convert date format to unix time
+     *
+     * @param string|Zend_Db_Expr $date
+     * @return mixed
+     */
+    public function getUnixTimestamp($date);
+
+    /**
+     * Convert unix time to date format
+     *
+     * @param int|Zend_Db_Expr $timestamp
+     * @return mixed
+     */
+    public function fromUnixtime($timestamp);
+
+    /**
+     * Change table auto increment value
+     *
+     * @param string $tableName
+     * @param string $increment
+     * @param null|string $schemaName
+     * @return Zend_Db_Statement_Interface
+     */
+    public function changeTableAutoIncrement($tableName, $increment, $schemaName = null);
+
+    /**
+     * Create new table from provided select statement
+     *
+     * @param string $tableName
+     * @param Zend_Db_Select $select
+     * @param bool $temporary
+     * @return mixed
+     */
+    public function createTableFromSelect($tableName, Zend_Db_Select $select, $temporary = false);
 }
 /**
  * Zend Framework
@@ -52237,9 +53815,9 @@ interface Varien_Db_Adapter_Interface
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Adapter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Abstract.php 23252 2010-10-26 12:48:32Z matthew $
+ * @version    $Id$
  */
 
 
@@ -52259,7 +53837,7 @@ interface Varien_Db_Adapter_Interface
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Adapter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Db_Adapter_Abstract
@@ -52378,6 +53956,7 @@ abstract class Zend_Db_Adapter_Abstract
      * persistent     => (boolean) Whether to use a persistent connection or not, defaults to false
      * protocol       => (string) The network protocol, defaults to TCPIP
      * caseFolding    => (int) style of case-alteration used for identifiers
+     * socket         => (string) The socket or named pipe that should be used
      *
      * @param  array|Zend_Config $config An array or instance of Zend_Config having configuration data
      * @throws Zend_Db_Adapter_Exception
@@ -52753,6 +54332,7 @@ abstract class Zend_Db_Adapter_Abstract
      * @param mixed $table The table to insert data into.
      * @param array $bind Column-value pairs.
      * @return int The number of affected rows.
+     * @throws Zend_Db_Adapter_Exception
      */
     public function insert($table, array $bind)
     {
@@ -52805,6 +54385,7 @@ abstract class Zend_Db_Adapter_Abstract
      * @param  array        $bind  Column-value pairs.
      * @param  mixed        $where UPDATE WHERE clause(s).
      * @return int          The number of affected rows.
+     * @throws Zend_Db_Adapter_Exception
      */
     public function update($table, array $bind, $where = '')
     {
@@ -52965,7 +54546,7 @@ abstract class Zend_Db_Adapter_Abstract
      * @param string|Zend_Db_Select $sql An SQL SELECT statement.
      * @param mixed $bind Data to bind into SELECT placeholders.
      * @param mixed                 $fetchMode Override current fetch mode.
-     * @return array
+     * @return mixed Array, object, or scalar depending on fetch mode.
      */
     public function fetchRow($sql, $bind = array(), $fetchMode = null)
     {
@@ -53346,10 +54927,15 @@ abstract class Zend_Db_Adapter_Abstract
         if ($this->_allowSerialization == false) {
             /** @see Zend_Db_Adapter_Exception */
             #require_once 'Zend/Db/Adapter/Exception.php';
-            throw new Zend_Db_Adapter_Exception(get_class($this) ." is not allowed to be serialized");
+            throw new Zend_Db_Adapter_Exception(
+                get_class($this) . ' is not allowed to be serialized'
+            );
         }
-        $this->_connection = false;
-        return array_keys(array_diff_key(get_object_vars($this), array('_connection'=>false)));
+        $this->_connection = null;
+
+        return array_keys(
+            array_diff_key(get_object_vars($this), array('_connection' => null))
+        );
     }
 
     /**
@@ -53514,9 +55100,9 @@ abstract class Zend_Db_Adapter_Abstract
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Adapter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Abstract.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 
@@ -53538,7 +55124,7 @@ abstract class Zend_Db_Adapter_Abstract
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Adapter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Db_Adapter_Pdo_Abstract extends Zend_Db_Adapter_Abstract
@@ -53913,9 +55499,9 @@ abstract class Zend_Db_Adapter_Pdo_Abstract extends Zend_Db_Adapter_Abstract
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Adapter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Mysql.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 
@@ -53931,7 +55517,7 @@ abstract class Zend_Db_Adapter_Pdo_Abstract extends Zend_Db_Adapter_Abstract
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Adapter
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Abstract
@@ -53975,6 +55561,19 @@ class Zend_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Abstract
     );
 
     /**
+     * Override _dsn() and ensure that charset is incorporated in mysql
+     * @see Zend_Db_Adapter_Pdo_Abstract::_dsn()
+     */
+    protected function _dsn()
+    {
+        $dsn = parent::_dsn();
+        if (isset($this->_config['charset'])) {
+            $dsn .= ';charset=' . $this->_config['charset'];
+        }
+        return $dsn;
+    }
+    
+    /**
      * Creates a PDO object and connects to the database.
      *
      * @return void
@@ -53986,7 +55585,9 @@ class Zend_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Abstract
             return;
         }
 
-        if (!empty($this->_config['charset'])) {
+        if (!empty($this->_config['charset'])
+            && version_compare(PHP_VERSION, '5.3.6', '<')
+        ) {
             $initCommand = "SET NAMES '" . $this->_config['charset'] . "'";
             $this->_config['driver_options'][1002] = $initCommand; // 1002 = PDO::MYSQL_ATTR_INIT_COMMAND
         }
@@ -54341,6 +55942,13 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     protected $_ddlRoutines = array('alt', 'cre', 'ren', 'dro', 'tru');
 
     /**
+     * DDL statements for temporary tables
+     *
+     * @var string
+     */
+    protected $_tempRoutines =  '#^\w+\s+temporary\s#im';
+
+    /**
      * Allowed interval units array
      *
      * @var array
@@ -54549,7 +56157,9 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     {
         if (is_string($sql) && $this->getTransactionLevel() > 0) {
             $startSql = strtolower(substr(ltrim($sql), 0, 3));
-            if (in_array($startSql, $this->_ddlRoutines)) {
+            if (in_array($startSql, $this->_ddlRoutines)
+                && (preg_match($this->_tempRoutines, $sql) !== 1)
+            ) {
                 trigger_error(Varien_Db_Adapter_Interface::ERROR_DDL_MESSAGE, E_USER_ERROR);
             }
         }
@@ -54561,7 +56171,7 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
      *
      * @param string|Zend_Db_Select $sql The SQL statement with placeholders.
      * @param mixed $bind An array of data or data itself to bind to the placeholders.
-     * @return Zend_Db_Pdo_Statement
+     * @return Zend_Db_Statement_Pdo
      * @throws Zend_Db_Adapter_Exception To re-throw PDOException.
      */
     public function query($sql, $bind = array())
@@ -55050,7 +56660,7 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     {
         if (!$this->tableColumnExists($tableName, $oldColumnName, $schemaName)) {
             throw new Zend_Db_Exception(sprintf(
-                'Column "%s" does not exists on table "%s"',
+                'Column "%s" does not exist in table "%s".',
                 $oldColumnName,
                 $tableName
             ));
@@ -55090,7 +56700,7 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     public function modifyColumn($tableName, $columnName, $definition, $flushData = false, $schemaName = null)
     {
         if (!$this->tableColumnExists($tableName, $columnName, $schemaName)) {
-            throw new Zend_Db_Exception(sprintf('Column "%s" does not exists on table "%s"', $columnName, $tableName));
+            throw new Zend_Db_Exception(sprintf('Column "%s" does not exist in table "%s".', $columnName, $tableName));
         }
         if (is_array($definition)) {
             $definition = $this->_getColumnDefinition($definition);
@@ -55980,6 +57590,21 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     }
 
     /**
+     * Change table auto increment value
+     *
+     * @param string $tableName
+     * @param string $increment
+     * @param null|string $schemaName
+     * @return Zend_Db_Statement_Interface
+     */
+    public function changeTableAutoIncrement($tableName, $increment, $schemaName = null)
+    {
+        $table = $this->quoteIdentifier($this->_getTableName($tableName, $schemaName));
+        $sql = sprintf('ALTER TABLE %s AUTO_INCREMENT=%d', $table, $increment);
+        return $this->raw_query($sql);
+    }
+
+    /**
      * Inserts a table row with specified data
      * Special for Zero values to identity column
      *
@@ -56048,7 +57673,7 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
                 }
             } elseif (is_string($v)) {
                 $value = sprintf('VALUES(%s)', $this->quoteIdentifier($v));
-                $field = $v;
+                $field = $this->quoteIdentifier($v);
             }
 
             if ($field && $value) {
@@ -56132,6 +57757,60 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     }
 
     /**
+     * Inserts a table row with specified data.
+     *
+     * @param mixed $table The table to insert data into.
+     * @param array $bind Column-value pairs.
+     * @return int The number of affected rows.
+     * @throws Zend_Db_Adapter_Exception
+     */
+    public function insertIgnore($table, array $bind)
+    {
+        // extract and quote col names from the array keys
+        $cols = array();
+        $vals = array();
+        $i = 0;
+        foreach ($bind as $col => $val) {
+            $cols[] = $this->quoteIdentifier($col, true);
+            if ($val instanceof Zend_Db_Expr) {
+                $vals[] = $val->__toString();
+                unset($bind[$col]);
+            } else {
+                if ($this->supportsParameters('positional')) {
+                    $vals[] = '?';
+                } else {
+                    if ($this->supportsParameters('named')) {
+                        unset($bind[$col]);
+                        $bind[':col'.$i] = $val;
+                        $vals[] = ':col'.$i;
+                        $i++;
+                    } else {
+                        /** @see Zend_Db_Adapter_Exception */
+                        #require_once 'Zend/Db/Adapter/Exception.php';
+                        throw new Zend_Db_Adapter_Exception(
+                            get_class($this) ." doesn't support positional or named binding"
+                        );
+                    }
+                }
+            }
+        }
+
+        // build the statement
+        $sql = "INSERT IGNORE INTO "
+            . $this->quoteIdentifier($table, true)
+            . ' (' . implode(', ', $cols) . ') '
+            . 'VALUES (' . implode(', ', $vals) . ')';
+
+        // execute the statement and return the number of affected rows
+        if ($this->supportsParameters('positional')) {
+            $bind = array_values($bind);
+        }
+        $stmt = $this->query($sql, $bind);
+        $result = $stmt->rowCount();
+        return $result;
+    }
+
+    /**
      * Set cache adapter
      *
      * @param Zend_Cache_Backend_Interface $adapter
@@ -56186,6 +57865,29 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
         );
         $tableOptions   = $this->_getOptionsDefinition($table);
         $sql = sprintf("CREATE TABLE %s (\n%s\n) %s",
+            $this->quoteIdentifier($table->getName()),
+            implode(",\n", $sqlFragment),
+            implode(" ", $tableOptions));
+
+        return $this->query($sql);
+    }
+
+    /**
+     * Create temporary table
+     *
+     * @param Varien_Db_Ddl_Table $table
+     * @throws Zend_Db_Exception
+     * @return Zend_Db_Pdo_Statement
+     */
+    public function createTemporaryTable(Varien_Db_Ddl_Table $table)
+    {
+        $sqlFragment    = array_merge(
+            $this->_getColumnsDefinition($table),
+            $this->_getIndexesDefinition($table),
+            $this->_getForeignKeysDefinition($table)
+        );
+        $tableOptions   = $this->_getOptionsDefinition($table);
+        $sql = sprintf("CREATE TEMPORARY TABLE %s (\n%s\n) %s",
             $this->quoteIdentifier($table->getName()),
             implode(",\n", $sqlFragment),
             implode(" ", $tableOptions));
@@ -56466,8 +58168,10 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
                 $cDefault = new Zend_Db_Expr('0 ON UPDATE CURRENT_TIMESTAMP');
             } else if ($cDefault == Varien_Db_Ddl_Table::TIMESTAMP_INIT_UPDATE) {
                 $cDefault = new Zend_Db_Expr('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP');
+            } else if ($cNullable && !$cDefault) {
+                $cDefault = new Zend_Db_Expr('NULL');
             } else {
-                $cDefault = false;
+                $cDefault = new Zend_Db_Expr('0');
             }
         } else if (is_null($cDefault) && $cNullable) {
             $cDefault = new Zend_Db_Expr('NULL');
@@ -56479,13 +58183,20 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
             $comment = $options['COMMENT'];
         }
 
-        return sprintf('%s%s%s%s%s COMMENT %s',
+        //set column position
+        $after = null;
+        if (!empty($options['AFTER'])) {
+            $after = $options['AFTER'];
+        }
+
+        return sprintf('%s%s%s%s%s COMMENT %s %s',
             $cType,
             $cUnsigned ? ' UNSIGNED' : '',
             $cNullable ? ' NULL' : ' NOT NULL',
             $cDefault !== false ? $this->quoteInto(' default ?', $cDefault) : '',
             $cIdentity ? ' auto_increment' : '',
-            $this->quote($comment)
+            $this->quote($comment),
+            $after ? 'AFTER ' . $this->quoteIdentifier($after) : ''
         );
     }
 
@@ -56503,6 +58214,22 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
         $this->query($query);
 
         return true;
+    }
+
+    /**
+     * Drop temporary table from database
+     *
+     * @param string $tableName
+     * @param string $schemaName
+     * @return boolean
+     */
+    public function dropTemporaryTable($tableName, $schemaName = null)
+    {
+        $table = $this->quoteIdentifier($this->_getTableName($tableName, $schemaName));
+        $query = 'DROP TEMPORARY TABLE IF EXISTS ' . $table;
+        $this->query($query);
+
+        return $this;
     }
 
     /**
@@ -56566,6 +58293,42 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
 
         return true;
     }
+
+    /**
+     * Rename several tables
+     *
+     * @param array $tablePairs array('oldName' => 'Name1', 'newName' => 'Name2')
+     *
+     * @return boolean
+     * @throws Zend_Db_Exception
+     */
+    public function renameTablesBatch(array $tablePairs)
+    {
+        if (count($tablePairs) == 0) {
+            throw new Zend_Db_Exception('Please provide tables for rename');
+        }
+
+        $renamesList = array();
+        $tablesList  = array();
+        foreach ($tablePairs as $pair) {
+            $oldTableName  = $pair['oldName'];
+            $newTableName  = $pair['newName'];
+            $renamesList[] = sprintf('%s TO %s', $oldTableName, $newTableName);
+
+            $tablesList[$oldTableName] = $oldTableName;
+            $tablesList[$newTableName] = $newTableName;
+        }
+
+        $query = sprintf('RENAME TABLE %s', implode(',', $renamesList));
+        $this->query($query);
+
+        foreach ($tablesList as $table) {
+            $this->resetDdlCache($table);
+        }
+
+        return true;
+    }
+
 
     /**
      * Add new index to table name
@@ -57024,7 +58787,9 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
      *
      * @param string $valueName Name of value to check
      * @param array $casesResults Cases and results
-     * @param string $defaultValue value to use if value doesn't confirm to any cases
+     * @param string $defaultValue value to use if value doesn't conform to any cases
+     *
+     * @return Zend_Db_Expr
      */
     public function getCaseSql($valueName, $casesResults, $defaultValue = null)
     {
@@ -57385,7 +59150,7 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
      * @param Varien_Db_Select $select
      * @param string $table     insert into table
      * @param array $fields
-     * @param int $mode
+     * @param bool|int $mode
      * @return string
      */
     public function insertFromSelect(Varien_Db_Select $select, $table, array $fields = array(), $mode = false)
@@ -57411,11 +59176,28 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
                     }
                 }
             }
-            $update = array();
-            foreach ($fields as $field) {
-                $update[] = sprintf('%1$s = VALUES(%1$s)', $this->quoteIdentifier($field));
-            }
 
+            $update = array();
+            foreach ($fields as $k => $v) {
+                $field = $value = null;
+                if (!is_numeric($k)) {
+                    $field = $this->quoteIdentifier($k);
+                    if ($v instanceof Zend_Db_Expr) {
+                        $value = $v->__toString();
+                    } elseif (is_string($v)) {
+                        $value = sprintf('VALUES(%s)', $this->quoteIdentifier($v));
+                    } elseif (is_numeric($v)) {
+                        $value = $this->quoteInto('?', $v);
+                    }
+                } elseif (is_string($v)) {
+                    $value = sprintf('VALUES(%s)', $this->quoteIdentifier($v));
+                    $field = $this->quoteIdentifier($v);
+                }
+
+                if ($field && $value) {
+                    $update[] = sprintf('%s = %s', $field, $value);
+                }
+            }
             if ($update) {
                 $query = sprintf('%s ON DUPLICATE KEY UPDATE %s', $query, join(', ', $update));
             }
@@ -57425,10 +59207,91 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     }
 
     /**
+     * Get insert queries in array for insert by range with step parameter
+     *
+     * @param string $rangeField
+     * @param Varien_Db_Select $select
+     * @param int $stepCount
+     * @return array
+     * @throws Varien_Db_Exception
+     */
+    public function selectsByRange($rangeField, Varien_Db_Select $select, $stepCount = 100)
+    {
+        $queries = array();
+        $fromSelect = $select->getPart(Varien_Db_Select::FROM);
+        if (empty($fromSelect)) {
+            throw new Varien_Db_Exception('Select must have correct FROM part');
+        }
+
+        $tableName = array();
+        $correlationName = '';
+        foreach ($fromSelect as $correlationName => $formPart) {
+            if ($formPart['joinType'] == Varien_Db_Select::FROM) {
+                $tableName = $formPart['tableName'];
+                break;
+            }
+        }
+
+        $selectRange = $this->select()
+            ->from(
+                $tableName,
+                array(
+                    new Zend_Db_Expr('MIN(' . $this->quoteIdentifier($rangeField) . ') AS min'),
+                    new Zend_Db_Expr('MAX(' . $this->quoteIdentifier($rangeField) . ') AS max'),
+                )
+            );
+
+        $rangeResult = $this->fetchRow($selectRange);
+        $min = $rangeResult['min'];
+        $max = $rangeResult['max'];
+
+        while ($min <= $max) {
+            $partialSelect = clone $select;
+            $partialSelect->where(
+                $this->quoteIdentifier($correlationName) . '.'
+                    . $this->quoteIdentifier($rangeField) . ' >= ?', $min
+            )
+            ->where(
+                $this->quoteIdentifier($correlationName) . '.'
+                    . $this->quoteIdentifier($rangeField) . ' < ?', $min+$stepCount
+            );
+            $queries[] = $partialSelect;
+            $min += $stepCount;
+        }
+        return $queries;
+    }
+
+    /**
+     * Convert date format to unix time
+     *
+     * @param string|Zend_Db_Expr $date
+     * @throws Varien_Db_Exception
+     * @return Zend_Db_Expr
+     */
+    public function getUnixTimestamp($date)
+    {
+        $expr = sprintf('UNIX_TIMESTAMP(%s)', $date);
+        return new Zend_Db_Expr($expr);
+    }
+
+    /**
+     * Convert unix time to date format
+     *
+     * @param int|Zend_Db_Expr $timestamp
+     * @return mixed
+     */
+    public function fromUnixtime($timestamp)
+    {
+        $expr = sprintf('FROM_UNIXTIME(%s)', $timestamp);
+        return new Zend_Db_Expr($expr);
+    }
+
+    /**
      * Get update table query using select object for join and update
      *
      * @param Varien_Db_Select $select
      * @param string|array $table
+     * @throws Varien_Db_Exception
      * @return string
      */
     public function updateFromSelect(Varien_Db_Select $select, $table)
@@ -57791,6 +59654,40 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
     }
 
     /**
+     * Drop trigger
+     *
+     * @param string $triggerName
+     * @return Varien_Db_Adapter_Interface
+     */
+    public function dropTrigger($triggerName)
+    {
+        $query = sprintf(
+            'DROP TRIGGER IF EXISTS %s',
+            $this->_getTableName($triggerName)
+        );
+        $this->query($query);
+        return $this;
+    }
+
+    /**
+     * Create new table from provided select statement
+     *
+     * @param string $tableName
+     * @param Zend_Db_Select $select
+     * @param bool $temporary
+     * @return mixed
+     */
+    public function createTableFromSelect($tableName, Zend_Db_Select $select, $temporary = false)
+    {
+        $query = sprintf(
+            'CREATE' . ($temporary ? ' TEMPORARY' : '') . ' TABLE `%s` AS (%s)',
+            $this->_getTableName($tableName),
+            (string)$select
+        );
+        $this->query($query);
+    }
+
+    /**
      * Check if all transactions have been committed
      */
     public function __destruct()
@@ -57816,9 +59713,9 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Select
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Select.php 23254 2010-10-26 12:49:23Z matthew $
+ * @version    $Id$
  */
 
 
@@ -57839,7 +59736,7 @@ class Varien_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql implements V
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Select
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Select
@@ -58008,8 +59905,8 @@ class Zend_Db_Select
      * The first parameter $name can be a simple string, in which case the
      * correlation name is generated automatically.  If you want to specify
      * the correlation name, the first parameter must be an associative
-     * array in which the key is the physical table name, and the value is
-     * the correlation name.  For example, array('table' => 'alias').
+     * array in which the key is the correlation name, and the value is
+     * the physical table name.  For example, array('alias' => 'table').
      * The correlation name is prepended to all columns fetched for this
      * table.
      *
@@ -58020,8 +59917,8 @@ class Zend_Db_Select
      * no correlation name is generated or prepended to the columns named
      * in the second parameter.
      *
-     * @param  array|string|Zend_Db_Expr $name The table name or an associative array relating table name to
-     *                                         correlation name.
+     * @param  array|string|Zend_Db_Expr $name The table name or an associative array
+     *                                         relating correlation name to table name.
      * @param  array|string|Zend_Db_Expr $cols The columns to select from this table.
      * @param  string $schema The schema name to specify, if any.
      * @return Zend_Db_Select This Zend_Db_Select object.
@@ -58402,7 +60299,7 @@ class Zend_Db_Select
                     $val = trim($matches[1]);
                     $direction = $matches[2];
                 }
-                if (preg_match('/\(.*\)/', $val)) {
+                if (preg_match('/^[\w]*\(.*\)$/', $val)) {
                     $val = new Zend_Db_Expr($val);
                 }
                 $this->_parts[self::ORDER][] = array($val, $direction);
@@ -58455,7 +60352,7 @@ class Zend_Db_Select
     }
 
     /**
-     * Get part of the structured information for the currect query.
+     * Get part of the structured information for the current query.
      *
      * @param string $part
      * @return mixed
@@ -58519,7 +60416,7 @@ class Zend_Db_Select
     {
         if ($part == null) {
             $this->_parts = self::$_partsInit;
-        } else if (array_key_exists($part, self::$_partsInit)) {
+        } elseif (array_key_exists($part, self::$_partsInit)) {
             $this->_parts[$part] = self::$_partsInit[$part];
         }
         return $this;
@@ -58569,7 +60466,7 @@ class Zend_Db_Select
 
         if (empty($name)) {
             $correlationName = $tableName = '';
-        } else if (is_array($name)) {
+        } elseif (is_array($name)) {
             // Must be array($correlationName => $tableName) or array($ident, ...)
             foreach ($name as $_correlationName => $_tableName) {
                 if (is_string($_correlationName)) {
@@ -58583,10 +60480,10 @@ class Zend_Db_Select
                 }
                 break;
             }
-        } else if ($name instanceof Zend_Db_Expr|| $name instanceof Zend_Db_Select) {
+        } elseif ($name instanceof Zend_Db_Expr|| $name instanceof Zend_Db_Select) {
             $tableName = $name;
             $correlationName = $this->_uniqueCorrelation('t');
-        } else if (preg_match('/^(.+)\s+AS\s+(.+)$/i', $name, $m)) {
+        } elseif (preg_match('/^(.+)\s+AS\s+(.+)$/i', $name, $m)) {
             $tableName = $m[1];
             $correlationName = $m[2];
         } else {
@@ -58681,9 +60578,13 @@ class Zend_Db_Select
         $join  = $this->_adapter->quoteIdentifier(key($this->_parts[self::FROM]), true);
         $from  = $this->_adapter->quoteIdentifier($this->_uniqueCorrelation($name), true);
 
-        $cond1 = $from . '.' . $cond;
-        $cond2 = $join . '.' . $cond;
-        $cond  = $cond1 . ' = ' . $cond2;
+        $joinCond = array();
+        foreach ((array)$cond as $fieldName) {
+            $cond1 = $from . '.' . $fieldName;
+            $cond2 = $join . '.' . $fieldName;
+            $joinCond[]  = $cond1 . ' = ' . $cond2;
+        }
+        $cond = implode(' '.self::SQL_AND.' ', $joinCond);
 
         return $this->_join($type, $name, $cond, $cols, $schema);
     }
@@ -58697,7 +60598,8 @@ class Zend_Db_Select
     private function _uniqueCorrelation($name)
     {
         if (is_array($name)) {
-            $c = end($name);
+            $k = key($name);
+            $c = is_string($k) ? $k : end($name);
         } else {
             // Extract just the last name of a qualified table name
             $dot = strrpos($name,'.');
@@ -59034,7 +60936,7 @@ class Zend_Db_Select
                     } else {
                         $order[] = $this->_adapter->quoteIdentifier($term[0], true) . ' ' . $term[1];
                     }
-                } else if (is_numeric($term) && strval(intval($term)) == $term) {
+                } elseif (is_numeric($term) && strval(intval($term)) == $term) {
                     $order[] = (int)trim($term);
                 } else {
                     $order[] = $this->_adapter->quoteIdentifier($term, true);
@@ -60346,15 +62248,15 @@ class Varien_Filter_Template_Tokenizer_Parameter extends Varien_Filter_Template_
  *
  * @category   Zend
  * @package    Zend_Cache
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Cache.php 23154 2010-10-18 17:41:06Z mabe $
+ * @version    $Id$
  */
 
 
 /**
  * @package    Zend_Cache
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Cache
@@ -60373,14 +62275,14 @@ abstract class Zend_Cache
      * @var array
      */
     public static $standardBackends = array('File', 'Sqlite', 'Memcached', 'Libmemcached', 'Apc', 'ZendPlatform',
-                                            'Xcache', 'TwoLevels', 'ZendServer_Disk', 'ZendServer_ShMem');
+                                            'Xcache', 'TwoLevels', 'WinCache', 'ZendServer_Disk', 'ZendServer_ShMem');
 
     /**
      * Standard backends which implement the ExtendedInterface
      *
      * @var array
      */
-    public static $standardExtendedBackends = array('File', 'Apc', 'TwoLevels', 'Memcached', 'Libmemcached', 'Sqlite');
+    public static $standardExtendedBackends = array('File', 'Apc', 'TwoLevels', 'Memcached', 'Libmemcached', 'Sqlite', 'WinCache');
 
     /**
      * Only for backward compatibility (may be removed in next major release)
@@ -60396,7 +62298,7 @@ abstract class Zend_Cache
      * @var array
      * @deprecated
      */
-    public static $availableBackends = array('File', 'Sqlite', 'Memcached', 'Libmemcached', 'Apc', 'ZendPlatform', 'Xcache', 'TwoLevels');
+    public static $availableBackends = array('File', 'Sqlite', 'Memcached', 'Libmemcached', 'Apc', 'ZendPlatform', 'Xcache', 'WinCache', 'TwoLevels');
 
     /**
      * Consts for clean() method
@@ -60465,7 +62367,7 @@ abstract class Zend_Cache
             #require_once str_replace('_', DIRECTORY_SEPARATOR, $backendClass) . '.php';
         } else {
             // we use a custom backend
-            if (!preg_match('~^[\w]+$~D', $backend)) {
+            if (!preg_match('~^[\w\\\\]+$~D', $backend)) {
                 Zend_Cache::throwException("Invalid backend name [$backend]");
             }
             if (!$customBackendNaming) {
@@ -60507,7 +62409,7 @@ abstract class Zend_Cache
             #require_once str_replace('_', DIRECTORY_SEPARATOR, $frontendClass) . '.php';
         } else {
             // we use a custom frontend
-            if (!preg_match('~^[\w]+$~D', $frontend)) {
+            if (!preg_match('~^[\w\\\\]+$~D', $frontend)) {
                 Zend_Cache::throwException("Invalid frontend name [$frontend]");
             }
             if (!$customFrontendNaming) {
@@ -60596,16 +62498,16 @@ abstract class Zend_Cache
  * @category   Zend
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Backend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Backend.php 20880 2010-02-03 18:18:32Z matthew $
+ * @version    $Id$
  */
 
 
 /**
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Backend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Cache_Backend
@@ -60693,6 +62595,28 @@ class Zend_Cache_Backend
     }
 
     /**
+     * Returns an option
+     *
+     * @param string $name Optional, the options name to return
+     * @throws Zend_Cache_Exceptions
+     * @return mixed
+     */
+    public function getOption($name)
+    {
+        $name = strtolower($name);
+
+        if (array_key_exists($name, $this->_options)) {
+            return $this->_options[$name];
+        }
+
+        if (array_key_exists($name, $this->_directives)) {
+            return $this->_directives[$name];
+        }
+
+        Zend_Cache::throwException("Incorrect option name : {$name}");
+    }
+
+    /**
      * Get the life time
      *
      * if $specificLifetime is not false, the given specific life time is used
@@ -60735,7 +62659,7 @@ class Zend_Cache_Backend
         $tmpdir = array();
         foreach (array($_ENV, $_SERVER) as $tab) {
             foreach (array('TMPDIR', 'TEMP', 'TMP', 'windir', 'SystemRoot') as $key) {
-                if (isset($tab[$key])) {
+                if (isset($tab[$key]) && is_string($tab[$key])) {
                     if (($key == 'windir') or ($key == 'SystemRoot')) {
                         $dir = realpath($tab[$key] . '\\temp');
                     } else {
@@ -60781,7 +62705,7 @@ class Zend_Cache_Backend
     /**
      * Verify if the given temporary directory is readable and writable
      *
-     * @param $dir temporary directory
+     * @param string $dir temporary directory
      * @return boolean true if the directory is ok
      */
     protected function _isGoodTmpDir($dir)
@@ -60818,7 +62742,9 @@ class Zend_Cache_Backend
         // Create a default logger to the standard output stream
         #require_once 'Zend/Log.php';
         #require_once 'Zend/Log/Writer/Stream.php';
+        #require_once 'Zend/Log/Filter/Priority.php';
         $logger = new Zend_Log(new Zend_Log_Writer_Stream('php://output'));
+        $logger->addFilter(new Zend_Log_Filter_Priority(Zend_Log::WARN, '<='));
         $this->_directives['logger'] = $logger;
     }
 
@@ -60861,16 +62787,16 @@ class Zend_Cache_Backend
  * @category   Zend
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Backend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Interface.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 
 /**
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Backend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Cache_Backend_Interface
@@ -60958,15 +62884,15 @@ interface Zend_Cache_Backend_Interface
  *
  * @category   Zend
  * @package    Zend_Cache
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Core.php 22651 2010-07-21 04:19:44Z ramon $
+ * @version    $Id$
  */
 
 
 /**
  * @package    Zend_Cache
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Cache_Core
@@ -61155,7 +63081,7 @@ class Zend_Cache_Core
     public function setOption($name, $value)
     {
         if (!is_string($name)) {
-            Zend_Cache::throwException("Incorrect option name : $name");
+            Zend_Cache::throwException("Incorrect option name!");
         }
         $name = strtolower($name);
         if (array_key_exists($name, $this->_options)) {
@@ -61179,17 +63105,18 @@ class Zend_Cache_Core
      */
     public function getOption($name)
     {
-        if (is_string($name)) {
-            $name = strtolower($name);
-            if (array_key_exists($name, $this->_options)) {
-                // This is a Core option
-                return $this->_options[$name];
-            }
-            if (array_key_exists($name, $this->_specificOptions)) {
-                // This a specic option of this frontend
-                return $this->_specificOptions[$name];
-            }
+        $name = strtolower($name);
+
+        if (array_key_exists($name, $this->_options)) {
+            // This is a Core option
+            return $this->_options[$name];
         }
+
+        if (array_key_exists($name, $this->_specificOptions)) {
+            // This a specic option of this frontend
+            return $this->_specificOptions[$name];
+        }
+
         Zend_Cache::throwException("Incorrect option name : $name");
     }
 
@@ -61244,6 +63171,8 @@ class Zend_Cache_Core
         $id = $this->_id($id); // cache id may need prefix
         $this->_lastId = $id;
         self::_validateIdOrTag($id);
+
+        $this->_log("Zend_Cache_Core: load item '{$id}'", 7);
         $data = $this->_backend->load($id, $doNotTestCacheValidity);
         if ($data===false) {
             // no cache available
@@ -61270,6 +63199,8 @@ class Zend_Cache_Core
         $id = $this->_id($id); // cache id may need prefix
         self::_validateIdOrTag($id);
         $this->_lastId = $id;
+
+        $this->_log("Zend_Cache_Core: test item '{$id}'", 7);
         return $this->_backend->test($id);
     }
 
@@ -61304,27 +63235,22 @@ class Zend_Cache_Core
                 Zend_Cache::throwException("Datas must be string or set automatic_serialization = true");
             }
         }
+
         // automatic cleaning
         if ($this->_options['automatic_cleaning_factor'] > 0) {
             $rand = rand(1, $this->_options['automatic_cleaning_factor']);
             if ($rand==1) {
-                if ($this->_extendedBackend) {
-                    // New way
-                    if ($this->_backendCapabilities['automatic_cleaning']) {
-                        $this->clean(Zend_Cache::CLEANING_MODE_OLD);
-                    } else {
-                        $this->_log('Zend_Cache_Core::save() / automatic cleaning is not available/necessary with this backend');
-                    }
+                //  new way                 || deprecated way
+                if ($this->_extendedBackend || method_exists($this->_backend, 'isAutomaticCleaningAvailable')) {
+                    $this->_log("Zend_Cache_Core::save(): automatic cleaning running", 7);
+                    $this->clean(Zend_Cache::CLEANING_MODE_OLD);
                 } else {
-                    // Deprecated way (will be removed in next major version)
-                    if (method_exists($this->_backend, 'isAutomaticCleaningAvailable') && ($this->_backend->isAutomaticCleaningAvailable())) {
-                        $this->clean(Zend_Cache::CLEANING_MODE_OLD);
-                    } else {
-                        $this->_log('Zend_Cache_Core::save() / automatic cleaning is not available/necessary with this backend');
-                    }
+                    $this->_log("Zend_Cache_Core::save(): automatic cleaning is not available/necessary with current backend", 4);
                 }
             }
         }
+
+        $this->_log("Zend_Cache_Core: save item '{$id}'", 7);
         if ($this->_options['ignore_user_abort']) {
             $abort = ignore_user_abort(true);
         }
@@ -61336,22 +63262,23 @@ class Zend_Cache_Core
         if ($this->_options['ignore_user_abort']) {
             ignore_user_abort($abort);
         }
+
         if (!$result) {
             // maybe the cache is corrupted, so we remove it !
-            if ($this->_options['logging']) {
-                $this->_log("Zend_Cache_Core::save() : impossible to save cache (id=$id)");
-            }
-            $this->remove($id);
+            $this->_log("Zend_Cache_Core::save(): failed to save item '{$id}' -> removing it", 4);
+            $this->_backend->remove($id);
             return false;
         }
+
         if ($this->_options['write_control']) {
             $data2 = $this->_backend->load($id, true);
             if ($data!=$data2) {
-                $this->_log('Zend_Cache_Core::save() / write_control : written and read data do not match');
+                $this->_log("Zend_Cache_Core::save(): write control of item '{$id}' failed -> removing it", 4);
                 $this->_backend->remove($id);
                 return false;
             }
         }
+
         return true;
     }
 
@@ -61368,6 +63295,8 @@ class Zend_Cache_Core
         }
         $id = $this->_id($id); // cache id may need prefix
         self::_validateIdOrTag($id);
+
+        $this->_log("Zend_Cache_Core: remove item '{$id}'", 7);
         return $this->_backend->remove($id);
     }
 
@@ -61402,6 +63331,7 @@ class Zend_Cache_Core
             Zend_Cache::throwException('Invalid cleaning mode');
         }
         self::_validateTagsArray($tags);
+
         return $this->_backend->clean($mode, $tags);
     }
 
@@ -61593,6 +63523,8 @@ class Zend_Cache_Core
             Zend_Cache::throwException(self::BACKEND_NOT_IMPLEMENTS_EXTENDED_IF);
         }
         $id = $this->_id($id); // cache id may need prefix
+
+        $this->_log("Zend_Cache_Core: touch item '{$id}'", 7);
         return $this->_backend->touch($id, $extraLifetime);
     }
 
@@ -61657,9 +63589,11 @@ class Zend_Cache_Core
         }
 
         // Create a default logger to the standard output stream
-        #require_once 'Zend/Log/Writer/Stream.php';
         #require_once 'Zend/Log.php';
+        #require_once 'Zend/Log/Writer/Stream.php';
+        #require_once 'Zend/Log/Filter/Priority.php';
         $logger = new Zend_Log(new Zend_Log_Writer_Stream('php://output'));
+        $logger->addFilter(new Zend_Log_Filter_Priority(Zend_Log::WARN, '<='));
         $this->_options['logger'] = $logger;
     }
 
@@ -61715,9 +63649,9 @@ class Zend_Cache_Core
  *
  * @category   Zend
  * @package    Zend_Db
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Db.php 23405 2010-11-19 19:46:10Z bittarman $
+ * @version    $Id$
  */
 
 
@@ -61726,7 +63660,7 @@ class Zend_Cache_Core
  *
  * @category   Zend
  * @package    Zend_Db
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db
@@ -61790,6 +63724,9 @@ class Zend_Db
      *    'NULL_TO_STRING', 'ERR_NONE', 'FETCH_ORI_NEXT',
      *    'FETCH_ORI_PRIOR', 'FETCH_ORI_FIRST', 'FETCH_ORI_LAST',
      *    'FETCH_ORI_ABS', 'FETCH_ORI_REL', 'CURSOR_FWDONLY', 'CURSOR_SCROLL',
+     *    'ERR_CANT_MAP', 'ERR_SYNTAX', 'ERR_CONSTRAINT', 'ERR_NOT_FOUND',
+     *    'ERR_ALREADY_EXISTS', 'ERR_NOT_IMPLEMENTED', 'ERR_MISMATCH',
+     *    'ERR_TRUNCATED', 'ERR_DISCONNECTED', 'ERR_NO_PERM',
      * );
      *
      * $const = array();
@@ -61822,7 +63759,17 @@ class Zend_Db
     const CASE_UPPER = 1;
     const CURSOR_FWDONLY = 0;
     const CURSOR_SCROLL = 1;
+    const ERR_ALREADY_EXISTS = NULL;
+    const ERR_CANT_MAP = NULL;
+    const ERR_CONSTRAINT = NULL;
+    const ERR_DISCONNECTED = NULL;
+    const ERR_MISMATCH = NULL;
+    const ERR_NO_PERM = NULL;
     const ERR_NONE = '00000';
+    const ERR_NOT_FOUND = NULL;
+    const ERR_NOT_IMPLEMENTED = NULL;
+    const ERR_SYNTAX = NULL;
+    const ERR_TRUNCATED = NULL;
     const ERRMODE_EXCEPTION = 2;
     const ERRMODE_SILENT = 0;
     const ERRMODE_WARNING = 1;
@@ -61987,9 +63934,9 @@ class Zend_Db
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Expr
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Expr.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 
@@ -62015,7 +63962,7 @@ class Zend_Db
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Expr
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Expr
@@ -62063,9 +64010,9 @@ class Zend_Db_Expr
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Profiler
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Profiler.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 
@@ -62073,7 +64020,7 @@ class Zend_Db_Expr
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Profiler
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Profiler
@@ -62273,7 +64220,9 @@ class Zend_Db_Profiler
     }
 
     /**
-     * @param  integer $queryId
+     * Clone a profiler query
+     *
+     * @param  Zend_Db_Profiler_Query $query
      * @return integer or null
      */
     public function queryClone(Zend_Db_Profiler_Query $query)
@@ -62335,12 +64284,12 @@ class Zend_Db_Profiler
     }
 
     /**
-     * Ends a query.  Pass it the handle that was returned by queryStart().
+     * Ends a query. Pass it the handle that was returned by queryStart().
      * This will mark the query as ended and save the time.
      *
      * @param  integer $queryId
      * @throws Zend_Db_Profiler_Exception
-     * @return void
+     * @return string   Inform that a query is stored or ignored.
      */
     public function queryEnd($queryId)
     {
@@ -62532,9 +64481,9 @@ class Zend_Db_Profiler
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Statement
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Interface.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 /**
@@ -62543,7 +64492,7 @@ class Zend_Db_Profiler
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Statement
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Db_Statement_Interface
@@ -62900,32 +64849,23 @@ abstract class Zend_Db_Statement implements Zend_Db_Statement_Interface
         $d = $this->_adapter->quoteIdentifier('a');
         $d = $d[0];
 
-        // get the value used as an escaped delimited id quote,
-        // e.g. \" or "" or \`
-        $de = $this->_adapter->quoteIdentifier($d);
-        $de = substr($de, 1, 2);
-        $de = str_replace('\\', '\\\\', $de);
-
         // get the character for value quoting
         // this should be '
         $q = $this->_adapter->quote('a');
         $q = $q[0];
 
-        // get the value used as an escaped quote,
-        // e.g. \' or ''
-        $qe = $this->_adapter->quote($q);
-        $qe = substr($qe, 1, 2);
-        $qe = str_replace('\\', '\\\\', $qe);
-
         // get a version of the SQL statement with all quoted
         // values and delimited identifiers stripped out
-        // remove "foo\"bar"
-        $sql = preg_replace("/$q($qe|\\\\{2}|[^$q])*$q/", '', $sql);
-        // remove 'foo\'bar'
-        if (!empty($q)) {
-            $sql = preg_replace("/$q($qe|[^$q])*$q/", '', $sql);
+        // remove quoted identifiers
+        if (!empty($d)) {
+            $rx = "{$d}.*?(?<!(((?<![{$d}\\\\]){$d})|((?<!\\\\)\\\\))){$d}(?!{$d})";
+            $sql = preg_replace("/$rx/Us", '', $sql);
         }
-
+        // remove quoted values
+        if (!empty($q)) {
+            $rx = "{$q}.*?(?<!(((?<![{$q}\\\\]){$q})|((?<!\\\\)\\\\))){$q}(?!{$q})";
+            $sql = preg_replace("/$rx/Us", '', $sql);
+        }
         return $sql;
     }
 
@@ -63218,9 +65158,9 @@ abstract class Zend_Db_Statement implements Zend_Db_Statement_Interface
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Statement
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Pdo.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id$
  */
 
 /**
@@ -63237,7 +65177,7 @@ abstract class Zend_Db_Statement implements Zend_Db_Statement_Interface
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Statement
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Statement_Pdo extends Zend_Db_Statement implements IteratorAggregate
@@ -63434,7 +65374,8 @@ class Zend_Db_Statement_Pdo extends Zend_Db_Statement implements IteratorAggrega
             }
         } catch (PDOException $e) {
             #require_once 'Zend/Db/Statement/Exception.php';
-            throw new Zend_Db_Statement_Exception($e->getMessage(), (int) $e->getCode(), $e);
+            $message = sprintf('%s, query was: %s', $e->getMessage(), $this->_stmt->queryString);
+            throw new Zend_Db_Statement_Exception($message, (int) $e->getCode(), $e);
         }
     }
 
@@ -63655,9 +65596,9 @@ class Zend_Db_Statement_Pdo extends Zend_Db_Statement implements IteratorAggrega
  *
  * @category   Zend
  * @package    Zend_Json
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Json.php 20615 2010-01-25 19:54:12Z matthew $
+ * @version    $Id$
  */
 
 /**
@@ -63667,6 +65608,8 @@ class Zend_Db_Statement_Pdo extends Zend_Db_Statement implements IteratorAggrega
  */
 #require_once 'Zend/Json/Expr.php';
 
+/** @see Zend_Xml_Security */
+#require_once 'Zend/Xml/Security.php';
 
 /**
  * Class for encoding to and decoding from JSON.
@@ -63674,7 +65617,7 @@ class Zend_Db_Statement_Pdo extends Zend_Db_Statement implements IteratorAggrega
  * @category   Zend
  * @package    Zend_Json
  * @uses       Zend_Json_Expr
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Json
@@ -63718,7 +65661,9 @@ class Zend_Json
 
             // php < 5.3
             if (!function_exists('json_last_error')) {
-                if ($decode === $encodedValue) {
+                if (strtolower($encodedValue) === 'null') {
+                    return null;
+                } elseif ($decode === null) {
                     #require_once 'Zend/Json/Exception.php';
                     throw new Zend_Json_Exception('Decoding failed');
                 }
@@ -63766,8 +65711,12 @@ class Zend_Json
      */
     public static function encode($valueToEncode, $cycleCheck = false, $options = array())
     {
-        if (is_object($valueToEncode) && method_exists($valueToEncode, 'toJson')) {
-            return $valueToEncode->toJson();
+        if (is_object($valueToEncode)) {
+            if (method_exists($valueToEncode, 'toJson')) {
+                return $valueToEncode->toJson();
+            } elseif (method_exists($valueToEncode, 'toArray')) {
+                return self::encode($valueToEncode->toArray(), $cycleCheck, $options);
+            }
         }
 
         // Pre-encoding look for Zend_Json_Expr objects and replacing by tmp ids
@@ -63820,12 +65769,15 @@ class Zend_Json
      * NOTE: This method is used internally by the encode method.
      *
      * @see encode
-     * @param mixed $valueToCheck a string - object property to be encoded
+     * @param array|object|Zend_Json_Expr $value a string - object property to be encoded
+     * @param array $javascriptExpressions
+     * @param null $currentKey
+     *
+     * @internal param mixed $valueToCheck
      * @return void
      */
-    protected static function _recursiveJsonExprFinder(
-        &$value, array &$javascriptExpressions, $currentKey = null
-    ) {
+    protected static function _recursiveJsonExprFinder(&$value, array &$javascriptExpressions, $currentKey = null)
+    {
          if ($value instanceof Zend_Json_Expr) {
             // TODO: Optimize with ascii keys, if performance is bad
             $magicKey = "____" . $currentKey . "_" . (count($javascriptExpressions));
@@ -63846,6 +65798,104 @@ class Zend_Json
             }
         }
         return $value;
+    }
+
+    /**
+     * Return the value of an XML attribute text or the text between
+     * the XML tags
+     *
+     * In order to allow Zend_Json_Expr from xml, we check if the node
+     * matchs the pattern that try to detect if it is a new Zend_Json_Expr
+     * if it matches, we return a new Zend_Json_Expr instead of a text node
+     *
+     * @param SimpleXMLElement $simpleXmlElementObject
+     * @return Zend_Json_Expr|string
+     */
+    protected static function _getXmlValue($simpleXmlElementObject) {
+        $pattern = '/^[\s]*new Zend_Json_Expr[\s]*\([\s]*[\"\']{1}(.*)[\"\']{1}[\s]*\)[\s]*$/';
+        $matchings = array();
+        $match = preg_match ($pattern, $simpleXmlElementObject, $matchings);
+        if ($match) {
+            return new Zend_Json_Expr($matchings[1]);
+        } else {
+            return (trim(strval($simpleXmlElementObject)));
+        }
+    }
+    /**
+     * _processXml - Contains the logic for xml2json
+     *
+     * The logic in this function is a recursive one.
+     *
+     * The main caller of this function (i.e. fromXml) needs to provide
+     * only the first two parameters i.e. the SimpleXMLElement object and
+     * the flag for ignoring or not ignoring XML attributes. The third parameter
+     * will be used internally within this function during the recursive calls.
+     *
+     * This function converts the SimpleXMLElement object into a PHP array by
+     * calling a recursive (protected static) function in this class. Once all
+     * the XML elements are stored in the PHP array, it is returned to the caller.
+     *
+     * Throws a Zend_Json_Exception if the XML tree is deeper than the allowed limit.
+     *
+     * @param SimpleXMLElement $simpleXmlElementObject
+     * @param boolean $ignoreXmlAttributes
+     * @param integer $recursionDepth
+     * @return array
+     */
+    protected static function _processXml($simpleXmlElementObject, $ignoreXmlAttributes, $recursionDepth=0)
+    {
+        // Keep an eye on how deeply we are involved in recursion.
+        if ($recursionDepth > self::$maxRecursionDepthAllowed) {
+            // XML tree is too deep. Exit now by throwing an exception.
+            #require_once 'Zend/Json/Exception.php';
+            throw new Zend_Json_Exception(
+                "Function _processXml exceeded the allowed recursion depth of " .
+                self::$maxRecursionDepthAllowed);
+        } // End of if ($recursionDepth > self::$maxRecursionDepthAllowed)
+
+        $children = $simpleXmlElementObject->children();
+        $name = $simpleXmlElementObject->getName();
+        $value = self::_getXmlValue($simpleXmlElementObject);
+        $attributes = (array) $simpleXmlElementObject->attributes();
+
+        if (count($children) == 0) {
+            if (!empty($attributes) && !$ignoreXmlAttributes) {
+                foreach ($attributes['@attributes'] as $k => $v) {
+                    $attributes['@attributes'][$k]= self::_getXmlValue($v);
+                }
+                if (!empty($value)) {
+                    $attributes['@text'] = $value;
+                } 
+                return array($name => $attributes);
+            } else {
+               return array($name => $value);
+            }
+        } else {
+            $childArray= array();
+            foreach ($children as $child) {
+                $childname = $child->getName();
+                $element = self::_processXml($child,$ignoreXmlAttributes,$recursionDepth+1);
+                if (array_key_exists($childname, $childArray)) {
+                    if (empty($subChild[$childname])) {
+                        $childArray[$childname] = array($childArray[$childname]);
+                        $subChild[$childname] = true;
+                    }
+                    $childArray[$childname][] = $element[$childname];
+                } else {
+                    $childArray[$childname] = $element[$childname];
+                }
+            }
+            if (!empty($attributes) && !$ignoreXmlAttributes) {
+                foreach ($attributes['@attributes'] as $k => $v) {
+                    $attributes['@attributes'][$k] = self::_getXmlValue($v);
+                }
+                $childArray['@attributes'] = $attributes['@attributes'];
+            }
+            if (!empty($value)) {
+                $childArray['@text'] = $value;
+            }
+            return array($name => $childArray);
+        }
     }
 
     /**
@@ -63874,9 +65924,10 @@ class Zend_Json
      * @return mixed - JSON formatted string on success
      * @throws Zend_Json_Exception
      */
-    public static function fromXml ($xmlStringContents, $ignoreXmlAttributes=true) {
+    public static function fromXml($xmlStringContents, $ignoreXmlAttributes=true)
+    {
         // Load the XML formatted string into a Simple XML Element object.
-        $simpleXmlElementObject = simplexml_load_string($xmlStringContents);
+        $simpleXmlElementObject = Zend_Xml_Security::scan($xmlStringContents);
 
         // If it is not a valid XML content, throw an exception.
         if ($simpleXmlElementObject == null) {
@@ -63893,120 +65944,16 @@ class Zend_Json
         // It is just that simple.
         $jsonStringOutput = self::encode($resultArray);
         return($jsonStringOutput);
-    } // End of function fromXml.
+    }
 
-    /**
-     * _processXml - Contains the logic for xml2json
-     *
-     * The logic in this function is a recursive one.
-     *
-     * The main caller of this function (i.e. fromXml) needs to provide
-     * only the first two parameters i.e. the SimpleXMLElement object and
-     * the flag for ignoring or not ignoring XML attributes. The third parameter
-     * will be used internally within this function during the recursive calls.
-     *
-     * This function converts the SimpleXMLElement object into a PHP array by
-     * calling a recursive (protected static) function in this class. Once all
-     * the XML elements are stored in the PHP array, it is returned to the caller.
-     *
-     * Throws a Zend_Json_Exception if the XML tree is deeper than the allowed limit.
-     *
-     * @static
-     * @access protected
-     * @param SimpleXMLElement $simpleXmlElementObject XML element to be converted
-     * @param boolean $ignoreXmlAttributes Include or exclude XML attributes in
-     * the xml2json conversion process.
-     * @param int $recursionDepth Current recursion depth of this function
-     * @return mixed - On success, a PHP associative array of traversed XML elements
-     * @throws Zend_Json_Exception
-     */
-    protected static function _processXml ($simpleXmlElementObject, $ignoreXmlAttributes, $recursionDepth=0) {
-        // Keep an eye on how deeply we are involved in recursion.
-        if ($recursionDepth > self::$maxRecursionDepthAllowed) {
-            // XML tree is too deep. Exit now by throwing an exception.
-            #require_once 'Zend/Json/Exception.php';
-            throw new Zend_Json_Exception(
-                "Function _processXml exceeded the allowed recursion depth of " .
-                self::$maxRecursionDepthAllowed);
-        } // End of if ($recursionDepth > self::$maxRecursionDepthAllowed)
-
-        if ($recursionDepth == 0) {
-            // Store the original SimpleXmlElementObject sent by the caller.
-            // We will need it at the very end when we return from here for good.
-            $callerProvidedSimpleXmlElementObject = $simpleXmlElementObject;
-        } // End of if ($recursionDepth == 0)
-
-        if ($simpleXmlElementObject instanceof SimpleXMLElement) {
-            // Get a copy of the simpleXmlElementObject
-            $copyOfSimpleXmlElementObject = $simpleXmlElementObject;
-            // Get the object variables in the SimpleXmlElement object for us to iterate.
-            $simpleXmlElementObject = get_object_vars($simpleXmlElementObject);
-        } // End of if (get_class($simpleXmlElementObject) == "SimpleXMLElement")
-
-        // It needs to be an array of object variables.
-        if (is_array($simpleXmlElementObject)) {
-            // Initialize a result array.
-            $resultArray = array();
-            // Is the input array size 0? Then, we reached the rare CDATA text if any.
-            if (count($simpleXmlElementObject) <= 0) {
-                // Let us return the lonely CDATA. It could even be
-                // an empty element or just filled with whitespaces.
-                return (trim(strval($copyOfSimpleXmlElementObject)));
-            } // End of if (count($simpleXmlElementObject) <= 0)
-
-            // Let us walk through the child elements now.
-            foreach($simpleXmlElementObject as $key=>$value) {
-                // Check if we need to ignore the XML attributes.
-                // If yes, you can skip processing the XML attributes.
-                // Otherwise, add the XML attributes to the result array.
-                if(($ignoreXmlAttributes == true) && (is_string($key)) && ($key == "@attributes")) {
-                    continue;
-                } // End of if(($ignoreXmlAttributes == true) && ($key == "@attributes"))
-
-                // Let us recursively process the current XML element we just visited.
-                // Increase the recursion depth by one.
-                $recursionDepth++;
-                $resultArray[$key] = self::_processXml ($value, $ignoreXmlAttributes, $recursionDepth);
-
-                // Decrease the recursion depth by one.
-                $recursionDepth--;
-            } // End of foreach($simpleXmlElementObject as $key=>$value) {
-
-            if ($recursionDepth == 0) {
-                // That is it. We are heading to the exit now.
-                // Set the XML root element name as the root [top-level] key of
-                // the associative array that we are going to return to the original
-                // caller of this recursive function.
-                $tempArray = $resultArray;
-                $resultArray = array();
-                $resultArray[$callerProvidedSimpleXmlElementObject->getName()] = $tempArray;
-            } // End of if ($recursionDepth == 0)
-
-            return($resultArray);
-        } else {
-            // We are now looking at either the XML attribute text or
-            // the text between the XML tags.
-
-            // In order to allow Zend_Json_Expr from xml, we check if the node
-            // matchs the pattern that try to detect if it is a new Zend_Json_Expr
-            // if it matches, we return a new Zend_Json_Expr instead of a text node
-            $pattern = '/^[\s]*new Zend_Json_Expr[\s]*\([\s]*[\"\']{1}(.*)[\"\']{1}[\s]*\)[\s]*$/';
-            $matchings = array();
-            $match = preg_match ($pattern, $simpleXmlElementObject, $matchings);
-            if ($match) {
-                return new Zend_Json_Expr($matchings[1]);
-            } else {
-                return (trim(strval($simpleXmlElementObject)));
-            }
-
-        } // End of if (is_array($simpleXmlElementObject))
-    } // End of function _processXml.
     
+
     /**
      * Pretty-print JSON string
-     * 
-     * Use 'indent' option to select indentation string - by default it's a tab
-     * 
+     *
+     * Use 'format' option to select output format - currently html and txt supported, txt is default
+     * Use 'indent' option to override the indentation string set in the format - by default for the 'txt' format it's a tab
+     *
      * @param string $json Original JSON string
      * @param array $options Encoding options
      * @return string
@@ -64014,32 +65961,62 @@ class Zend_Json
     public static function prettyPrint($json, $options = array())
     {
         $tokens = preg_split('|([\{\}\]\[,])|', $json, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $result = "";
+        $result = '';
         $indent = 0;
-        
+
+        $format= 'txt';
+
         $ind = "\t";
-        if(isset($options['indent'])) {
+
+        if (isset($options['format'])) {
+            $format = $options['format'];
+        }
+
+        switch ($format) {
+            case 'html':
+                $lineBreak = '<br />';
+                $ind = '&nbsp;&nbsp;&nbsp;&nbsp;';
+                break;
+            default:
+            case 'txt':
+                $lineBreak = "\n";
+                $ind = "\t";
+                break;
+        }
+
+        // override the defined indent setting with the supplied option
+        if (isset($options['indent'])) {
             $ind = $options['indent'];
         }
-        
+
+        $inLiteral = false;
         foreach($tokens as $token) {
-            if($token == "") continue;
-            
+            if($token == '') {
+                continue;
+            }
+
             $prefix = str_repeat($ind, $indent);
-            if($token == "{" || $token == "[") {
+            if (!$inLiteral && ($token == '{' || $token == '[')) {
                 $indent++;
-                if($result != "" && $result[strlen($result)-1] == "\n") {
+                if (($result != '') && ($result[(strlen($result)-1)] == $lineBreak)) {
                     $result .= $prefix;
                 }
-                $result .= "$token\n";
-            } else if($token == "}" || $token == "]") {
+                $result .= $token . $lineBreak;
+            } elseif (!$inLiteral && ($token == '}' || $token == ']')) {
                 $indent--;
                 $prefix = str_repeat($ind, $indent);
-                $result .= "\n$prefix$token";                
-            } else if($token == ",") {
-                $result .= "$token\n";
+                $result .= $lineBreak . $prefix . $token;
+            } elseif (!$inLiteral && $token == ',') {
+                $result .= $token . $lineBreak;
             } else {
-                $result .= $prefix.$token;
+                $result .= ( $inLiteral ? '' : $prefix ) . $token;
+                
+                // Count # of unescaped double-quotes in token, subtract # of
+                // escaped double-quotes and if the result is odd then we are 
+                // inside a string literal
+                if ((substr_count($token, "\"")-substr_count($token, "\\\"")) % 2 != 0) {
+                    $inLiteral = !$inLiteral;
+                }
             }
         }
         return $result;
@@ -64060,9 +66037,9 @@ class Zend_Json
  *
  * @category   Zend
  * @package    Zend_Loader
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Loader.php 22019 2010-04-27 16:33:31Z matthew $
+ * @version    $Id$
  */
 
 /**
@@ -64070,7 +66047,7 @@ class Zend_Json
  *
  * @category   Zend
  * @package    Zend_Loader
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Loader
@@ -64106,19 +66083,7 @@ class Zend_Loader
             throw new Zend_Exception('Directory argument must be a string or an array');
         }
 
-        // Autodiscover the path from the class name
-        // Implementation is PHP namespace-aware, and based on 
-        // Framework Interop Group reference implementation:
-        // http://groups.google.com/group/php-standards/web/psr-0-final-proposal
-        $className = ltrim($class, '\\');
-        $file      = '';
-        $namespace = '';
-        if ($lastNsPos = strripos($className, '\\')) {
-            $namespace = substr($className, 0, $lastNsPos);
-            $className = substr($className, $lastNsPos + 1);
-            $file      = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-        }
-        $file .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+        $file = self::standardiseFile($class);
 
         if (!empty($dirs)) {
             // use the autodiscovered path
@@ -64220,7 +66185,7 @@ class Zend_Loader
     public static function isReadable($filename)
     {
         if (is_readable($filename)) {
-            // Return early if the filename is readable without needing the 
+            // Return early if the filename is readable without needing the
             // include_path
             return true;
         }
@@ -64228,7 +66193,7 @@ class Zend_Loader
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN'
             && preg_match('/^[a-z]:/i', $filename)
         ) {
-            // If on windows, and path provided is clearly an absolute path, 
+            // If on windows, and path provided is clearly an absolute path,
             // return false immediately
             return false;
         }
@@ -64253,8 +66218,8 @@ class Zend_Loader
      *
      * If no path provided, uses current include_path. Works around issues that
      * occur when the path includes stream schemas.
-     * 
-     * @param  string|null $path 
+     *
+     * @param  string|null $path
      * @return array
      */
     public static function explodeIncludePath($path = null)
@@ -64264,7 +66229,7 @@ class Zend_Loader
         }
 
         if (PATH_SEPARATOR == ':') {
-            // On *nix systems, include_paths which include paths with a stream 
+            // On *nix systems, include_paths which include paths with a stream
             // schema cannot be safely explode'd, so we have to be a bit more
             // intelligent in the approach.
             $paths = preg_split('#:(?!//)#', $path);
@@ -64371,5 +66336,31 @@ class Zend_Loader
         } else {
             return include $filespec ;
         }
+    }
+
+    /**
+     * Standardise the filename.
+     *
+     * Convert the supplied filename into the namespace-aware standard,
+     * based on the Framework Interop Group reference implementation:
+     * http://groups.google.com/group/php-standards/web/psr-0-final-proposal
+     *
+     * The filename must be formatted as "$file.php".
+     *
+     * @param string $file - The file name to be loaded.
+     * @return string
+     */
+    public static function standardiseFile($file)
+    {
+        $fileName = ltrim($file, '\\');
+        $file      = '';
+        $namespace = '';
+        if ($lastNsPos = strripos($fileName, '\\')) {
+            $namespace = substr($fileName, 0, $lastNsPos);
+            $fileName = substr($fileName, $lastNsPos + 1);
+            $file      = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+        }
+        $file .= str_replace('_', DIRECTORY_SEPARATOR, $fileName) . '.php';
+        return $file;    
     }
 }
