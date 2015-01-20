@@ -8,14 +8,8 @@
  * @link       http://www.crucialwebhost.com  Crucial Web Hosting
  */
 
-switch($_GET['clean']) {
-    case 'log':
         clean_log_tables();
-    break;
-    case 'var':
         clean_var_directory();
-    break;
-}
 
 function clean_log_tables() {
     $xml = simplexml_load_file('./app/etc/local.xml', NULL, LIBXML_NOCDATA);

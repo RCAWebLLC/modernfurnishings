@@ -588,12 +588,12 @@ tr.summary-details-excluded { font-style:italic; }
 .sidebar .block-title strong,
 .my-account .block .block-title strong,
 .checkout-onepage-success .block .block-title strong,
-.cart .block-title strong{ background-image:url(../images/sidebarblockTitle_shadow.jpg); }
-.block .block-title strong span { height:32px; display:block; font:800 12px/27px "Open Sans", arial, sans-serif; color:#fff; text-shadow:1px 1px 0 #000; text-transform:uppercase; }
+.cart .block-title strong{ background-image:none; }
+.block .block-title strong span { height:32px; display:block; font:800 12px/27px "Open Sans", arial, sans-serif; /* text-shadow:1px 1px 0 #000; text-transform:uppercase; */ }
 .sidebar .block-title strong span,
 .my-account .block .block-title strong span,
 .checkout-onepage-success .block .block-title strong span,
-.cart .block-title strong span{ text-shadow:1px 1px 0 #000; }
+.cart .block-title strong span{/*  text-shadow:1px 1px 0 #000; */ }
 .block .block-title a { text-decoration:none !important; }
 .block .block-subtitle { font-size:12px; font-weight:normal; color:#6a6969; margin-bottom:5px; margin-bottom:11px; }
 .block .block-content { background:#fff; border:1px solid #d5d5d5; display:block; clear:both; margin:4px; padding:18px 13px; }
@@ -1450,17 +1450,18 @@ tr.summary-details-excluded { font-style:italic; }
 
 
 .block-progress {}
-.block-progress {background:none; border:1px solid #eaeae6; margin:5px 16px 0 2px; padding:7px 10px;}
+.block-progress {background:#FFF; border:0px; margin:0px; padding:10px;}
 .block-progress .block-title {background:none; border:0;}
-.block .block-title strong {color:#000;}
+.block .block-title strong {color: #6a6969;}
+.block .block-title strong span{ color: #6a6969;}
 .block-progress dt { font-size:12px; color:#6a6969; border-top:1px solid #e2e2e2; padding:11px 0 11px 0px; font-weight:normal;}
 .block-progress dt:first-child {border-top:none;}
 .block-progress dt.complete,
 .block-progress dd.complete { border-top:1px solid #f0f0f0; margin-top:-1px; padding-bottom:12px; }
 .block-progress dd.complete {padding:15px 2px; }
 
-.opc { border-bottom:1px solid #f0f0f0; position:relative; }
-.opc li.section { border:1px solid #f0f0f0; border-bottom:0; }
+.opc { border-bottom:1px solid #f0f0f0; position:relative; display: inline-block; width: 75%; background-color: #fff; }
+.opc li.section { border:1px solid #f0f0f0; border-bottom:0; clear: both; }
 .opc p {margin-bottom:5px;}
 
 .opc .buttons-set.disabled button.button { display:none; }
