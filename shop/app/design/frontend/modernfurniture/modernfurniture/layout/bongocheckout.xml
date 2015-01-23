@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <checkout_cart_index>
+        <reference name="checkout.cart.top_methods">
+            <block type="bongocheckout/link" name="checkout.cart.methods.bongocheckout.top" template="bongocheckout/link.phtml" before="-"/>
+        </reference>
+        
+        <reference name="checkout.cart.methods">
+            <block type="bongocheckout/link" after="checkout.cart.methods.onepage" name="checkout.cart.methods.bongocheckout.bottom" template="bongocheckout/link.phtml"/>
+            <block type="bongocheckout/form" after="checkout.cart.methods.bongocheckout.bottom" name="checkout.cart.methods.bongocheckout.form" template="bongocheckout/form.phtml"/>
+        </reference>
+    </checkout_cart_index>
+
+    <checkout_onepage_shippingmethod>
+    	<block type="bongocheckout/form" name="checkout.onepage.shipping_method.bongocheckout.form" output="toHtml" template="bongocheckout/form.phtml" before="-" />
+    	<block type="bongocheckout/redirect" after="checkout.onepage.shipping_method.bongocheckout.form" name="checkout.onepage.shipping_method.bongocheckout.redirect" output="toHtml" template="bongocheckout/redirect.phtml" />
+    </checkout_onepage_shippingmethod>
+</layout>

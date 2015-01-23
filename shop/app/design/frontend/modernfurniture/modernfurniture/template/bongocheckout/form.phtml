@@ -1,0 +1,73 @@
+<?php
+if ($this->getIsEnabled ()) :
+	?>
+<div id="bongo_form_div">
+<form id="bongo_form" action="<?php
+	echo $this->getCheckoutUrl ();
+	?>" method="post">
+<input type="hidden" name="TOTAL_DOMESTIC_SHIPPING_CHARGE"
+	value="<?php
+	echo $this->getDomesticShipping ();
+	?>" />
+<input type="hidden" name="PARTNER_KEY"
+	value="<?php
+	echo $this->getApiKey ();
+	?>">
+<input type="hidden" name="CUSTOM_ORDER_1"
+	value="<?php
+	echo $this->getQuoteId ();
+	?>">
+<input type="hidden" name="CUSTOM_ORDER_2" value="<?php echo $this->getCustomerId(); ?>" />
+<input type="hidden" name="CUSTOM_ORDER_3" value="" />
+<?php if ($this->getItems()): ?>
+<?php $i=0; foreach ($this->getItems() as $item): $i++; ?>
+<input type="hidden" name="PRODUCT_ID_<?php echo $i; ?>" value="<?php echo $item->getSku(); ?>" />
+<input type="hidden" name="PRODUCT_NAME_<?php echo $i; ?>" value="<?php echo $item->getName(); ?>" />
+<input type="hidden" name="PRODUCT_PRICE_<?php echo $i; ?>" value="<?php echo $item->getProduct ()->getFinalPrice (); ?>" />
+<input type="hidden" name="PRODUCT_Q_<?php echo $i; ?>" value="<?php echo $item->getQty(); ?>" />
+<input type="hidden" name="PRODUCT_SHIPPING_<?php echo $i; ?>" value="0.00" />
+<?php $options = $item->getProduct()->getTypeInstance(true)->getOrderOptions($item->getProduct()); ?>
+<?php if ($options['options'] && count($options['options'])>0): ?>
+<?php $o=0; foreach ($options['options'] as $option): ?>
+<?php if (empty($option['label']) && empty($option['value'])) { continue; } ?>
+<?php $o++; if ($o>3) { break; } ?>
+<input type="hidden" name="PRODUCT_CUSTOM_<?php echo $o; ?>_<?php echo $i; ?>" value="<?php echo "{$option['label']}: {$option['value']}"; ?>" />
+<?php endforeach; ?>
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endif; ?>
+<input type="hidden" name="CUST_FIRST_NAME" value="<?php echo $this->getBillingAddress()->getFirstname(); ?>" />
+<input type="hidden" name="CUST_LAST_NAME" value="<?php echo $this->getBillingAddress()->getLastname(); ?>" />
+<input type="hidden" name="CUST_COMPANY" value="<?php echo $this->getBillingAddress()->getCompany(); ?>" />
+<input type="hidden" name="CUST_ADDRESS_LINE_1" value="<?php echo $this->getBillingAddress()->getStreet(1); ?>" />
+<input type="hidden" name="CUST_ADDRESS_LINE_2" value="<?php echo $this->getBillingAddress()->getStreet(2); ?>" />
+<input type="hidden" name="CUST_CITY" value="<?php echo $this->getBillingAddress()->getCity(); ?>" />
+<input type="hidden" name="CUST_STATE" value="<?php echo $this->getBillingRegion(); ?>" />
+<input type="hidden" name="CUST_COUNTRY" value="<?php echo $this->getBillingAddress()->getCountryId(); ?>" />
+<input type="hidden" name="CUST_ZIP" value="<?php echo $this->getBillingAddress()->getPostcode(); ?>" />
+<input type="hidden" name="CUST_PHONE" value="<?php echo $this->getBillingAddress()->getTelephone(); ?>" />
+<input type="hidden" name="CUST_EMAIL" value="<?php echo $this->getCustomerEmail(); ?>" />
+<input type="hidden" name="SHIP_FIRST_NAME" value="<?php echo $this->getShippingAddress()->getFirstname(); ?>" />
+<input type="hidden" name="SHIP_LAST_NAME" value="<?php echo $this->getShippingAddress()->getLastname(); ?>" />
+<input type="hidden" name="SHIP_COMPANY" value="<?php echo $this->getShippingAddress()->getCompany(); ?>" />
+<input type="hidden" name="SHIP_ADDRESS_LINE_1" value="<?php echo $this->getShippingAddress()->getStreet(1); ?>" />
+<input type="hidden" name="SHIP_ADDRESS_LINE_2" value="<?php echo $this->getShippingAddress()->getStreet(2); ?>" />
+<input type="hidden" name="SHIP_CITY" value="<?php echo $this->getShippingAddress()->getCity(); ?>" />
+<input type="hidden" name="SHIP_STATE" value="<?php echo $this->getShippingRegion(); ?>" />
+<input type="hidden" name="SHIP_COUNTRY" value="<?php echo $this->getShippingAddress()->getCountryId(); ?>" />
+<input type="hidden" name="SHIP_ZIP" value="<?php echo $this->getShippingAddress()->getPostcode(); ?>" />
+<input type="hidden" name="SHIP_PHONE" value="<?php echo $this->getShippingAddress()->getTelephone(); ?>" />
+<input type="hidden" name="SHIP_EMAIL" value="<?php echo $this->getCustomerEmail(); ?>" />
+<input type="hidden" name="SUB" value="SUBMIT ORDER" />
+</form>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+function bongoRedirect () {
+	$('bongo_form').submit();
+}
+//]]>
+</script>
+
+<?php endif;
+?>
