@@ -5,9 +5,11 @@ shop/media/js/*
 shop/media/css_secure/*
 shop.tar.gz
 shop.zip
+shop/downloader/.cache/*
 !shop/var/.gitkeep
 cms/system/expressionengine/config/config.php
 cms/system/expressionengine/config/database.php
 cms/system/expressionengine/cache/*
 !cms/system/expressionengine/cache/index.html
 .DS_Store
+
