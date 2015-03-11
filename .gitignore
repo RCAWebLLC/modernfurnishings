@@ -4,6 +4,7 @@ shop/media/css/*
 shop/media/js/*
 shop/media/css_secure/*
 shop.tar.gz
+shop.zip
 !shop/var/.gitkeep
 cms/system/expressionengine/config/config.php
 cms/system/expressionengine/config/database.php
