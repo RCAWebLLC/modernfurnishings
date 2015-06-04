@@ -29,8 +29,15 @@ class Springbot_Services_Cmd_Harvest extends Springbot_Services
 				self::$_classes, array('coupons', 'rules')
 			));
 		}
+
+		if (Mage::getStoreConfig('springbot/advanced/send_inventory') == 1) {
+			self::$_classes[] = 'inventories';
+		}
+
 		return self::$_classes;
 	}
+
+
 
 	protected function _init()
 	{
@@ -126,6 +133,7 @@ class Springbot_Services_Cmd_Harvest extends Springbot_Services
 
 		$forecastService = new Springbot_Services_Cmd_Forecast;
 		$forecastService->forecastStore($store->getStoreId(), $this->_harvestId);
+		$this->_registerInstagramRewrites($store);
 
 		foreach ($classes as $class) {
 			Springbot_Boss::scheduleJob(
@@ -158,6 +166,29 @@ class Springbot_Services_Cmd_Harvest extends Springbot_Services
 			'default',
 			$store->getStoreId()
 		);
+
+	}
+
+	private function _registerInstagramRewrites($store) {
+		$existingRewrite = Mage::getModel('core/url_rewrite')->loadByIdPath("springbot/{$store->getStoreId()}");
+		if ($existingRewrite->getUrlRewriteId() == null) {
+			if ($springbotStoreId = $this->getHelper()->getSpringbotStoreId($store->getStoreId())) {
+				try {
+					$encodedStoreName = urlencode($store->getFrontendName());
+					Mage::getModel('core/url_rewrite')
+						->setIsSystem(0)
+						->setStoreId($store->getStoreId())
+						->setOptions('RP')
+						->setIdPath('springbot/' . $store->getStoreId())
+						->setTargetPath("https://app.springbot.com/i/{$springbotStoreId}/{$encodedStoreName}")
+						->setRequestPath('i')
+						->save();
+				}
+				catch (Exception $e) {
+					Springbot_Log::debug("Unable to create instagram URL rewrite for store id " . $store->getStoreId());
+				}
+			}
+		}
 	}
 
 	/**
