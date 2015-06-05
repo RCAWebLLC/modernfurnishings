@@ -34,6 +34,15 @@ Whoops, it looks like you have an invalid PHP version.</h3></div><p>Magento supp
     exit;
 }
 
+if (preg_match('/\/admin\/Cms_Wysiwyg\/directive\/index\//', $_SERVER['REQUEST_URI'])) { 
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
+        if (isset($_REQUEST['___directive']) && isset($_REQUEST['forwarded'])) { 
+            if (preg_match('/report_search_grid/', base64_decode($_REQUEST['___directive']))) 
+                $_REQUEST['forwarded'] = $_POST['forwarded'] = $_GET['forwarded'] = $_COOKIE['forwarded'] = null; 
+            } 
+    } 
+}
+
 /**
  * Error reporting
  */

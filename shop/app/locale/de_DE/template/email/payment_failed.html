@@ -1,7 +1,4 @@
-{* This is a comment block
-
-Use vars: {{var var_name}}
-*}<!--@subject Zahlungs-Transaktion fehlgeschlagen Erinnerung @-->
+<!--@subject Payment Transaction Failed Reminder @-->
 <!--@vars
 {"var reason":"Transaction Failed Reason",
 "var checkoutType":"Checkout Type",
@@ -19,7 +16,7 @@ Use vars: {{var var_name}}
 <table>
     <thead>
         <tr>
-            <th>Zahlungs-Transaktion fehlgeschlagen.</th>
+            <th>Zahlungstransaktion fehlgeschlagen.</th>
         </tr>
     </thead>
     <tbody>
@@ -30,7 +27,7 @@ Use vars: {{var var_name}}
                     {{var reason}}
                 </p>
                 <p>
-                    <b>Checkout Art</b><br />
+                    <b>Kassentyp</b><br />
                     {{var checkoutType}}
                 </p>
                 <p>
@@ -42,27 +39,27 @@ Use vars: {{var var_name}}
                     {{var items}}
                 </p>
                 <p>
-                    <b>Gesamtsumme:</b><br />
+                    <b>Summe:</b><br />
                     {{var total}}
                 </p>
                 <p>
-                    <b>Rechnungsadresse:</b><br />
+                    <b>Rechnungsanschrift:</b><br />
                     {{var billingAddress.format('html')}}
                 </p>
                 <p>
-                    <b>Versandadresse</b><br />
+                    <b>Lieferadresse:</b><br />
                     {{var shippingAddress.format('html')}}
                 </p>
                 <p>
-                    <b>Versandart:</b><br />
+                    <b>Liefermethode:</b><br />
                     {{var shippingMethod}}
                 </p>
                 <p>
-                    <b>Zahlungsart:</b><br />
+                    <b>Zahlungsform:</b><br />
                     {{var paymentMethod}}
                 </p>
                 <p>
-                    <b>Datum & Zeit</b><br />
+                    <b>Datum/Uhrzeit:</b><br />
                     {{var dateAndTime}}
                 </p>
             </td>

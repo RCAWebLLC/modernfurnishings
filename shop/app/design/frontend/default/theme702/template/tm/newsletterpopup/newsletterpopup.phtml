@@ -1,0 +1,63 @@
+<?php 
+if (Mage::getStoreConfig('newsletterpopup/general/active', Mage::app()->getStore())):?>
+	
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newsletterpopup" aria-hidden="true" id="newsletterpopup">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header block-title">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"></span><span class="sr-only">Close</span></button>
+					<strong><span><?php echo $this->__('Newsletter') ?></span></strong>
+				</div>
+				<div class="modal-body">
+					<form action="<?php echo $this->getFormActionUrl() ?>" method="post" id="newsletter-validate-detail">
+						<div class="block-content">
+							<span>Subscribe to the Itrerior mailing list to receive updates on new arrivals, special offers and other discount information.</span>
+							<div class="form-group">
+								<input type="text" name="email" id="newsletter" title="<?php echo $this->__('Sign up for our newsletter') ?>" class="input-text required-entry validate-email" />
+							</div>
+							<div class="actions">
+								<button type="submit" title="<?php echo $this->__('Subscribe') ?>" class="button" name="newsletter_submit"><span><span><?php echo $this->__('Subscribe') ?></span></span></button>
+							</div>
+							<div class="clear"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<?php 
+	//var_dump(Mage::getSingleton('core/session'));
+
+	// Script init for home page only
+	if(Mage::getSingleton('cms/page')->getIdentifier() == 'home' && Mage::app()->getFrontController()->getRequest()->getRouteName() == 'cms') : ?>
+		<script type="text/javascript">
+			//<![CDATA[
+				var newsletterSubscriberFormDetail = new VarienForm('newsletter-validate-detail2');
+			//]]>			
+		</script>		
+
+		<?php 
+		// Popup init conditions
+		if (Mage::getSingleton('core/session')->getSignedUpForNewsletter() == false) { ?>
+			<script>
+				jQuery(document).ready(function() {
+					var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEmobile|Windows Phone|WPDesktop/i.test(navigator.userAgent);
+					if(!isMobile) {  
+						var newsPopup 		= jQuery('#newsletterpopup');
+						var newsPopupClose 	= newsPopup.find('.close');
+						var showNewsPopup = sessionStorage.getItem("showNewsPopup");
+
+						if (showNewsPopup != '0') {
+							newsPopup.modal();
+						};					
+
+						newsPopupClose.click(function(){
+							sessionStorage.setItem("showNewsPopup", '0');
+						});		
+					};	
+				});
+			</script>
+		<?php } ?>
+	<?php endif; ?>
+<?php endif; ?>
