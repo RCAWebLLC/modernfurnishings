@@ -1,0 +1,18 @@
+<?php
+/**
+ * Category Logo
+ *
+ */
+?>
+<?php 
+    $_helper    = $this->helper('catalog/output');
+    $_category  = $this->getCurrentCategory();
+    $imageUrl = $_category->getThumbnail();
+	$catName = $_category->getName();
+	$catUrl = $_category->getUrl();
+	if($_category->getParentId() == 21){
+		if($imageUrl){
+			echo '<div class="block cat-logo"><a href="' . $catUrl . '"><img src="' . Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . 'media/catalog/category/' . $imageUrl . '" alt="' . $catName . '" /></a></div>';
+		}
+	}
+?>

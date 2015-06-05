@@ -1,0 +1,30 @@
+<?php
+/**
+ * Top menu for store
+ *
+ * @see Mage_Catalog_Block_Navigation
+ */
+?>
+<?php
+/**
+ * $this->renderCategoriesMenuHtml() supports optional arguments:
+ * int Level number for list item class to start from
+ * string Extra class of outermost list items
+ * string If specified wraps children list in div with this class
+ */
+?>
+<?php $_menu = ''?>
+<?php foreach ($this->getStoreCategories() as $_category): ?>
+    <?php $_menu .= $this->drawItem($_category) ?>
+<?php endforeach ?>
+<?php if ($_menu): ?>
+<div class="nav-container">
+    <ul id="nav">
+    <?php foreach ($this->getStoreCategories() as $_category): ?>
+    <?php if (!in_array($_category->getId(), array(53,68,66,80))) : ?><?php echo $this->drawItem($_category) ?>
+    <?php endif; ?>
+    <?php endforeach ?>
+    </ul>
+    <script type="text/javascript">decorateList('nav', 'none-recursive')</script>
+</div>
+<?php endif; ?>

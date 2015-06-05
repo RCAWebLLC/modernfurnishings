@@ -10,17 +10,17 @@
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
- * @category   Mage
- * @package    Mage
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @category    Mage
+ * @package     Mage
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -32,15 +32,6 @@ Whoops, it looks like you have an invalid PHP version.</h3></div><p>Magento supp
 <a href="http://www.magentocommerce.com/install" target="">Find out</a> how to install</a>
  Magento using PHP-CGI as a work-around.</p></div>';
     exit;
-}
-
-if (preg_match('/\/admin\/Cms_Wysiwyg\/directive\/index\//', $_SERVER['REQUEST_URI'])) { 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
-        if (isset($_REQUEST['___directive']) && isset($_REQUEST['forwarded'])) { 
-            if (preg_match('/report_search_grid/', base64_decode($_REQUEST['___directive']))) 
-                $_REQUEST['forwarded'] = $_POST['forwarded'] = $_GET['forwarded'] = $_COOKIE['forwarded'] = null; 
-            } 
-    } 
 }
 
 /**

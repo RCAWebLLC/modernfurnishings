@@ -1,0 +1,69 @@
+<?php
+ /**
+ * GoMage LightCheckout Extension
+ *
+ * @category     Extension
+ * @copyright    Copyright (c) 2010-2012 GoMage (http://www.gomage.com)
+ * @author       GoMage
+ * @license      http://www.gomage.com/license-agreement/  Single domain license
+ * @terms of use http://www.gomage.com/terms-of-use
+ * @version      Release: 3.2
+ * @since        Class available since Release 1.0
+ */
+?>
+<div id="gcheckout-payment-methods" class="gcheckout-payment-methods">
+	<div class="block-title">
+		<div class="step-number"><strong><span>3</span></strong></div>
+		<h2 class="glc-title"><span><?php echo $this->__('Payment method');?></span></h2>
+	</div>
+	<div class="glc-col">
+	<div class="glc-col-in">
+	<script type="text/javascript">
+	//<![CDATA[
+	    var payment = new paymentForm('gcheckout-onepage-form');
+	//]]>
+	</script>
+	
+	<div id="gcheckout-payment-methods-available">
+	<!-- (c) 2005, 2013. Authorize.Net is a registered trademark of CyberSource Corporation --> <div class="AuthorizeNetSeal"> <script type="text/javascript" language="javascript">var ANS_customer_id="a5108368-94a1-447f-8720-f867fb463511";</script> <script type="text/javascript" language="javascript" src="//verify.authorize.net/anetseal/seal.js" ></script> <a href="http://www.authorize.net/" id="AuthorizeNetText" target="_blank">Accept Credit Cards Online</a> </div>
+	<?php echo $this->getChildHtml('methods') ?>
+	
+	</div>
+	
+	<?php if($advanced_content = trim($this->getChildHtml('advanced'))): ?>
+	
+	<div class="payment-advanced">
+		
+		<?php echo $advanced_content ?>
+		
+	</div>
+	
+	<?php endif;?>
+	</div>
+	</div>
+	<div class="tool-tip" id="payment-tool-tip" style="display:none;">
+		<div class="btn-close">
+			<a href="#" id="payment-tool-tip-close"><img src="<?php echo $this->getSkinUrl('images/gomage/lightcheckout/btn_window_close.png') ?>" alt="<?php echo $this->__('Close') ?>" title="<?php echo $this->__('Close') ?>" /></a>
+		</div>
+		<div class="tool-tip-content">
+			<img src="<?php echo $this->getSkinUrl('images/gomage/lightcheckout/cvv.png') ?>" alt="<?php echo $this->__('Card Verification Number Visual Reference') ?>" title="<?php echo $this->__('Card Verification Number Visual Reference') ?>" />
+		</div>
+	</div>
+	<script type="text/javascript">
+    //<![CDATA[
+        function toggleToolTip(event){
+            if($('payment-tool-tip')){
+                /*$('payment-tool-tip').setStyle({
+                    top: (Event.pointerY(event)-510)+'px',
+                    left: (Event.pointerX(event)-800)+'px'
+                })*/
+                $('payment-tool-tip').toggle();
+            }
+            Event.stop(event);
+        }
+        if($('payment-tool-tip-close')){
+            Event.observe($('payment-tool-tip-close'), 'click', toggleToolTip);
+        }        
+    //]]>
+	</script>		
+</div>
