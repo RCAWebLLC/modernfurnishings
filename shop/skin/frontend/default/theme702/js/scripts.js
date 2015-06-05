@@ -3,7 +3,7 @@ jQuery(document).ready(function(){
 
 	var blockSliderMarker = jQuery('.products-grid, .products-list, .catalog-product-view');
  	if(blockSliderMarker.length===0 ) {
-   		jQuery(".sidebar .block-slider-sidebar").remove();  
+   		jQuery(".sidebar .block-slider-sidebar").remove();
  	}
  	else {
   		jQuery(".sidebar .block-slider-sidebar").addClass('block-slider-start');
@@ -18,7 +18,7 @@ jQuery(document).ready(function(){
 
 	jQuery('.sf-menu-phone').find('li.parent').append('<strong></strong>');
 	jQuery('.sf-menu-phone li.parent strong').on("click", function(){
-		if (jQuery(this).attr('class') == 'opened') { jQuery(this).removeClass().parent('li.parent').find('> ul').slideToggle(); } 
+		if (jQuery(this).attr('class') == 'opened') { jQuery(this).removeClass().parent('li.parent').find('> ul').slideToggle(); }
 			else {
 				jQuery(this).addClass('opened').parent('li.parent').find('> ul').slideToggle();
 			}
@@ -30,7 +30,7 @@ jQuery(document).ready(function(){
 	});
 
 	/***************************************************************** Cart Truncated *********************************************************************/
-	
+
 		jQuery('.truncated span').click(function(){
 				jQuery(this).parent().find('.truncated_full_value').stop().slideToggle();
 		});
@@ -43,25 +43,25 @@ jQuery(document).ready(function(){
 		        });
 		    });
 		}
-	
+
 		Event.observe(window, 'load', function(){
 		   truncateOptions();
 		});
 
-		jQuery(".price-box.map-info a, .tier-price a").click(function() { 
+		jQuery(".price-box.map-info a, .tier-price a").click(function() {
 	        jQuery(".map-popup").toggleClass("displayblock");
 	    });
 
-	    jQuery('.map-popup-close').on('click',function(){ 
+	    jQuery('.map-popup-close').on('click',function(){
 	    	jQuery('.map-popup').removeClass('displayblock');
 	    });
 	/********************************************************** Product View Accordion *********************************************************************/
 		jQuery.fn.slideFadeToggle = function(speed, easing, callback) {
-		  return this.animate({opacity: 'toggle', height: 'toggle'}, speed, easing, callback);  
+		  return this.animate({opacity: 'toggle', height: 'toggle'}, speed, easing, callback);
 		};
 		jQuery('.box-collateral').not('.box-up-sell').find('h2').append('<span class="toggle"></span>');
 		jQuery('.form-add').find('.box-collateral-content').css({'display':'block'}).parents('.form-add').find('> h2 > span').addClass('opened');
-		
+
 		jQuery('.box-collateral > h2').click(function(){
 			OpenedClass = jQuery(this).find('> span').attr('class');
 			if (OpenedClass == 'toggle opened') { jQuery(this).find('> span').removeClass('opened'); }
@@ -99,17 +99,17 @@ jQuery(document).ready(function(){
 		     jQuery('.header-button, .switch-show').not(this).removeClass('active'),
 		     jQuery('.header-button, .switch-show').not(this).find('ul').slideUp()
 		     jQuery('.header-button ul li, .switch-show ul li').click(function(e){
-		      	 e.stopPropagation(); 
+		      	 e.stopPropagation();
 		    	});
 		    	return false
 		});
-		jQuery(document).on('click',function(){ 
+		jQuery(document).on('click',function(){
 		    jQuery('.header-button, .switch-show').removeClass('active').find('ul').slideUp()
 		});
-		jQuery('.block-cart-header, .top-search').on('click',function(){ 
+		jQuery('.block-cart-header, .top-search').on('click',function(){
 		    jQuery('.header-button').removeClass('active').find('ul').slideUp()
 		});
-		   
+
 /********************************************************************* swipe *****************************************************************************/
 		function swipe_animate_true(){
 			jQuery('.swipe-control').addClass('active');
@@ -171,10 +171,10 @@ jQuery(document).ready(function(){
 
 /********************************************************************* top-icon-menu ***********************************************************************/
 		function mini_form_hide(){
-			if(!$flag){	return false}		
-				jQuery('#search_mini_form').animate({height: 'hide', opacity:0}, 300);		
+			if(!$flag){	return false}
+				jQuery('#search_mini_form').animate({height: 'hide', opacity:0}, 300);
 				jQuery('.top-search').removeClass('active');
-			
+
 		}
 		function mini_form_show(){
 			jQuery('#search_mini_form').animate({height: 'show', opacity:1}, 300);
@@ -184,14 +184,14 @@ jQuery(document).ready(function(){
 				jQuery('#search_mini_form').css({'top':'55px'});
 			}
 		};
-		
+
 		jQuery('.top-search').on("click", function(){
 			if ( jQuery('#search_mini_form').css('display') == 'none' ) {
 				mini_form_show()
 			} else {
 				mini_form_hide()
 			}
-		}); 
+		});
 
 	/********************************************************************** Header Cart *********************************************************************/
 
@@ -200,11 +200,11 @@ jQuery(document).ready(function(){
 			jQuery(this).toggleClass('active');
 			return false
 		});
-		jQuery(topControlIcon).not('.block-cart-header').on('click',function(){ 
+		jQuery(topControlIcon).not('.block-cart-header').on('click',function(){
 			jQuery('.block-cart-header .cart-content').slideUp();
 			jQuery('.block-cart-header').removeClass('active');
 		});
-		jQuery('.swipe-control').on('click',function(){ 
+		jQuery('.swipe-control').on('click',function(){
 			jQuery('.block-cart-header .cart-content').slideUp();
 			jQuery('.block-cart-header').removeClass('active');
 		});
@@ -218,11 +218,11 @@ jQuery(document).ready(function(){
  var top_search=$('.top-search')
  $(window).bind('load resize',function(){
   var bodyWidth=$('.container').width()
-  if(bodyWidth>=767){    
+  if(bodyWidth>=767){
     if($flag===true)
   		$('#search_mini_form').show().css({opacity:1})
   	$flag = false;
-  }else{    
+  }else{
     if($flag===false&&!top_search.hasClass('active'))
   		$('#search_mini_form').hide().css({opacity:0})
   	$flag = true;
@@ -262,13 +262,13 @@ jQuery(document).ready(function() {
 	jQuery('#checkout-progress-state li:odd').addClass('odd');
 	jQuery('.product-view .product-img-box .product-image').append('<span></span>');
     jQuery('.links a.top-link-cart').parent().addClass('top-car');
-    jQuery('.footer-cols-wrapper .footer-col').last().addClass('last'); 
+    jQuery('.footer-cols-wrapper .footer-col').last().addClass('last');
     if(jQuery('.footer .facebook-fanbox')){ jQuery('.footer .footer-col').addClass('footer-col-ex')};
     jQuery('.input-box select, .input-box input, input.qty, .data-table textarea, .input-box textarea, .advanced-search .input-range input').not('input.radio, input.checkbox').addClass('form-control');
     if(jQuery('.new + .sale').each(function(index){
     	jQuery(this).parent('.label-product').addClass('label-indent');
     }));
-  
+
 	if (jQuery('.container').width() < 766) {
 		if(jQuery(".my-account").length){
 			jQuery('.my-account table td.order-id').prepend('<strong>Order #:</strong>');
@@ -280,7 +280,7 @@ jQuery(document).ready(function() {
 			jQuery('.my-account table td.order-price').prepend('<strong>Price: </strong>');
 			jQuery('.my-account table td.order-subtotal').prepend('<strong>Subtotal: </strong>');
 		};
-		
+
 		if(jQuery(".multiple-checkout").length){
 			jQuery('.multiple-checkout td.order-qty, .multiple-checkout th.order-qty').prepend('<strong>Qty: </strong>');
 			jQuery('.multiple-checkout td.order-shipping, .multiple-checkout th.order-shipping, ').prepend('<strong>Send To: </strong>');
@@ -291,7 +291,7 @@ jQuery(document).ready(function() {
 
 		jQuery(function() {
 		//	Scrolled by user interaction
-			if(jQuery(".up-sell-carousel").length){ 
+			if(jQuery(".up-sell-carousel").length){
 				jQuery('.up-sell-carousel').carouFredSel({
 					responsive: true,
 					width: '100%',
@@ -317,7 +317,7 @@ jQuery(document).ready(function() {
 				});
 			};
 
-			if(jQuery(".tumbSlider").length){ 
+			if(jQuery(".tumbSlider").length){
 				jQuery('.tumbSlider').carouFredSel({
 					responsive: true,
 					width: '100%',
@@ -353,7 +353,7 @@ jQuery(document).ready(function() {
 		            }
 		        });
 			};
-			if(jQuery(".slider-sidebar").length){ 
+			if(jQuery(".slider-sidebar").length){
 				jQuery('.slider-sidebar').carouFredSel({
 					responsive: true,
 					width: '100%',
@@ -379,9 +379,9 @@ jQuery(document).ready(function() {
 					}
 				});
 			};
-			
+
 		});
-		if(jQuery("#gallery-swipe").length){ 
+		if(jQuery("#gallery-swipe").length){
 				jQuery('#gallery-swipe').bxSlider({
 					pager:false,
 					controls:true,
@@ -392,11 +392,11 @@ jQuery(document).ready(function() {
 					});
 			};
 
-		if(jQuery("#gallery-swipe").length){  
+		if(jQuery("#gallery-swipe").length){
 			var myPhotoSwipe = jQuery("#gallery-swipe a").photoSwipe({ enableMouseWheel: false , enableKeyboard: false, captionAndToolbarAutoHideDelay:0 });
 		};
 
-		// + and - Qty product  
+		// + and - Qty product
 	var parentTD;
     var newDiv;
     var navigationDiv;
@@ -440,7 +440,7 @@ jQuery(document).ready(function() {
             }
         });
     });
-		
+
 });
 
 

@@ -257,6 +257,6 @@
 })(jQuery);
 
 /*---------------------*/
-jQuery(function(){
-	jQuery('.sf-menu').superfish()
-})
+$(function(){
+	$('.sf-menu').superfish();
+});
