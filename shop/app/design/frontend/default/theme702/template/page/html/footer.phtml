@@ -47,16 +47,16 @@
         <div class="footer">
           <p id="back-top"><a href="#top"><span></span></a> </p>
           <div class="footer-cols-wrapper">
-            <div class="footer-col">
+            <!--div class="footer-col">
               <h4>
                 <?php //echo $this->__('Information') ?>
               </h4>
               <div class="footer-col-content">
                 <?php //echo $this->getChildHtml('cms_footer_links') ?>
                 <?php //echo $this->getChildHtml('footer_links') ?>
-                <?php echo $this->getChildHtml('footer_list') ?> </div>
-            </div>
-            <?php //echo $this->getChildHtml('footer_list') ?>
+                <?php //echo $this->getChildHtml('footer_list') ?> </div>
+            </div-->
+            <?php echo $this->getChildHtml('footer_list') ?>
             <div class="clear"></div>
           </div>
           <div class="clear"></div>
@@ -77,3 +77,24 @@ $current_page = Mage::app()->getFrontController()->getRequest()->getRouteName();
     </div>
   </div>
 </div>
+<script type="text/javascript">
+var google_tag_params = {
+ecomm_prodid: 'REPLACE_WITH_VALUE',
+ecomm_pagetype: 'REPLACE_WITH_VALUE',
+ecomm_totalvalue: 'REPLACE_WITH_VALUE',
+};
+</script>
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 1022337098;
+var google_custom_params = window.google_tag_params;
+var google_remarketing_only = true;
+/* ]]> */
+</script>
+<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/1022337098/?value=0&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>

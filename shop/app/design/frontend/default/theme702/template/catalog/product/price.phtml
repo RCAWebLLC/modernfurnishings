@@ -40,7 +40,9 @@ $_taxHelper = $this->helper('tax');
 /* @var $_weeeHelper Mage_Weee_Helper_Data */
 /* @var $_taxHelper Mage_Tax_Helper_Data */
 
-$_product = $this->getProduct();
+//$_product = $this->getProduct();
+$_proId  = $this->getProduct()->getId();
+$_product= Mage::getModel('catalog/product')->load($_proId);
 $_storeId = $_product->getStoreId();
 $_store = $_product->getStore();
 $_id = $_product->getId();
@@ -200,7 +202,7 @@ if ($this->getProductAttribute('special_price')) $_specialPriceStoreLabel = $thi
                         : <?php echo $_coreHelper->currency($_weeeTaxAttribute->getAmount() + ($_taxHelper->displayPriceIncludingTax() ? $_weeeTaxAttribute->getTaxAmount() : 0), true, true); ?>
                     </span>
                 <?php endforeach; ?>
-                <span class="regular-price" itemprop="price" 
+                <span class="regular-price" itemprop="price"
                       id="product-price-weee-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>">
                     <?php echo $_coreHelper->currency($_price + $weeeAmountToDisplay, true, true) ?>
                 </span>
@@ -372,7 +374,7 @@ if ($this->getProductAttribute('special_price')) $_specialPriceStoreLabel = $thi
                     <span class="price-label"><?php echo $_specialPriceStoreLabel ?></span>
                     <span class="price-excluding-tax">
                         <span class="label"><?php echo $this->helper('tax')->__('Excl. Tax:') ?></span>
-                        <span class="price" itemprop="price" 
+                        <span class="price" itemprop="price"
                               id="price-excluding-tax-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>">
                             <?php echo $_coreHelper->formatPrice($_finalPrice, false) ?>
                         </span>
