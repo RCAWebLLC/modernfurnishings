@@ -21,7 +21,7 @@
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -117,7 +117,7 @@ class Mage_CatalogIndex_Model_Price extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -200,7 +200,7 @@ class Mage_CatalogIndex_Model_Resource_Abstract extends Mage_Core_Model_Resource
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -508,7 +508,7 @@ class Mage_CatalogIndex_Model_Resource_Price extends Mage_CatalogIndex_Model_Res
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -1534,7 +1534,7 @@ class Mage_CatalogInventory_Model_Observer
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -1907,7 +1907,7 @@ class Mage_CatalogInventory_Model_Resource_Stock extends Mage_Core_Model_Resourc
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2035,7 +2035,7 @@ class Mage_CatalogInventory_Model_Resource_Stock_Item extends Mage_Core_Model_Re
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2197,7 +2197,7 @@ class Mage_CatalogInventory_Model_Resource_Stock_Item_Collection extends Mage_Co
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2465,7 +2465,7 @@ class Mage_CatalogInventory_Model_Resource_Stock_Status extends Mage_Core_Model_
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2702,7 +2702,7 @@ class Mage_CatalogInventory_Model_Stock extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -3606,7 +3606,7 @@ class Mage_CatalogInventory_Model_Stock_Item extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4144,7 +4144,7 @@ class Mage_CatalogInventory_Model_Stock_Status extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4202,7 +4202,7 @@ class Mage_CatalogRule_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4629,7 +4629,7 @@ class Mage_CatalogRule_Model_Observer
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4914,7 +4914,7 @@ abstract class Mage_Rule_Model_Resource_Abstract extends Mage_Core_Model_Resourc
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -5745,7 +5745,7 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -5775,7 +5775,7 @@ interface Mage_Rule_Model_Condition_Interface
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -6451,7 +6451,7 @@ abstract class Mage_Rule_Model_Condition_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7054,7 +7054,7 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7191,7 +7191,7 @@ class Mage_CatalogRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Cond
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7422,7 +7422,7 @@ class Mage_Catalog_Block_Product_Price extends Mage_Catalog_Block_Product_Abstra
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7543,7 +7543,7 @@ abstract class Mage_Catalog_Helper_Flat_Abstract extends Mage_Core_Helper_Abstra
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7700,7 +7700,7 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Catalog_Helper_Flat_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -8060,7 +8060,7 @@ class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -10139,7 +10139,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -10835,7 +10835,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Media extends Mage_Eav_Model_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -10943,7 +10943,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11044,7 +11044,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Startdate extends Mage_Eav_Mo
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11412,7 +11412,7 @@ abstract class Mage_Catalog_Model_Product_Attribute_Backend_Groupprice_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11503,7 +11503,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Tierprice
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11576,7 +11576,7 @@ abstract class Mage_Catalog_Model_Attribute_Backend_Urlkey_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11612,7 +11612,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Urlkey extends Mage_Catalog_M
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11775,7 +11775,7 @@ class Mage_Catalog_Model_Product_Link extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Media
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11842,7 +11842,7 @@ interface Mage_Media_Model_Image_Config_Interface
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -12028,7 +12028,7 @@ class Mage_Catalog_Model_Product_Media_Config implements Mage_Media_Model_Image_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -12621,7 +12621,7 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -12970,7 +12970,7 @@ class Mage_Catalog_Model_Product_Status extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -13196,7 +13196,7 @@ class Mage_Catalog_Model_Product_Type
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14196,7 +14196,7 @@ abstract class Mage_Catalog_Model_Product_Type_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14632,7 +14632,7 @@ class Mage_Catalog_Model_Product_Type_Price
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14667,7 +14667,7 @@ class Mage_Catalog_Model_Product_Type_Simple extends Mage_Catalog_Model_Product_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14969,7 +14969,7 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -15278,7 +15278,7 @@ class Mage_Catalog_Model_Product_Visibility extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -15977,7 +15977,7 @@ abstract class Mage_Catalog_Model_Resource_Abstract extends Mage_Eav_Model_Entit
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -17477,7 +17477,7 @@ abstract class Mage_Eav_Model_Entity_Collection_Abstract extends Varien_Data_Col
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -17696,7 +17696,7 @@ class Mage_Catalog_Model_Resource_Collection_Abstract extends Mage_Eav_Model_Ent
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -17847,7 +17847,7 @@ class Mage_Catalog_Model_Resource_Config extends Mage_Core_Model_Resource_Db_Abs
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -18249,7 +18249,7 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -18953,7 +18953,7 @@ class Mage_Catalog_Model_Resource_Product extends Mage_Catalog_Model_Resource_Ab
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -19248,7 +19248,7 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media extends Mage_C
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -19394,7 +19394,7 @@ abstract class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Groupprice_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -19526,7 +19526,7 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -21702,7 +21702,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22035,7 +22035,7 @@ class Mage_Catalog_Model_Resource_Product_Link_Product_Collection extends Mage_C
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22545,7 +22545,7 @@ class Mage_Catalog_Model_Resource_Product_Option extends Mage_Core_Model_Resourc
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22774,7 +22774,7 @@ class Mage_Catalog_Model_Resource_Product_Option_Collection extends Mage_Core_Mo
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22956,7 +22956,7 @@ class Mage_Checkout_Block_Cart extends Mage_Checkout_Block_Cart_Abstract
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22991,7 +22991,7 @@ class Mage_Checkout_Block_Cart_Coupon extends Mage_Checkout_Block_Cart_Abstract
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -23173,7 +23173,7 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -23667,7 +23667,7 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -23932,7 +23932,7 @@ class Mage_Checkout_Block_Cart_Shipping extends Mage_Checkout_Block_Cart_Abstrac
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24075,7 +24075,7 @@ class Mage_Checkout_Block_Cart_Totals extends Mage_Checkout_Block_Cart_Abstract
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24128,7 +24128,7 @@ class Mage_Checkout_Block_Multishipping_Link extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24177,7 +24177,7 @@ class Mage_Checkout_Block_Onepage_Link extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24243,7 +24243,7 @@ class Mage_Checkout_Block_Total_Default extends Mage_Checkout_Block_Cart_Totals
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24278,7 +24278,7 @@ class Mage_Checkout_Block_Total_Tax extends Mage_Checkout_Block_Total_Default
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24342,7 +24342,7 @@ class Mage_Checkout_Model_Observer
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24603,7 +24603,7 @@ class Mage_Core_Block_Html_Select extends Mage_Core_Block_Abstract
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24890,7 +24890,7 @@ class Mage_Core_Model_Date
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25046,7 +25046,7 @@ class Mage_Core_Model_Encryption
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25507,7 +25507,7 @@ class Mage_Customer_Model_Address_Abstract extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25600,7 +25600,7 @@ class Mage_Customer_Model_Resource_Group extends Mage_Core_Model_Resource_Db_Abs
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25636,7 +25636,7 @@ class Mage_Customer_Model_Entity_Group extends Mage_Customer_Model_Resource_Grou
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25790,7 +25790,7 @@ class Mage_Directory_Block_Data extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26096,7 +26096,7 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26452,7 +26452,7 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26531,7 +26531,7 @@ class Mage_Directory_Model_Region extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26779,7 +26779,7 @@ class Mage_Directory_Model_Resource_Currency extends Mage_Core_Model_Resource_Db
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26932,7 +26932,7 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26984,7 +26984,7 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Array extends Mage_Eav_Model_Entit
  *
  * @category    Mage
  * @package     Mage_GiftMessage
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27063,7 +27063,7 @@ class Mage_GiftMessage_Model_Entity_Attribute_Backend_Boolean_Config extends Mag
  *
  * @category    Mage
  * @package     Mage_GiftMessage
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27307,7 +27307,7 @@ class Mage_GiftMessage_Model_Observer extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27566,7 +27566,7 @@ class Mage_Reports_Model_Event_Observer
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27598,7 +27598,7 @@ class Mage_Rule_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28105,7 +28105,7 @@ abstract class Mage_Rule_Model_Abstract extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28461,7 +28461,7 @@ class Mage_Rule_Model_Condition_Combine extends Mage_Rule_Model_Condition_Abstra
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28695,7 +28695,7 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28751,7 +28751,7 @@ class Mage_Rule_Model_Rule extends Mage_Rule_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28817,7 +28817,7 @@ class Mage_SalesRule_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -29116,7 +29116,7 @@ class Mage_SalesRule_Model_Observer
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -29433,7 +29433,7 @@ class Mage_SalesRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstra
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -29660,7 +29660,7 @@ class Mage_SalesRule_Model_Resource_Rule_Collection extends Mage_Rule_Model_Reso
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30223,7 +30223,7 @@ class Mage_SalesRule_Model_Rule extends Mage_Rule_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30283,7 +30283,7 @@ class Mage_SalesRule_Model_Rule_Condition_Combine extends Mage_Rule_Model_Condit
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30354,7 +30354,7 @@ class Mage_SalesRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Condit
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30577,7 +30577,7 @@ class Mage_SalesRule_Model_Rule_Condition_Product_Combine extends Mage_Rule_Mode
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30633,7 +30633,7 @@ class Mage_SalesRule_Model_Rule_Customer extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -31710,7 +31710,7 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -31881,7 +31881,7 @@ class Mage_Sales_Helper_Data extends Mage_Core_Helper_Data
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -33848,7 +33848,7 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -35107,7 +35107,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -35167,7 +35167,7 @@ interface Mage_Catalog_Model_Product_Configuration_Item_Interface
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -35979,7 +35979,7 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36181,7 +36181,7 @@ class Mage_Sales_Model_Quote_Address_Item extends Mage_Sales_Model_Quote_Item_Ab
  *
  * @category    Mage
  * @package     Mage_Shipping
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36220,7 +36220,7 @@ abstract class Mage_Shipping_Model_Rate_Abstract extends Mage_Core_Model_Abstrac
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36330,7 +36330,7 @@ class Mage_Sales_Model_Quote_Address_Rate extends Mage_Shipping_Model_Rate_Abstr
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36375,7 +36375,7 @@ class Mage_Sales_Model_Quote_Address_Total extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36643,7 +36643,7 @@ abstract class Mage_Sales_Model_Quote_Address_Total_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36797,7 +36797,7 @@ class Mage_Sales_Model_Quote_Address_Total_Discount extends Mage_Sales_Model_Quo
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36870,7 +36870,7 @@ class Mage_Sales_Model_Quote_Address_Total_Grand extends Mage_Sales_Model_Quote_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37079,7 +37079,7 @@ class Mage_Sales_Model_Quote_Address_Total_Shipping extends Mage_Sales_Model_Quo
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37255,7 +37255,7 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37507,7 +37507,7 @@ class Mage_Sales_Model_Quote_Address_Total_Tax extends Mage_Sales_Model_Quote_Ad
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37551,7 +37551,7 @@ class Mage_Sales_Model_Quote_Config
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38441,7 +38441,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38482,7 +38482,7 @@ interface Mage_Catalog_Model_Product_Configuration_Item_Option_Interface
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38634,7 +38634,7 @@ class Mage_Sales_Model_Quote_Item_Option extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38686,7 +38686,7 @@ abstract class Mage_Sales_Model_Resource_Abstract extends Mage_Core_Model_Resour
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38951,7 +38951,7 @@ class Mage_Sales_Model_Resource_Quote extends Mage_Sales_Model_Resource_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38995,7 +38995,7 @@ class Mage_Sales_Model_Resource_Quote_Address extends Mage_Sales_Model_Resource_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39082,7 +39082,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Collection extends Mage_Core_Model
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39126,7 +39126,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Item extends Mage_Sales_Model_Reso
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39208,7 +39208,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Item_Collection extends Mage_Core_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39252,7 +39252,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Rate extends Mage_Sales_Model_Reso
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39346,7 +39346,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Rate_Collection extends Mage_Core_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39390,7 +39390,7 @@ class Mage_Sales_Model_Resource_Quote_Item extends Mage_Sales_Model_Resource_Abs
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39630,7 +39630,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39674,7 +39674,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Option extends Mage_Core_Model_Resour
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39847,7 +39847,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41053,7 +41053,7 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41760,7 +41760,7 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -42527,7 +42527,7 @@ class Mage_Tax_Model_Config
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -42775,7 +42775,7 @@ class Mage_Tax_Model_Observer
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2014 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -43280,17 +43280,17 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
- * @category   Varien
- * @package    Varien_Crypt
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @category    Varien
+ * @package     Varien_Crypt
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -43328,17 +43328,17 @@ class Varien_Crypt
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
- * @category   Varien
- * @package    Varien_Crypt
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @category    Varien
+ * @package     Varien_Crypt
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -43365,17 +43365,17 @@ abstract class Varien_Crypt_Abstract extends Varien_Object
  * http://opensource.org/licenses/osl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
+ * to license@magento.com so we can send you a copy immediately.
  *
  * DISCLAIMER
  *
  * Do not edit or add to this file if you wish to upgrade Magento to newer
  * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
+ * needs please refer to http://www.magento.com for more information.
  *
- * @category   Varien
- * @package    Varien_Crypt
- * @copyright  Copyright (c) 2008 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @category    Varien
+ * @package     Varien_Crypt
+ * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
