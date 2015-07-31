@@ -105,6 +105,8 @@
     -moz-box-shadow: 0 5px 21px rgba(0,0,0,0.09);
     -webkit-box-shadow:0 5px 21px rgba(0,0,0,0.09);
     display: none;
+    overflow-y: scroll;
+    max-height: 768px;
 }
 .isStuck .grid-full > li > .level-top {
     top: 41px;
@@ -310,7 +312,7 @@
 .grid-full .catagory_children > .level1{
     width: 25% !important;
 }
-.grid-full .column1 .catagory_children .level1 {width: 100% !important; margin: 0;}
+.grid-full .column1 .catagory_children .level1 {/* width: 100% !important; */ margin: 0;}
 .grid-full .catagory_children .level1 span{
 	padding: 0px !important;
     text-transform: uppercase !important;
