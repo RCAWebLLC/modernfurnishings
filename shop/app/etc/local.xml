@@ -56,7 +56,7 @@
 		<header1>HTTP_X_REAL_IP</header1>
 		<header2>HTTP_X_FORWARDED_FOR</header2>
 	</remote_addr_headers>
-        <session_save><![CDATA[files]]></session_save>
+        <session_save><![CDATA[db]]></session_save>
     </global>
     <admin>
         <routers>

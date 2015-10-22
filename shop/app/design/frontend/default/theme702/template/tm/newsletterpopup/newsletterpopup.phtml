@@ -1,6 +1,6 @@
-<?php 
+<?php
 if (Mage::getStoreConfig('newsletterpopup/general/active', Mage::app()->getStore())):?>
-	
+
 	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newsletterpopup" aria-hidden="true" id="newsletterpopup">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -11,7 +11,7 @@ if (Mage::getStoreConfig('newsletterpopup/general/active', Mage::app()->getStore
 				<div class="modal-body">
 					<form action="<?php echo $this->getFormActionUrl() ?>" method="post" id="newsletter-validate-detail">
 						<div class="block-content">
-							<span>Subscribe to the Itrerior mailing list to receive updates on new arrivals, special offers and other discount information.</span>
+							<span>Subscribe to the Modern Studio Furnishings mailing list to receive updates on new arrivals, special offers and other discount information.</span>
 							<div class="form-group">
 								<input type="text" name="email" id="newsletter" title="<?php echo $this->__('Sign up for our newsletter') ?>" class="input-text required-entry validate-email" />
 							</div>
@@ -26,7 +26,7 @@ if (Mage::getStoreConfig('newsletterpopup/general/active', Mage::app()->getStore
 		</div>
 	</div>
 
-	<?php 
+	<?php
 	//var_dump(Mage::getSingleton('core/session'));
 
 	// Script init for home page only
@@ -34,28 +34,28 @@ if (Mage::getStoreConfig('newsletterpopup/general/active', Mage::app()->getStore
 		<script type="text/javascript">
 			//<![CDATA[
 				var newsletterSubscriberFormDetail = new VarienForm('newsletter-validate-detail2');
-			//]]>			
-		</script>		
+			//]]>
+		</script>
 
-		<?php 
+		<?php
 		// Popup init conditions
 		if (Mage::getSingleton('core/session')->getSignedUpForNewsletter() == false) { ?>
 			<script>
 				jQuery(document).ready(function() {
 					var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEmobile|Windows Phone|WPDesktop/i.test(navigator.userAgent);
-					if(!isMobile) {  
+					if(!isMobile) {
 						var newsPopup 		= jQuery('#newsletterpopup');
 						var newsPopupClose 	= newsPopup.find('.close');
 						var showNewsPopup = sessionStorage.getItem("showNewsPopup");
 
 						if (showNewsPopup != '0') {
 							newsPopup.modal();
-						};					
+						};
 
 						newsPopupClose.click(function(){
 							sessionStorage.setItem("showNewsPopup", '0');
-						});		
-					};	
+						});
+					};
 				});
 			</script>
 		<?php } ?>

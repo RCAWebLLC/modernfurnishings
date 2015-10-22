@@ -48,7 +48,9 @@ function clean_log_tables() {
         mysql_select_db($db['name']) or die(mysql_error());
         
         foreach($tables as $table) {
-            @mysql_query('TRUNCATE `'.$db['pref'].$table.'`');
+            mysql_query('TRUNCATE `'.$db['pref'].$table.'`');
+	   echo 'TRUNCATE `'.$db['pref'].$table.'`
+';
         }
     } else {
         exit('Unable to load local.xml file');
@@ -73,6 +75,8 @@ function clean_var_directory() {
     );
     
     foreach($dirs as $dir) {
-        exec('rm -rf '.$dir);
+        exec('sudo rm -rf '.$dir);
+	echo 'removed ' .$dir.'
+';
     }
 }
