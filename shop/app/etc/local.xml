@@ -40,10 +40,10 @@
             </db>
             <default_setup>
                 <connection>
-                    <host><![CDATA[localhost]]></host>
+                    <host><![CDATA[rds.modernfurnishings.com]]></host>
                     <username><![CDATA[modern]]></username>
                     <password><![CDATA[husH3u6dred9]]></password>
-                    <dbname><![CDATA[ms_magento]]></dbname>
+                    <dbname><![CDATA[ModernFurnishing]]></dbname>
                     <initStatements><![CDATA[SET NAMES utf8]]></initStatements>
                     <model><![CDATA[mysql4]]></model>
                     <type><![CDATA[pdo_mysql]]></type>
@@ -56,7 +56,7 @@
 		<header1>HTTP_X_REAL_IP</header1>
 		<header2>HTTP_X_FORWARDED_FOR</header2>
 	</remote_addr_headers>
-        <session_save><![CDATA[db]]></session_save>
+        <session_save><![CDATA[files]]></session_save>
     </global>
     <admin>
         <routers>
@@ -68,3 +68,4 @@
         </routers>
     </admin>
 </config>
+
