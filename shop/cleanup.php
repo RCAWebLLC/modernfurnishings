@@ -41,7 +41,8 @@ function clean_log_tables() {
             'catalog_compare_item',
             'catalogindex_aggregation',
             'catalogindex_aggregation_tag',
-            'catalogindex_aggregation_to_tag'
+            'catalogindex_aggregation_to_tag',
+'core_session'
         );
         
         mysql_connect($db['host'], $db['user'], $db['pass']) or die(mysql_error());
