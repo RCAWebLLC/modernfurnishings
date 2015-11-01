@@ -31,6 +31,8 @@
 ############################################
 ## adjust memory limit
 
+SetEnvIf X-Forwarded-Proto https HTTPS=on
+
 #    php_value memory_limit 64M
     php_value memory_limit 256M
     php_value max_execution_time 18000
