@@ -20,7 +20,7 @@
  *
  * @category    Tests
  * @package     Tests_Functional
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -106,11 +106,11 @@ class InstallTest extends Injectable
         $this->fixtureFactory = $fixtureFactory;
         $config = ObjectManagerFactory::getObjectManager()->get('Magento\Mtf\Config\DataInterface');
         // Prepare config data
-        $configData['db_host'] = $config->get('install/0/host/value');
-        $configData['db_user'] = $config->get('install/0/install/user/value');
-        $configData['db_pass'] = $config->get('install/0/install/password/value');
-        $configData['db_name'] = $config->get('install/0/install/dbName/value');
-        $configData['unsecure_base_url'] = $config->get('install/0/install/baseUrl/value');
+        $configData['db_host'] = $config->get('install/0/host/0/value');
+        $configData['db_user'] = $config->get('install/0/user/0/value');
+        $configData['db_pass'] = $config->get('install/0/password/0/value');
+        $configData['db_name'] = $config->get('install/0/dbName/0/value');
+        $configData['unsecure_base_url'] = $config->get('install/0/baseUrl/0/value');
 
         return ['configData' => $configData];
     }
@@ -147,8 +147,6 @@ class InstallTest extends Injectable
     public function test(AssertAgreementTextPresent $assertLicense, array $configData, array $install = [])
     {
         // Preconditions:
-        $this->uninstall($configData);
-
         $installConfig = $this->prepareInstallFixture($configData, $install);
         $user = $this->fixtureFactory->createByCode('user', ['dataSet' => 'default']);
 
@@ -184,38 +182,5 @@ class InstallTest extends Injectable
             : $dataConfig['unsecure_base_url'];
 
         return $this->fixtureFactory->createByCode('install', ['data' => $dataConfig]);
-    }
-
-    /**
-     * Uninstall magento.
-     *
-     * @param array $config
-     * @return void
-     */
-    protected function uninstall(array $config)
-    {
-        $magentoBaseDir = dirname(dirname(dirname(MTF_BP)));
-        $this->delete("$magentoBaseDir/var");
-        $this->delete("$magentoBaseDir/app/etc/local.xml");
-        $connection = new \PDO("mysql:host={$config['db_host']};dbname={$config['db_name']};", $config['db_user'],
-            $config['db_pass']);
-        $connection->exec("SET FOREIGN_KEY_CHECKS = 0;");
-        $tables = $connection->query("show tables");
-        while ($row = $tables->fetch(\PDO::FETCH_NUM)) {
-            $connection->exec("DROP TABLE {$row[0]};");
-        }
-        $connection->exec("SET FOREIGN_KEY_CHECKS = 1;");
-        $connection = null;
-    }
-
-    /**
-     * Recursively delete files by path.
-     *
-     * @param $path
-     * @return bool
-     */
-    protected function delete($path)
-    {
-        return is_file($path) ? unlink($path) : array_map([$this, __FUNCTION__], glob($path . '/*')) == rmdir($path);
     }
 }

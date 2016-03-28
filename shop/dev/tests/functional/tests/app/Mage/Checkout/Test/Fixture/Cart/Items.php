@@ -20,7 +20,7 @@
  *
  * @category    Tests
  * @package     Tests_Functional
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -46,7 +46,6 @@ class Items implements FixtureInterface
         'simple' => 'Mage\Catalog\Test\Fixture\Cart\Item',
         'configurable' => 'Mage\Catalog\Test\Fixture\ConfigurableProduct\Cart\Item',
         'downloadable' => 'Mage\Downloadable\Test\Fixture\Cart\Item',
-        'giftcard' => 'Enterprise\GiftCard\Test\Fixture\Cart\Item',
         'virtual' => 'Mage\Catalog\Test\Fixture\Cart\Item',
         'grouped' => 'Mage\Catalog\Test\Fixture\GroupedProduct\Cart\Item',
         'bundle' => 'Mage\Bundle\Test\Fixture\Cart\Item'

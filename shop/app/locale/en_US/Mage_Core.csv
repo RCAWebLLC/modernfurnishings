@@ -12,6 +12,7 @@
 "Admin","Admin"
 "Admin Base URL","Admin Base URL"
 "Admin User Emails","Admin User Emails"
+"Admin routing compatibility mode for extensions","Admin routing compatibility mode for extensions"
 "Advanced","Advanced"
 "After selecting a new media storage location, press the Synchronize button
                                 to transfer all media to that location. Media will not be available in the new
@@ -24,6 +25,7 @@
 "Allow Symlinks","Allow Symlinks"
 "Allowed IPs (comma separated)","Allowed IPs (comma separated)"
 "Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Not all browsers support all these formats!","Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG, SVG. Not all browsers support all these formats!"
+"Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG. Not all browsers support all these formats!","Allowed file types: ICO, PNG, GIF, JPG, JPEG, APNG. Not all browsers support all these formats!"
 "Allows customers to stay logged in when switching between different stores.","Allows customers to stay logged in when switching between different stores."
 "Alternative text for next link in pagination menu. If empty, default arrow image will used.","Alternative text for next link in pagination menu. If empty, default arrow image will used."
 "Alternative text for previous link in pagination menu. If empty, default arrow image will used.","Alternative text for previous link in pagination menu. If empty, default arrow image will used."
@@ -126,6 +128,8 @@
 "Enabled","Enabled"
 "Enabled for Admin","Enabled for Admin"
 "Enabled for Frontend","Enabled for Frontend"
+"Enabling ability to run Magento in a frame is not recommended for security reasons.","Enabling ability to run Magento in a frame is not recommended for security reasons."
+"Enabling this setting increases risk of automated attacks against admin functionality.","Enabling this setting increases risk of automated attacks against admin functionality."
 "Environment Update Time","Environment Update Time"
 "Error in file: ""%s"" - %s","Error in file: ""%s"" - %s"
 "European Union Countries","European Union Countries"
@@ -158,6 +162,7 @@
 "If the current frame position does not cover utmost pages, will render link to current position plus/minus this value.","If the current frame position does not cover utmost pages, will render link to current position plus/minus this value."
 "Incorrect credit card expiration date.","Incorrect credit card expiration date."
 "Input type ""%value%"" not found in the input types list.","Input type ""%value%"" not found in the input types list."
+"Invalid MIME type.","Invalid MIME type."
 "Invalid URL '%value%'.","Invalid URL '%value%'."
 "Invalid base url type","Invalid base url type"
 "Invalid block type: %s","Invalid block type: %s"

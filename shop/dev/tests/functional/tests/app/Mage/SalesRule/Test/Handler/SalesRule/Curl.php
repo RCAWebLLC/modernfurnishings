@@ -20,7 +20,7 @@
  *
  * @category    Tests
  * @package     Tests_Functional
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -92,9 +92,6 @@ class Curl extends Conditions implements SalesRuleInterface
             'type' => 'salesrule/rule_condition_combine',
             'aggregator' => 'all',
             'value' => '1',
-        ],
-        'Customer Segment' => [
-            'type' => 'enterprise_customersegment/segment_condition_segment',
         ],
         'Category' => [
             'type' => 'salesrule/rule_condition_product',
