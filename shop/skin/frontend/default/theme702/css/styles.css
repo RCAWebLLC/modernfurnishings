@@ -723,7 +723,7 @@ img.lazy{max-width: 100%;height: auto;opacity: 0;}
 /* ======================================================================================= */
 
 /* Logo ================================================================================ */
-.logo { float:left; }
+.logo { float:left; width: 109px; }
 .header .logo {
 	float:left;
 	display:block;

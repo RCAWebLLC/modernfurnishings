@@ -41,16 +41,18 @@
             <li class="item col-xs-3<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>" itemscope itemtype="http://schema.org/product">
                 <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(228) ?>" alt="<?php echo $this->htmlEscape($_product->getName()) ?>"/></a>
                 <div class="product-shop">
-                    <h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" itemprop="name"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
-                    <div class="desc_grid" itemprop="description"><?php $small_getDescription = $_product->getShortDescription();
-                        if (strlen($small_getDescription) < 218) echo($small_getDescription);
-                        else { echo mb_substr($small_getDescription, 0, 218,'UTF-8').'...';} ?>
+                    <h3 class="product-name" style="min-height: 35px;"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>" itemprop="name"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+                    <div class="desc_grid" itemprop="description"><?php
+                      $small_getDescription = $_product->getShortDescription();
+
+                      if(preg_match('/<img/', $small_getDescription)){
+                          if (strlen($small_getDescription) < 218) echo($small_getDescription);
+                          else { echo mb_substr($small_getDescription, 0, 218,'UTF-8').'...';}
+                      }
+                      ?>
                     </div>
                     <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
                     <?php echo $this->getPriceHtml($_product, true, '-new') ?>
-                    <?php if( $_product->getFreeShippingDiscount() ): ?>
-					      <div style="margin-bottom: 10px;"><i style="font-size: 32px; margin-right: 10px; vertical-align: middle; color:#f16021;" class="fa fa-truck"></i> <strong>Free Standard Ground Shipping</strong></div>
-					<?php endif; ?>
                     <div class="actions">
                         <?php if($_product->isSaleable()): ?>
                             <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>

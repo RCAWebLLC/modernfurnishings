@@ -472,3 +472,6 @@ if ($this->getProductAttribute('special_price')) $_specialPriceStoreLabel = $thi
         </div>
     <?php endif; /* if ($this->getDisplayMinimalPrice() && $_minimalPrice): */ ?>
 <?php endif; /* if (!$_product->isGrouped()): */ ?>
+<?php if( $_product->getFreeShippingDiscount() ): ?>
+					      <div style="margin-bottom: 5px; margin-top: 5px;"><i style="font-size: 32px; margin-right: 10px; vertical-align: middle; color:#f16021;" class="fa fa-truck"></i> <strong>Free Standard Ground Shipping</strong></div>
+					<?php endif; ?>

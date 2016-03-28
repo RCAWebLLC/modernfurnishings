@@ -447,3 +447,6 @@ $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStore
 <?php else: ?>
     <?php //echo $this->helper('catalog')->__('Price is not available');?>
 <?php endif; /* if (!$_product->getCanShowPrice()): */ ?>
+<?php if( $_product->getFreeShippingDiscount() ): ?>
+					      <div style="margin-bottom: 5px; margin-top: 5px;"><i style="font-size: 32px; margin-right: 10px; vertical-align: middle; color:#f16021;" class="fa fa-truck"></i> <strong>Free Standard Ground Shipping</strong></div>
+					<?php endif; ?>
