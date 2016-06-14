@@ -21,7 +21,7 @@
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -117,7 +117,7 @@ class Mage_CatalogIndex_Model_Price extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -200,7 +200,7 @@ class Mage_CatalogIndex_Model_Resource_Abstract extends Mage_Core_Model_Resource
  *
  * @category    Mage
  * @package     Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -508,7 +508,7 @@ class Mage_CatalogIndex_Model_Resource_Price extends Mage_CatalogIndex_Model_Res
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -1534,7 +1534,7 @@ class Mage_CatalogInventory_Model_Observer
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -1907,7 +1907,7 @@ class Mage_CatalogInventory_Model_Resource_Stock extends Mage_Core_Model_Resourc
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2035,7 +2035,7 @@ class Mage_CatalogInventory_Model_Resource_Stock_Item extends Mage_Core_Model_Re
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2197,7 +2197,7 @@ class Mage_CatalogInventory_Model_Resource_Stock_Item_Collection extends Mage_Co
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2465,7 +2465,7 @@ class Mage_CatalogInventory_Model_Resource_Stock_Status extends Mage_Core_Model_
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -2702,7 +2702,7 @@ class Mage_CatalogInventory_Model_Stock extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -3606,7 +3606,7 @@ class Mage_CatalogInventory_Model_Stock_Item extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4144,7 +4144,7 @@ class Mage_CatalogInventory_Model_Stock_Status extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4202,7 +4202,7 @@ class Mage_CatalogRule_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4211,6 +4211,13 @@ class Mage_CatalogRule_Helper_Data extends Mage_Core_Helper_Abstract
  */
 class Mage_CatalogRule_Model_Observer
 {
+    /**
+     * Preload price rules for all items in quote
+     *
+     * @var array
+     */
+    protected $_preloadedPrices = array();
+
     /**
      * Store calculated catalog rules prices for products
      * Prices collected per website, customer group, date and product
@@ -4276,6 +4283,40 @@ class Mage_CatalogRule_Model_Observer
     }
 
     /**
+     * Preload all price rules for all items in quote
+     *
+     * @param   Varien_Event_Observer $observer
+     *
+     * @return  Mage_CatalogRule_Model_Observer
+     */
+    public function preloadPriceRules(Varien_Event_Observer $observer)
+    {
+        $quote = $observer->getQuote();
+        $date = Mage::app()->getLocale()->storeTimeStamp($quote->getStoreId());
+        $wId = $quote->getStore()->getWebsiteId();
+        $gId = $quote->getCustomerGroupId();
+
+        $productIds = array();
+        foreach ($quote->getAllItems() as $item) {
+            $productIds[] = $item->getProductId();
+        }
+
+        $cacheKey = spl_object_hash($quote);
+
+        if (!isset($this->_preloadedPrices[$cacheKey])) {
+            $this->_preloadedPrices[$cacheKey] = Mage::getResourceSingleton('catalogrule/rule')
+                 ->getRulePrices($date, $wId, $gId, $productIds);
+        }
+
+        foreach ($this->_preloadedPrices[$cacheKey] as $pId => $price) {
+            $key = $this->_getRulePricesKey(array($date, $wId, $gId, $pId));
+            $this->_rulePrices[$key] = $price;
+        }
+
+        return $this;
+    }
+
+    /**
      * Apply catalog price rules to product on frontend
      *
      * @param   Varien_Event_Observer $observer
@@ -4308,7 +4349,7 @@ class Mage_CatalogRule_Model_Observer
             $gId = Mage::getSingleton('customer/session')->getCustomerGroupId();
         }
 
-        $key = "$date|$wId|$gId|$pId";
+        $key = $this->_getRulePricesKey(array($date, $wId, $gId, $pId));
         if (!isset($this->_rulePrices[$key])) {
             $rulePrice = Mage::getResourceModel('catalogrule/rule')
                 ->getRulePrice($date, $wId, $gId, $pId);
@@ -4340,13 +4381,13 @@ class Mage_CatalogRule_Model_Observer
             $gId = $ruleData->getCustomerGroupId();
             $pId = $product->getId();
 
-            $key = "$date|$wId|$gId|$pId";
+            $key = $this->_getRulePricesKey(array($date, $wId, $gId, $pId));
         }
-        elseif (!is_null($product->getWebsiteId()) && !is_null($product->getCustomerGroupId())) {
-            $wId = $product->getWebsiteId();
+        elseif (!is_null($storeId) && !is_null($product->getCustomerGroupId())) {
+            $wId = Mage::app()->getStore($storeId)->getWebsiteId();
             $gId = $product->getCustomerGroupId();
             $pId = $product->getId();
-            $key = "$date|$wId|$gId|$pId";
+            $key = $this->_getRulePricesKey(array($date, $wId, $gId, $pId));
         }
 
         if ($key) {
@@ -4554,7 +4595,7 @@ class Mage_CatalogRule_Model_Observer
         $productIds = array();
         /* @var $product Mage_Core_Model_Product */
         foreach ($collection as $product) {
-            $key = implode('|', array($date, $websiteId, $groupId, $product->getId()));
+            $key = $this->_getRulePricesKey(array($date, $websiteId, $groupId, $product->getId()));
             if (!isset($this->_rulePrices[$key])) {
                 $productIds[] = $product->getId();
             }
@@ -4564,7 +4605,7 @@ class Mage_CatalogRule_Model_Observer
             $rulePrices = Mage::getResourceModel('catalogrule/rule')
                 ->getRulePrices($date, $websiteId, $groupId, $productIds);
             foreach ($productIds as $productId) {
-                $key = implode('|', array($date, $websiteId, $groupId, $productId));
+                $key = $this->_getRulePricesKey(array($date, $websiteId, $groupId, $productId));
                 $this->_rulePrices[$key] = isset($rulePrices[$productId]) ? $rulePrices[$productId] : false;
             }
         }
@@ -4607,6 +4648,16 @@ class Mage_CatalogRule_Model_Observer
             $indexProcess->reindexAll();
         }
     }
+
+    /**
+     * Generate key for rule prices
+     *
+     * @param array
+     */
+    protected function _getRulePricesKey($keyInfo)
+    {
+        return implode('|', $keyInfo);
+    }
 }
 /**
  * Magento
@@ -4629,7 +4680,7 @@ class Mage_CatalogRule_Model_Observer
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -4914,7 +4965,7 @@ abstract class Mage_Rule_Model_Resource_Abstract extends Mage_Core_Model_Resourc
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -5745,7 +5796,7 @@ class Mage_CatalogRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abst
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -5775,7 +5826,7 @@ interface Mage_Rule_Model_Condition_Interface
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -5852,9 +5903,10 @@ abstract class Mage_Rule_Model_Condition_Abstract
                 'string'      => array('==', '!=', '>=', '>', '<=', '<', '{}', '!{}', '()', '!()'),
                 'numeric'     => array('==', '!=', '>=', '>', '<=', '<', '()', '!()'),
                 'date'        => array('==', '>=', '<='),
+                'datetime'    => array('==', '>=', '<='),
                 'select'      => array('==', '!='),
                 'boolean'     => array('==', '!='),
-                'multiselect' => array('{}', '!{}', '()', '!()'),
+                'multiselect' => array('[]', '![]', '()', '!()'),
                 'grid'        => array('()', '!()'),
             );
             $this->_arrayInputTypes = array('multiselect', 'grid');
@@ -5880,6 +5932,8 @@ abstract class Mage_Rule_Model_Condition_Abstract
                 '<'   => Mage::helper('rule')->__('less than'),
                 '{}'  => Mage::helper('rule')->__('contains'),
                 '!{}' => Mage::helper('rule')->__('does not contain'),
+                '[]'  => Mage::helper('rule')->__('contains'),
+                '![]' => Mage::helper('rule')->__('does not contain'),
                 '()'  => Mage::helper('rule')->__('is one of'),
                 '!()' => Mage::helper('rule')->__('is not one of')
             );
@@ -5895,21 +5949,21 @@ abstract class Mage_Rule_Model_Condition_Abstract
     public function asArray(array $arrAttributes = array())
     {
         $out = array(
-            'type'=>$this->getType(),
-            'attribute'=>$this->getAttribute(),
-            'operator'=>$this->getOperator(),
-            'value'=>$this->getValue(),
-            'is_value_processed'=>$this->getIsValueParsed(),
+            'type'               => $this->getType(),
+            'attribute'          => $this->getAttribute(),
+            'operator'           => $this->getOperator(),
+            'value'              => $this->getValue(),
+            'is_value_processed' => $this->getIsValueParsed(),
         );
         return $out;
     }
 
     public function asXml()
     {
-        $xml = "<type>".$this->getType()."</type>"
-            ."<attribute>".$this->getAttribute()."</attribute>"
-            ."<operator>".$this->getOperator()."</operator>"
-            ."<value>".$this->getValue()."</value>";
+        $xml = '<type>' . $this->getType() . '</type>'
+            . '<attribute>' . $this->getAttribute() . '</attribute>'
+            . '<operator>' . $this->getOperator() . '</operator>'
+            . '<value>' . $this->getValue() . '</value>';
         return $xml;
     }
 
@@ -5950,8 +6004,8 @@ abstract class Mage_Rule_Model_Condition_Abstract
     public function getAttributeSelectOptions()
     {
         $opt = array();
-        foreach ($this->getAttributeOption() as $k=>$v) {
-            $opt[] = array('value'=>$k, 'label'=>$v);
+        foreach ($this->getAttributeOption() as $k => $v) {
+            $opt[] = array('value' => $k, 'label' => $v);
         }
         return $opt;
     }
@@ -6055,13 +6109,26 @@ abstract class Mage_Rule_Model_Condition_Abstract
 
     public function getValue()
     {
-        if ($this->getInputType()=='date' && !$this->getIsValueParsed()) {
+        if (!$this->getIsValueParsed()) {
             // date format intentionally hard-coded
-            $this->setValue(
-                Mage::app()->getLocale()->date($this->getData('value'),
-                Varien_Date::DATE_INTERNAL_FORMAT, null, false)->toString(Varien_Date::DATE_INTERNAL_FORMAT)
-            );
-            $this->setIsValueParsed(true);
+            $format = null;
+            switch ($this->getInputType()) {
+                case 'date':
+                    $format = Varien_Date::DATE_INTERNAL_FORMAT;
+                    break;
+
+                case 'datetime':
+                    $format = Varien_Date::DATETIME_INTERNAL_FORMAT;
+                    break;
+            }
+
+            if ($format !== null) {
+                $this->setValue(
+                    Mage::app()->getLocale()->date($this->getData('value'),
+                        $format, null, false)->toString($format)
+                );
+                $this->setIsValueParsed(true);
+            }
         }
         return $this->getData('value');
     }
@@ -6109,7 +6176,7 @@ abstract class Mage_Rule_Model_Condition_Abstract
     public function getNewChildSelectOptions()
     {
         return array(
-            array('value'=>'', 'label'=>Mage::helper('rule')->__('Please choose a condition to add...')),
+            array('value' => '', 'label' => Mage::helper('rule')->__('Please choose a condition to add...')),
         );
     }
 
@@ -6158,11 +6225,11 @@ abstract class Mage_Rule_Model_Condition_Abstract
                 break;
             }
         }
-        return $this->getForm()->addField($this->getPrefix().'__'.$this->getId().'__attribute', 'select', array(
-            'name'=>'rule['.$this->getPrefix().']['.$this->getId().'][attribute]',
-            'values'=>$this->getAttributeSelectOptions(),
-            'value'=>$this->getAttribute(),
-            'value_name'=>$this->getAttributeName(),
+        return $this->getForm()->addField($this->getPrefix() . '__' . $this->getId() . '__attribute', 'select', array(
+            'name'       => 'rule[' . $this->getPrefix() . '][' . $this->getId() . '][attribute]',
+            'values'     => $this->getAttributeSelectOptions(),
+            'value'      => $this->getAttribute(),
+            'value_name' => $this->getAttributeName(),
         ))->setRenderer(Mage::getBlockSingleton('rule/editable'));
     }
 
@@ -6227,19 +6294,28 @@ abstract class Mage_Rule_Model_Condition_Abstract
     public function getValueElement()
     {
         $elementParams = array(
-            'name'               => 'rule['.$this->getPrefix().']['.$this->getId().'][value]',
+            'name'               => 'rule[' . $this->getPrefix() . '][' . $this->getId() . '][value]',
             'value'              => $this->getValue(),
             'values'             => $this->getValueSelectOptions(),
             'value_name'         => $this->getValueName(),
             'after_element_html' => $this->getValueAfterElementHtml(),
             'explicit_apply'     => $this->getExplicitApply(),
         );
-        if ($this->getInputType()=='date') {
-            // date format intentionally hard-coded
-            $elementParams['input_format'] = Varien_Date::DATE_INTERNAL_FORMAT;
-            $elementParams['format']       = Varien_Date::DATE_INTERNAL_FORMAT;
+
+        switch ($this->getInputType()) {
+            case 'date':
+                $elementParams['input_format'] = Varien_Date::DATE_INTERNAL_FORMAT;
+                $elementParams['format']       = Varien_Date::DATE_INTERNAL_FORMAT;
+                break;
+
+            case 'datetime':
+                $elementParams['input_format'] = Varien_Date::DATETIME_INTERNAL_FORMAT;
+                $elementParams['format']       = Varien_Date::DATETIME_INTERNAL_FORMAT;
+                $elementParams['time']         = true;
+                break;
         }
-        return $this->getForm()->addField($this->getPrefix().'__'.$this->getId().'__value',
+
+        return $this->getForm()->addField($this->getPrefix() . '__' . $this->getId() . '__value',
             $this->getValueElementType(),
             $elementParams
         )->setRenderer($this->getValueElementRenderer());
@@ -6253,14 +6329,18 @@ abstract class Mage_Rule_Model_Condition_Abstract
     public function getAddLinkHtml()
     {
         $src = Mage::getDesign()->getSkinUrl('images/rule_component_add.gif');
-        $html = '<img src="' . $src . '" class="rule-param-add v-middle" alt="" title="' . Mage::helper('rule')->__('Add') . '"/>';
+        $html = '<img src="' . $src . '" class="rule-param-add v-middle" alt="" title="'
+            . Mage::helper('core')->quoteEscape(Mage::helper('rule')->__('Add'))
+            . '"/>';
         return $html;
     }
 
     public function getRemoveLinkHtml()
     {
         $src = Mage::getDesign()->getSkinUrl('images/rule_component_remove.gif');
-        $html = ' <span class="rule-param"><a href="javascript:void(0)" class="rule-param-remove" title="' . Mage::helper('rule')->__('Remove') . '"><img src="' . $src . '"  alt="" class="v-middle" /></a></span>';
+        $html = ' <span class="rule-param"><a href="javascript:void(0)" class="rule-param-remove" title="'
+            . Mage::helper('core')->quoteEscape(Mage::helper('rule')->__('Remove'))
+            . '"><img src="' . $src . '"  alt="" class="v-middle" /></a></span>';
         return $html;
     }
 
@@ -6373,9 +6453,16 @@ abstract class Mage_Rule_Model_Condition_Abstract
                 }
                 break;
 
-            case '()': case '!()':
+            case '()': case '!()': case '[]': case '![]':
                 if (is_array($validatedValue)) {
-                    $result = count(array_intersect($validatedValue, (array)$value))>0;
+                    $value = (array)$value;
+                    $match = count(array_intersect($validatedValue, $value));
+
+                    if (in_array($op, array('[]', '![]'))) {
+                        $result = $match == count($value);
+                    } else {
+                        $result = $match > 0;
+                    }
                 } else {
                     $value = (array)$value;
                     foreach ($value as $item) {
@@ -6388,7 +6475,7 @@ abstract class Mage_Rule_Model_Condition_Abstract
                 break;
         }
 
-        if ('!=' == $op || '>' == $op || '<' == $op || '!{}' == $op || '!()' == $op) {
+        if ('!=' == $op || '>' == $op || '<' == $op || '!{}' == $op || '!()' == $op || '![]' == $op) {
             $result = !$result;
         }
 
@@ -6451,7 +6538,7 @@ abstract class Mage_Rule_Model_Condition_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -6544,7 +6631,7 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
     {
         $alias     = 'cpf';
         $attribute = $this->getAttribute();
-        $value     = $this->getValue();
+        $value     = $this->getValueParsed();
         $operator  = $this->correctOperator($this->getOperator(), $this->getInputType());
         if ($attribute == 'category_ids') {
             $alias     = 'ccp';
@@ -6739,7 +6826,11 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
         }
 
         if (!empty($image)) {
-            $html = '<a href="javascript:void(0)" class="rule-chooser-trigger"><img src="' . $image . '" alt="" class="v-middle rule-chooser-trigger" title="' . Mage::helper('rule')->__('Open Chooser') . '" /></a>';
+            $html = '<a href="javascript:void(0)" class="rule-chooser-trigger"><img src="'
+                . $image
+                . '" alt="" class="v-middle rule-chooser-trigger" title="'
+                . Mage::helper('core')->quoteEscape(Mage::helper('rule')->__('Open Chooser'))
+                . '" /></a>';
         }
         return $html;
     }
@@ -7054,7 +7145,7 @@ abstract class Mage_Rule_Model_Condition_Product_Abstract extends Mage_Rule_Mode
  *
  * @category    Mage
  * @package     Mage_CatalogRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7191,7 +7282,7 @@ class Mage_CatalogRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Cond
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7422,7 +7513,7 @@ class Mage_Catalog_Block_Product_Price extends Mage_Catalog_Block_Product_Abstra
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7543,7 +7634,7 @@ abstract class Mage_Catalog_Helper_Flat_Abstract extends Mage_Core_Helper_Abstra
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -7700,7 +7791,7 @@ class Mage_Catalog_Helper_Product_Flat extends Mage_Catalog_Helper_Flat_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -8060,7 +8151,7 @@ class Mage_Catalog_Model_Config extends Mage_Eav_Model_Config
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -9929,17 +10020,28 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
      *
      * @return array
      */
-    public function getCacheIdTags()
+    public function getCacheIdTagsWithCategories()
     {
-        $tags = parent::getCacheIdTags();
-        $affectedCategoryIds = $this->getAffectedCategoryIds();
-        if (!$affectedCategoryIds) {
-            $affectedCategoryIds = $this->getCategoryIds();
-        }
+        $tags = $this->getCacheTags();
+        $affectedCategoryIds = $this->_getResource()->getCategoryIdsWithAnchors($this);
         foreach ($affectedCategoryIds as $categoryId) {
             $tags[] = Mage_Catalog_Model_Category::CACHE_TAG.'_'.$categoryId;
         }
         return $tags;
+    }
+
+    /**
+     * Remove model onject related cache
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    public function cleanModelCache()
+    {
+        $tags = $this->getCacheIdTagsWithCategories();
+        if ($tags !== false) {
+            Mage::app()->cleanCache($tags);
+        }
+        return $this;
     }
 
     /**
@@ -10139,7 +10241,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -10835,7 +10937,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Media extends Mage_Eav_Model_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -10943,7 +11045,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11044,7 +11146,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Startdate extends Mage_Eav_Mo
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11412,7 +11514,7 @@ abstract class Mage_Catalog_Model_Product_Attribute_Backend_Groupprice_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11503,7 +11605,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Tierprice
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11576,7 +11678,7 @@ abstract class Mage_Catalog_Model_Attribute_Backend_Urlkey_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11612,7 +11714,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Urlkey extends Mage_Catalog_M
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11775,7 +11877,7 @@ class Mage_Catalog_Model_Product_Link extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Media
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -11842,7 +11944,7 @@ interface Mage_Media_Model_Image_Config_Interface
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -12028,7 +12130,7 @@ class Mage_Catalog_Model_Product_Media_Config implements Mage_Media_Model_Image_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -12621,7 +12723,7 @@ class Mage_Catalog_Model_Product_Option extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -12849,7 +12951,23 @@ class Mage_Catalog_Model_Product_Status extends Mage_Core_Model_Abstract
      */
     public function getFlatColums()
     {
-        return array();
+        $attributeCode = $this->getAttribute()->getAttributeCode();
+        $column = array(
+            'unsigned'  => true,
+            'default'   => null,
+            'extra'     => null
+        );
+
+        if (Mage::helper('core')->useDbCompatibleMode()) {
+            $column['type']     = 'tinyint';
+            $column['is_null']  = true;
+        } else {
+            $column['type']     = Varien_Db_Ddl_Table::TYPE_SMALLINT;
+            $column['nullable'] = true;
+            $column['comment']  = 'Catalog Product Status ' . $attributeCode . ' column';
+        }
+
+        return array($attributeCode => $column);
     }
 
     /**
@@ -12859,7 +12977,15 @@ class Mage_Catalog_Model_Product_Status extends Mage_Core_Model_Abstract
      */
     public function getFlatIndexes()
     {
-        return array();
+        $indexes = array();
+
+        $index = 'IDX_' . strtoupper($this->getAttribute()->getAttributeCode());
+        $indexes[$index] = array(
+            'type'      => 'index',
+            'fields'    => array($this->getAttribute()->getAttributeCode())
+        );
+
+        return $indexes;
     }
 
     /**
@@ -12871,7 +12997,8 @@ class Mage_Catalog_Model_Product_Status extends Mage_Core_Model_Abstract
      */
     public function getFlatUpdateSelect($store)
     {
-        return null;
+        return Mage::getResourceSingleton('eav/entity_attribute')
+            ->getFlatUpdateSelect($this->getAttribute(), $store);
     }
 
     /**
@@ -12970,7 +13097,7 @@ class Mage_Catalog_Model_Product_Status extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -13196,7 +13323,7 @@ class Mage_Catalog_Model_Product_Type
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14196,7 +14323,7 @@ abstract class Mage_Catalog_Model_Product_Type_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14632,7 +14759,7 @@ class Mage_Catalog_Model_Product_Type_Price
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14667,7 +14794,7 @@ class Mage_Catalog_Model_Product_Type_Simple extends Mage_Catalog_Model_Product_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -14969,7 +15096,7 @@ class Mage_Catalog_Model_Product_Url extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -15278,7 +15405,7 @@ class Mage_Catalog_Model_Product_Visibility extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -15977,7 +16104,7 @@ abstract class Mage_Catalog_Model_Resource_Abstract extends Mage_Eav_Model_Entit
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -17477,7 +17604,7 @@ abstract class Mage_Eav_Model_Entity_Collection_Abstract extends Varien_Data_Col
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -17696,7 +17823,7 @@ class Mage_Catalog_Model_Resource_Collection_Abstract extends Mage_Eav_Model_Ent
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -17847,7 +17974,7 @@ class Mage_Catalog_Model_Resource_Config extends Mage_Core_Model_Resource_Db_Abs
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -18249,7 +18376,7 @@ class Mage_Catalog_Model_Resource_Eav_Attribute extends Mage_Eav_Model_Entity_At
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -18931,6 +19058,32 @@ class Mage_Catalog_Model_Resource_Product extends Mage_Catalog_Model_Resource_Ab
         $images = $read->fetchAll($select);
         return $images;
     }
+
+    /**
+     * Retrieve product categories
+     *
+     * @param Mage_Catalog_Model_Product $object
+     * @return array
+     */
+    public function getCategoryIdsWithAnchors($object)
+    {
+        $selectRootCategories = $this->_getReadAdapter()->select()
+            ->from(
+                array($this->getTable('catalog/category')),
+                array('entity_id')
+            )
+            ->where('level <= 1');
+        $rootIds = $this->_getReadAdapter()->fetchCol($selectRootCategories);
+        $select = $this->_getReadAdapter()->select()
+            ->from(
+                array($this->getTable('catalog/category_product_index')),
+                array('category_id')
+            )
+            ->where('product_id = ?', (int)$object->getEntityId())
+            ->where('category_id NOT IN(?)', $rootIds);
+
+        return $this->_getReadAdapter()->fetchCol($select);
+    }
 }
 /**
  * Magento
@@ -18953,7 +19106,7 @@ class Mage_Catalog_Model_Resource_Product extends Mage_Catalog_Model_Resource_Ab
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -19248,7 +19401,7 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Media extends Mage_C
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -19394,7 +19547,7 @@ abstract class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Groupprice_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -19526,7 +19679,7 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -19958,11 +20111,11 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
         if ($this->isEnabledFlat()) {
             $this->getSelect()
                 ->from(array(self::MAIN_TABLE_ALIAS => $this->getEntity()->getFlatTableName()), null)
-                ->columns(array('status' => new Zend_Db_Expr(Mage_Catalog_Model_Product_Status::STATUS_ENABLED)));
+                ->where('e.status = ?', new Zend_Db_Expr(Mage_Catalog_Model_Product_Status::STATUS_ENABLED));
             $this->addAttributeToSelect(array('entity_id', 'type_id', 'attribute_set_id'));
             if ($this->getFlatHelper()->isAddChildData()) {
                 $this->getSelect()
-                    ->where('e.is_child=?', 0);
+                    ->where('e.is_child = ?', 0);
                 $this->addAttributeToSelect(array('child_id', 'is_child'));
             }
         } else {
@@ -21702,7 +21855,7 @@ class Mage_Catalog_Model_Resource_Product_Collection extends Mage_Catalog_Model_
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22035,7 +22188,7 @@ class Mage_Catalog_Model_Resource_Product_Link_Product_Collection extends Mage_C
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22545,7 +22698,7 @@ class Mage_Catalog_Model_Resource_Product_Option extends Mage_Core_Model_Resourc
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22774,7 +22927,7 @@ class Mage_Catalog_Model_Resource_Product_Option_Collection extends Mage_Core_Mo
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22874,6 +23027,16 @@ class Mage_Checkout_Block_Cart extends Mage_Checkout_Block_Cart_Abstract
         return $this->getUrl('checkout/onepage', array('_secure'=>true));
     }
 
+    /**
+     * Return "cart" form action url
+     *
+     * @return string
+     */
+    public function getFormActionUrl()
+    {
+        return $this->getUrl('checkout/cart/updatePost', array('_secure' => $this->_isSecure()));
+    }
+
     public function getContinueShoppingUrl()
     {
         $url = $this->getData('continue_shopping_url');
@@ -22956,7 +23119,7 @@ class Mage_Checkout_Block_Cart extends Mage_Checkout_Block_Cart_Abstract
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -22968,6 +23131,15 @@ class Mage_Checkout_Block_Cart_Coupon extends Mage_Checkout_Block_Cart_Abstract
         return $this->getQuote()->getCouponCode();
     }
 
+    /**
+     * Return "discount" form action url
+     *
+     * @return string
+     */
+    public function getFormActionUrl()
+    {
+        return $this->getUrl('checkout/cart/couponPost', array('_secure' => $this->_isSecure()));
+    }
 
 }
 /**
@@ -22991,7 +23163,7 @@ class Mage_Checkout_Block_Cart_Coupon extends Mage_Checkout_Block_Cart_Abstract
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -23173,7 +23345,7 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -23377,6 +23549,7 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
             'checkout/cart/delete',
             array(
                 'id'=>$this->getItem()->getId(),
+                'form_key' => Mage::getSingleton('core/session')->getFormKey(),
                 Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $this->helper('core/url')->getEncodedUrl()
             )
         );
@@ -23667,7 +23840,7 @@ class Mage_Checkout_Block_Cart_Item_Renderer extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -23910,6 +24083,26 @@ class Mage_Checkout_Block_Cart_Shipping extends Mage_Checkout_Block_Cart_Abstrac
         }
         return false;
     }
+
+    /**
+     * Return 'Estimate Shipping and Tax' form action url
+     *
+     * @return string
+     */
+    public function getFormActionUrl()
+    {
+        return $this->getUrl('checkout/cart/estimatePost', array('_secure' => $this->_isSecure()));
+    }
+
+    /**
+     * Return 'Update Estimate Shipping and Tax' form action url
+     *
+     * @return string
+     */
+    public function getUpdateFormActionUrl()
+    {
+        return $this->getUrl('checkout/cart/estimateUpdatePost', array('_secure' => $this->_isSecure()));
+    }
 }
 /**
  * Magento
@@ -23932,7 +24125,7 @@ class Mage_Checkout_Block_Cart_Shipping extends Mage_Checkout_Block_Cart_Abstrac
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24075,7 +24268,7 @@ class Mage_Checkout_Block_Cart_Totals extends Mage_Checkout_Block_Cart_Abstract
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24128,7 +24321,7 @@ class Mage_Checkout_Block_Multishipping_Link extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24177,7 +24370,7 @@ class Mage_Checkout_Block_Onepage_Link extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24243,7 +24436,7 @@ class Mage_Checkout_Block_Total_Default extends Mage_Checkout_Block_Cart_Totals
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24278,7 +24471,7 @@ class Mage_Checkout_Block_Total_Tax extends Mage_Checkout_Block_Total_Default
  *
  * @category    Mage
  * @package     Mage_Checkout
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24342,7 +24535,7 @@ class Mage_Checkout_Model_Observer
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24603,7 +24796,7 @@ class Mage_Core_Block_Html_Select extends Mage_Core_Block_Abstract
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -24890,7 +25083,7 @@ class Mage_Core_Model_Date
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25046,7 +25239,7 @@ class Mage_Core_Model_Encryption
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25393,9 +25586,7 @@ class Mage_Customer_Model_Address_Abstract extends Mage_Core_Model_Abstract
 
         $this->_basicCheck();
 
-        if (!$this->_getErrors()) {
-            Mage::dispatchEvent('customer_address_validation_after', array('address' => $this));
-        }
+        Mage::dispatchEvent('customer_address_validation_after', array('address' => $this));
 
         $errors = $this->_getErrors();
 
@@ -25507,7 +25698,7 @@ class Mage_Customer_Model_Address_Abstract extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25600,7 +25791,7 @@ class Mage_Customer_Model_Resource_Group extends Mage_Core_Model_Resource_Db_Abs
  *
  * @category    Mage
  * @package     Mage_Customer
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25636,7 +25827,7 @@ class Mage_Customer_Model_Entity_Group extends Mage_Customer_Model_Resource_Grou
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -25790,7 +25981,7 @@ class Mage_Directory_Block_Data extends Mage_Core_Block_Template
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26096,7 +26287,7 @@ class Mage_Directory_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26452,7 +26643,7 @@ class Mage_Directory_Model_Currency extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26531,7 +26722,7 @@ class Mage_Directory_Model_Region extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26779,7 +26970,7 @@ class Mage_Directory_Model_Resource_Currency extends Mage_Core_Model_Resource_Db
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26932,7 +27123,7 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
  *
  * @category    Mage
  * @package     Mage_Eav
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -26984,7 +27175,7 @@ class Mage_Eav_Model_Entity_Attribute_Backend_Array extends Mage_Eav_Model_Entit
  *
  * @category    Mage
  * @package     Mage_GiftMessage
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27063,7 +27254,7 @@ class Mage_GiftMessage_Model_Entity_Attribute_Backend_Boolean_Config extends Mag
  *
  * @category    Mage
  * @package     Mage_GiftMessage
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27307,7 +27498,7 @@ class Mage_GiftMessage_Model_Observer extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Reports
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27321,6 +27512,16 @@ class Mage_GiftMessage_Model_Observer extends Varien_Object
  */
 class Mage_Reports_Model_Event_Observer
 {
+    protected $_enabledReports = true;
+
+    /**
+     * Object initialization
+     */
+    public function __construct()
+    {
+        $this->_enabledReports = Mage::helper('reports')->isReportsEnabled();
+    }
+
     /**
      * Abstract Event obeserver logic
      *
@@ -27366,7 +27567,7 @@ class Mage_Reports_Model_Event_Observer
      */
     public function customerLogin(Varien_Event_Observer $observer)
     {
-        if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
+        if (!Mage::getSingleton('customer/session')->isLoggedIn() || !$this->_enabledReports) {
             return $this;
         }
 
@@ -27393,12 +27594,15 @@ class Mage_Reports_Model_Event_Observer
      */
     public function customerLogout(Varien_Event_Observer $observer)
     {
-        Mage::getModel('reports/product_index_compared')
-            ->purgeVisitorByCustomer()
-            ->calculate();
-        Mage::getModel('reports/product_index_viewed')
-            ->purgeVisitorByCustomer()
-            ->calculate();
+        if ($this->_enabledReports) {
+            Mage::getModel('reports/product_index_compared')
+                ->purgeVisitorByCustomer()
+                ->calculate();
+            Mage::getModel('reports/product_index_viewed')
+                ->purgeVisitorByCustomer()
+                ->calculate();
+        }
+
         return $this;
     }
 
@@ -27410,6 +27614,10 @@ class Mage_Reports_Model_Event_Observer
      */
     public function catalogProductView(Varien_Event_Observer $observer)
     {
+        if (!$this->_enabledReports) {
+            return $this;
+        }
+
         $productId = $observer->getEvent()->getProduct()->getId();
 
         Mage::getModel('reports/product_index_viewed')
@@ -27428,6 +27636,10 @@ class Mage_Reports_Model_Event_Observer
      */
     public function sendfriendProduct(Varien_Event_Observer $observer)
     {
+        if (!$this->_enabledReports) {
+            return $this;
+        }
+
         return $this->_event(Mage_Reports_Model_Event::EVENT_PRODUCT_SEND,
             $observer->getEvent()->getProduct()->getId()
         );
@@ -27443,7 +27655,9 @@ class Mage_Reports_Model_Event_Observer
      */
     public function catalogProductCompareRemoveProduct(Varien_Event_Observer $observer)
     {
-        Mage::getModel('reports/product_index_compared')->calculate();
+        if ($this->_enabledReports) {
+            Mage::getModel('reports/product_index_compared')->calculate();
+        }
 
         return $this;
     }
@@ -27458,7 +27672,9 @@ class Mage_Reports_Model_Event_Observer
      */
     public function catalogProductCompareClear(Varien_Event_Observer $observer)
     {
-        Mage::getModel('reports/product_index_compared')->calculate();
+        if ($this->_enabledReports) {
+            Mage::getModel('reports/product_index_compared')->calculate();
+        }
 
         return $this;
     }
@@ -27473,6 +27689,10 @@ class Mage_Reports_Model_Event_Observer
      */
     public function catalogProductCompareAddProduct(Varien_Event_Observer $observer)
     {
+        if (!$this->_enabledReports) {
+            return $this;
+        }
+
         $productId = $observer->getEvent()->getProduct()->getId();
 
         Mage::getModel('reports/product_index_compared')
@@ -27491,11 +27711,14 @@ class Mage_Reports_Model_Event_Observer
      */
     public function checkoutCartAddProduct(Varien_Event_Observer $observer)
     {
-        $quoteItem = $observer->getEvent()->getItem();
-        if (!$quoteItem->getId() && !$quoteItem->getParentItem()) {
-            $productId = $quoteItem->getProductId();
-            $this->_event(Mage_Reports_Model_Event::EVENT_PRODUCT_TO_CART, $productId);
+        if ($this->_enabledReports) {
+            $quoteItem = $observer->getEvent()->getItem();
+            if (!$quoteItem->getId() && !$quoteItem->getParentItem()) {
+                $productId = $quoteItem->getProductId();
+                $this->_event(Mage_Reports_Model_Event::EVENT_PRODUCT_TO_CART, $productId);
+            }
         }
+
         return $this;
     }
 
@@ -27507,6 +27730,10 @@ class Mage_Reports_Model_Event_Observer
      */
     public function wishlistAddProduct(Varien_Event_Observer $observer)
     {
+        if (!$this->_enabledReports) {
+            return $this;
+        }
+
         return $this->_event(Mage_Reports_Model_Event::EVENT_PRODUCT_TO_WISHLIST,
             $observer->getEvent()->getProduct()->getId()
         );
@@ -27520,6 +27747,10 @@ class Mage_Reports_Model_Event_Observer
      */
     public function wishlistShare(Varien_Event_Observer $observer)
     {
+        if (!$this->_enabledReports) {
+            return $this;
+        }
+
         return $this->_event(Mage_Reports_Model_Event::EVENT_WISHLIST_SHARE,
             $observer->getEvent()->getWishlist()->getId()
         );
@@ -27566,7 +27797,7 @@ class Mage_Reports_Model_Event_Observer
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -27598,7 +27829,7 @@ class Mage_Rule_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28105,7 +28336,7 @@ abstract class Mage_Rule_Model_Abstract extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28461,7 +28692,7 @@ class Mage_Rule_Model_Condition_Combine extends Mage_Rule_Model_Condition_Abstra
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28695,7 +28926,7 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract
  *
  * @category    Mage
  * @package     Mage_Rule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28751,7 +28982,7 @@ class Mage_Rule_Model_Rule extends Mage_Rule_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -28817,7 +29048,7 @@ class Mage_SalesRule_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -29116,7 +29347,7 @@ class Mage_SalesRule_Model_Observer
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -29433,7 +29664,7 @@ class Mage_SalesRule_Model_Resource_Rule extends Mage_Rule_Model_Resource_Abstra
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -29660,7 +29891,7 @@ class Mage_SalesRule_Model_Resource_Rule_Collection extends Mage_Rule_Model_Reso
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30223,7 +30454,7 @@ class Mage_SalesRule_Model_Rule extends Mage_Rule_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30283,7 +30514,7 @@ class Mage_SalesRule_Model_Rule_Condition_Combine extends Mage_Rule_Model_Condit
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30354,7 +30585,7 @@ class Mage_SalesRule_Model_Rule_Condition_Product extends Mage_Rule_Model_Condit
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30577,7 +30808,7 @@ class Mage_SalesRule_Model_Rule_Condition_Product_Combine extends Mage_Rule_Mode
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -30633,7 +30864,7 @@ class Mage_SalesRule_Model_Rule_Customer extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_SalesRule
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -31710,7 +31941,7 @@ class Mage_SalesRule_Model_Validator extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -31727,6 +31958,11 @@ class Mage_Sales_Helper_Data extends Mage_Core_Helper_Data
      * Maximum available number
      */
     const MAXIMUM_AVAILABLE_NUMBER = 99999999;
+
+    /**
+     * Default precision for price calculations
+     */
+    const PRECISION_VALUE = 0.0001;
 
     /**
      * Check quote amount
@@ -31881,7 +32117,7 @@ class Mage_Sales_Helper_Data extends Mage_Core_Helper_Data
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -33848,7 +34084,7 @@ class Mage_Sales_Model_Quote extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -34918,7 +35154,12 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
      */
     public function getAppliedTaxes()
     {
-        return unserialize($this->getData('applied_taxes'));
+        try {
+            $return = Mage::helper('core/unserializeArray')->unserialize($this->getData('applied_taxes'));
+        } catch (Exception $e) {
+            $return = array();
+        }
+        return $return;
     }
 
     /**
@@ -35107,7 +35348,7 @@ class Mage_Sales_Model_Quote_Address extends Mage_Customer_Model_Address_Abstrac
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -35167,7 +35408,7 @@ interface Mage_Catalog_Model_Product_Configuration_Item_Interface
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -35979,7 +36220,7 @@ abstract class Mage_Sales_Model_Quote_Item_Abstract extends Mage_Core_Model_Abst
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36181,7 +36422,7 @@ class Mage_Sales_Model_Quote_Address_Item extends Mage_Sales_Model_Quote_Item_Ab
  *
  * @category    Mage
  * @package     Mage_Shipping
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36220,7 +36461,7 @@ abstract class Mage_Shipping_Model_Rate_Abstract extends Mage_Core_Model_Abstrac
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36330,7 +36571,7 @@ class Mage_Sales_Model_Quote_Address_Rate extends Mage_Shipping_Model_Rate_Abstr
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36375,7 +36616,7 @@ class Mage_Sales_Model_Quote_Address_Total extends Varien_Object
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36643,7 +36884,7 @@ abstract class Mage_Sales_Model_Quote_Address_Total_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36797,7 +37038,7 @@ class Mage_Sales_Model_Quote_Address_Total_Discount extends Mage_Sales_Model_Quo
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36870,7 +37111,7 @@ class Mage_Sales_Model_Quote_Address_Total_Grand extends Mage_Sales_Model_Quote_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37079,7 +37320,7 @@ class Mage_Sales_Model_Quote_Address_Total_Shipping extends Mage_Sales_Model_Quo
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37255,7 +37496,7 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37507,7 +37748,7 @@ class Mage_Sales_Model_Quote_Address_Total_Tax extends Mage_Sales_Model_Quote_Ad
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37551,7 +37792,7 @@ class Mage_Sales_Model_Quote_Config
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38016,7 +38257,9 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
             return false;
         }
         foreach ($this->getOptions() as $option) {
-            if (in_array($option->getCode(), $this->_notRepresentOptions)) {
+            if (in_array($option->getCode(), $this->_notRepresentOptions)
+                && !$item->getProduct()->hasCustomOptions()
+            ) {
                 continue;
             }
             if ($itemOption = $item->getOptionByCode($option->getCode())) {
@@ -38025,14 +38268,24 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
 
                 // dispose of some options params, that can cramp comparing of arrays
                 if (is_string($itemOptionValue) && is_string($optionValue)) {
-                    $_itemOptionValue = @unserialize($itemOptionValue);
-                    $_optionValue = @unserialize($optionValue);
-                    if (is_array($_itemOptionValue) && is_array($_optionValue)) {
-                        $itemOptionValue = $_itemOptionValue;
-                        $optionValue = $_optionValue;
-                        // looks like it does not break bundle selection qty
-                        unset($itemOptionValue['qty'], $itemOptionValue['uenc']);
-                        unset($optionValue['qty'], $optionValue['uenc']);
+                    try {
+                        /** @var Unserialize_Parser $parser */
+                        $parser = Mage::helper('core/unserializeArray');
+
+                        $_itemOptionValue = $parser->unserialize($itemOptionValue);
+                        $_optionValue = $parser->unserialize($optionValue);
+
+                        if (is_array($_itemOptionValue) && is_array($_optionValue)) {
+                            $itemOptionValue = $_itemOptionValue;
+                            $optionValue = $_optionValue;
+                            // looks like it does not break bundle selection qty
+                            foreach (array('qty', 'uenc', 'form_key') as $key) {
+                                unset($itemOptionValue[$key], $optionValue[$key]);
+                            }
+                        }
+
+                    } catch (Exception $e) {
+                        Mage::logException($e);
                     }
                 }
 
@@ -38441,7 +38694,7 @@ class Mage_Sales_Model_Quote_Item extends Mage_Sales_Model_Quote_Item_Abstract
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38482,7 +38735,7 @@ interface Mage_Catalog_Model_Product_Configuration_Item_Option_Interface
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38634,7 +38887,7 @@ class Mage_Sales_Model_Quote_Item_Option extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38686,7 +38939,7 @@ abstract class Mage_Sales_Model_Resource_Abstract extends Mage_Core_Model_Resour
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38843,27 +39096,49 @@ class Mage_Sales_Model_Resource_Quote extends Mage_Sales_Model_Resource_Abstract
     /**
      * Mark quotes - that depend on catalog price rules - to be recollected on demand
      *
+     *  @param  array|null $productIdList
+     *
+     * @return Mage_Sales_Model_Resource_Quote
+     */
+    public function markQuotesRecollectByAffectedProduct($productIdList = null)
+    {
+        $writeAdapter = $this->_getWriteAdapter();
+        $select = $writeAdapter->select();
+        $subSelect = clone $select;
+
+        $subSelect
+            ->distinct()
+            ->from(
+                   array('qi' => $this->getTable('sales/quote_item')),
+                   array('entity_id' => 'quote_id'))
+            ->join(
+                   array('pp' => $this->getTable('catalogrule/rule_product_price')),
+                   'qi.product_id = pp.product_id',
+                   array());
+        if ($productIdList !== null) {
+           $subSelect->where('qi.product_id IN (?)', $productIdList);
+        }
+
+        $select
+             ->join(
+                    array('tmp' => $subSelect),
+                    'q.entity_id = tmp.entity_id',
+                    array('trigger_recollect' => new Zend_Db_Expr(1)))
+             ->where('q.is_active = ?', 1);
+        $sql = $writeAdapter->updateFromSelect($select, array('q' => $this->getTable('sales/quote')));
+        $writeAdapter->query($sql);
+
+        return $this;
+    }
+
+    /**
+     * Mark quotes - that depend on catalog price rules - to be recollected on demand
+     *
      * @return Mage_Sales_Model_Resource_Quote
      */
     public function markQuotesRecollectOnCatalogRules()
     {
-        $quoteItemTable = $this->getTable('sales/quote_item');
-        $productPriceTable = $this->getTable('catalogrule/rule_product_price');
-
-        $select = $this->_getReadAdapter()
-          ->select()
-          ->distinct()
-          ->from(array('t2' => $quoteItemTable), array('entity_id' => 'quote_id'))
-          ->join(array('t3' => $productPriceTable), 't2.product_id = t3.product_id', array());
-
-        $entityIds = $this->_getReadAdapter()->fetchCol($select);
-
-        if (count($entityIds) > 0) {
-            $where = $this->_getWriteAdapter()->quoteInto('entity_id IN (?)', $entityIds);
-            $this->_getWriteAdapter()->update($this->getTable('sales/quote'), array('trigger_recollect' => 1), $where);
-        }
-
-        return $this;
+        return $this->markQuotesRecollectByAffectedProduct();
     }
 
     /**
@@ -38886,6 +39161,7 @@ class Mage_Sales_Model_Resource_Quote extends Mage_Sales_Model_Resource_Abstract
                 $adapter->quoteIdentifier('q.items_qty') . ' - ' . $adapter->quoteIdentifier('qi.qty')),
             'items_count' => new Zend_Db_Expr($adapter->quoteIdentifier('q.items_count') . ' - 1')
         ))
+        ->where('q.items_count > 0')
         ->join(
             array('qi' => $this->getTable('sales/quote_item')),
             implode(' AND ', array(
@@ -38916,7 +39192,7 @@ class Mage_Sales_Model_Resource_Quote extends Mage_Sales_Model_Resource_Abstract
         $subSelect = $this->_getReadAdapter()
             ->select()
             ->from($tableItem, array('entity_id' => 'quote_id'))
-            ->where('product_id IN ( ? )', $productIds)
+            ->where('product_id IN (?)', $productIds)
             ->group('quote_id');
 
         $select = $this->_getReadAdapter()->select()->join(
@@ -38951,7 +39227,7 @@ class Mage_Sales_Model_Resource_Quote extends Mage_Sales_Model_Resource_Abstract
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38995,7 +39271,7 @@ class Mage_Sales_Model_Resource_Quote_Address extends Mage_Sales_Model_Resource_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39082,7 +39358,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Collection extends Mage_Core_Model
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39126,7 +39402,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Item extends Mage_Sales_Model_Reso
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39208,7 +39484,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Item_Collection extends Mage_Core_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39252,7 +39528,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Rate extends Mage_Sales_Model_Reso
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39346,7 +39622,7 @@ class Mage_Sales_Model_Resource_Quote_Address_Rate_Collection extends Mage_Core_
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39390,7 +39666,7 @@ class Mage_Sales_Model_Resource_Quote_Item extends Mage_Sales_Model_Resource_Abs
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39630,7 +39906,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39674,7 +39950,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Option extends Mage_Core_Model_Resour
  *
  * @category    Mage
  * @package     Mage_Sales
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39847,7 +40123,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41053,7 +41329,7 @@ class Mage_Tax_Helper_Data extends Mage_Core_Helper_Abstract
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -41760,7 +42036,7 @@ class Mage_Tax_Model_Calculation extends Mage_Core_Model_Abstract
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -42527,7 +42803,7 @@ class Mage_Tax_Model_Config
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -42775,7 +43051,7 @@ class Mage_Tax_Model_Observer
  *
  * @category    Mage
  * @package     Mage_Tax
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -43290,7 +43566,7 @@ class Mage_Tax_Model_Resource_Calculation extends Mage_Core_Model_Resource_Db_Ab
  *
  * @category    Varien
  * @package     Varien_Crypt
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -43338,7 +43614,7 @@ class Varien_Crypt
  *
  * @category    Varien
  * @package     Varien_Crypt
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -43375,7 +43651,7 @@ abstract class Varien_Crypt_Abstract extends Varien_Object
  *
  * @category    Varien
  * @package     Varien_Crypt
- * @copyright  Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2016 X.commerce, Inc. and affiliates (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -43396,7 +43672,18 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
      */
     public function __construct(array $data=array())
     {
+        register_shutdown_function(array($this, 'destruct'));
         parent::__construct($data);
+    }
+
+    /**
+     * Close mcrypt module on shutdown
+     */
+    public function destruct()
+    {
+        if ($this->getHandler()) {
+            $this->_reset();
+        }
     }
 
     /**
@@ -43474,17 +43761,6 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
         return mdecrypt_generic($this->getHandler(), $data);
     }
 
-    /**
-     * Desctruct cipher module
-     *
-     */
-    public function __destruct()
-    {
-        if ($this->getHandler()) {
-            $this->_reset();
-        }
-    }
-
     protected function _reset()
     {
         mcrypt_generic_deinit($this->getHandler());
@@ -43506,7 +43782,7 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
  *
  * @category  Zend
  * @package   Zend_Currency
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  * @version   $Id$
  */
@@ -43523,7 +43799,7 @@ class Varien_Crypt_Mcrypt extends Varien_Crypt_Abstract
  *
  * @category  Zend
  * @package   Zend_Currency
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Currency
@@ -44407,7 +44683,7 @@ class Zend_Currency
  *
  * @category   Zend
  * @package    Zend_Date
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @version    $Id$
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -44416,7 +44692,7 @@ class Zend_Currency
  * @category   Zend
  * @package    Zend_Date
  * @subpackage Zend_Date_DateObject
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Date_DateObject {
@@ -44711,7 +44987,7 @@ abstract class Zend_Date_DateObject {
             // standard). However, this is not desired, so replacing 
             // all occurrences of "o" not preceded by a backslash 
             // with "Y"
-            $format = preg_replace('/(?<!\\\\)o\b/', 'Y', $format);
+            $format = preg_replace('/(?<!\\\\)o/', 'Y', $format);
             $result = ($gmt) ? @gmdate($format, $timestamp) : @date($format, $timestamp);
             date_default_timezone_set($oldzone);
             return $result;
@@ -45502,9 +45778,9 @@ abstract class Zend_Date_DateObject {
  *
  * @category  Zend
  * @package   Zend_Date
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
- * @version   $Id: Date.php 22713 2010-07-29 11:41:56Z thomas $
+ * @version   $Id$
  */
 
 /**
@@ -45521,7 +45797,7 @@ abstract class Zend_Date_DateObject {
  *
  * @category  Zend
  * @package   Zend_Date
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Date extends Zend_Date_DateObject
@@ -45855,7 +46131,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Sets a new timestamp
      *
      * @param  integer|string|array|Zend_Date  $timestamp  Timestamp to set
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setTimestamp($timestamp)
@@ -45867,7 +46143,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Adds a timestamp
      *
      * @param  integer|string|array|Zend_Date  $timestamp  Timestamp to add
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addTimestamp($timestamp)
@@ -45879,7 +46155,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Subtracts a timestamp
      *
      * @param  integer|string|array|Zend_Date  $timestamp  Timestamp to sub
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subTimestamp($timestamp)
@@ -45988,9 +46264,9 @@ class Zend_Date extends Zend_Date_DateObject
     {
         $result = $this->get($part);
         if (is_numeric($result)) {
-          return intval("$result");
+            return intval("$result");
         } else {
-          return false;
+            return false;
         }
     }
 
@@ -46002,17 +46278,17 @@ class Zend_Date extends Zend_Date_DateObject
     public function toArray()
     {
         return array('day'       => $this->toString(self::DAY_SHORT, 'iso'),
-                     'month'     => $this->toString(self::MONTH_SHORT, 'iso'),
-                     'year'      => $this->toString(self::YEAR, 'iso'),
-                     'hour'      => $this->toString(self::HOUR_SHORT, 'iso'),
-                     'minute'    => $this->toString(self::MINUTE_SHORT, 'iso'),
-                     'second'    => $this->toString(self::SECOND_SHORT, 'iso'),
-                     'timezone'  => $this->toString(self::TIMEZONE, 'iso'),
-                     'timestamp' => $this->toString(self::TIMESTAMP, 'iso'),
-                     'weekday'   => $this->toString(self::WEEKDAY_8601, 'iso'),
-                     'dayofyear' => $this->toString(self::DAY_OF_YEAR, 'iso'),
-                     'week'      => $this->toString(self::WEEK, 'iso'),
-                     'gmtsecs'   => $this->toString(self::TIMEZONE_SECS, 'iso'));
+            'month'     => $this->toString(self::MONTH_SHORT, 'iso'),
+            'year'      => $this->toString(self::YEAR, 'iso'),
+            'hour'      => $this->toString(self::HOUR_SHORT, 'iso'),
+            'minute'    => $this->toString(self::MINUTE_SHORT, 'iso'),
+            'second'    => $this->toString(self::SECOND_SHORT, 'iso'),
+            'timezone'  => $this->toString(self::TIMEZONE, 'iso'),
+            'timestamp' => $this->toString(self::TIMESTAMP, 'iso'),
+            'weekday'   => $this->toString(self::WEEKDAY_8601, 'iso'),
+            'dayofyear' => $this->toString(self::DAY_OF_YEAR, 'iso'),
+            'week'      => $this->toString(self::WEEK, 'iso'),
+            'gmtsecs'   => $this->toString(self::TIMEZONE_SECS, 'iso'));
     }
 
     /**
@@ -46564,7 +46840,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $date    Date or datepart to set
      * @param  string                          $part    OPTIONAL Part of the date to set, if null the timestamp is set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function set($date, $part = null, $locale = null)
@@ -46592,7 +46868,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $date    Date or datepart to add
      * @param  string                          $part    OPTIONAL Part of the date to add, if null the timestamp is added
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function add($date, $part = self::TIMESTAMP, $locale = null)
@@ -46615,7 +46891,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $date    Date or datepart to subtract
      * @param  string                          $part    OPTIONAL Part of the date to sub, if null the timestamp is subtracted
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function sub($date, $part = self::TIMESTAMP, $locale = null)
@@ -46702,14 +46978,14 @@ class Zend_Date extends Zend_Date_DateObject
         }
 
         preg_match('/([+-]\d{2}):{0,1}\d{2}/', $zone, $match);
-        if (!empty($match) and ($match[count($match) - 1] <= 12) and ($match[count($match) - 1] >= -12)) {
+        if (!empty($match) and ($match[count($match) - 1] <= 14) and ($match[count($match) - 1] >= -12)) {
             $zone = "Etc/GMT";
             $zone .= ($match[count($match) - 1] < 0) ? "+" : "-";
             $zone .= (int) abs($match[count($match) - 1]);
             return $zone;
         }
 
-        preg_match('/([[:alpha:]\/]{3,30})(?!.*([[:alpha:]\/]{3,30}))/', $zone, $match);
+        preg_match('/([[:alpha:]\/_]{3,30})(?!.*([[:alpha:]\/]{3,30}))/', $zone, $match);
         try {
             if (!empty($match) and (!is_int($match[count($match) - 1]))) {
                 $oldzone = $this->getTimezone();
@@ -46938,7 +47214,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $years = $date['year'];
                 }
                 return $this->_assign($calc, $this->mktime($hours, $minutes, $seconds, $months, $days, $years, true),
-                                             $this->mktime($hour, $minute, $second, $month, $day, $year, true), $hour);
+                    $this->mktime($hour, $minute, $second, $month, $day, $year, true), $hour);
             }
         }
 
@@ -46949,7 +47225,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::DAY:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + intval($date), 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + intval($day), 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + intval($day), 1970, true), $hour);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -46963,7 +47239,7 @@ class Zend_Date extends Zend_Date_DateObject
 
                 foreach ($daylist as $key => $value) {
                     if (strtoupper(iconv_substr($value, 0, 3, 'UTF-8')) == strtoupper($date)) {
-                         $found = $cnt;
+                        $found = $cnt;
                         break;
                     }
                     ++$cnt;
@@ -46972,7 +47248,7 @@ class Zend_Date extends Zend_Date_DateObject
                 // Weekday found
                 if ($cnt < 7) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + $found, 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
                 }
 
                 // Weekday not found
@@ -46983,7 +47259,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::DAY_SHORT:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + intval($date), 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + intval($day), 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + intval($day), 1970, true), $hour);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47006,7 +47282,7 @@ class Zend_Date extends Zend_Date_DateObject
                 // Weekday found
                 if ($cnt < 7) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + $found, 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
                 }
 
                 // Weekday not found
@@ -47018,7 +47294,7 @@ class Zend_Date extends Zend_Date_DateObject
                 $weekday = (int) $this->toString(self::WEEKDAY_8601, 'iso', $locale);
                 if ((intval($date) > 0) and (intval($date) < 8)) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + intval($date), 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
                 }
 
                 // Weekday not found
@@ -47035,7 +47311,7 @@ class Zend_Date extends Zend_Date_DateObject
                 $weekday = (int) $this->toString(self::WEEKDAY_DIGIT, 'iso', $locale);
                 if (is_numeric($date) and (intval($date) >= 0) and (intval($date) < 7)) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + $date, 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
                 }
 
                 // Weekday not found
@@ -47052,7 +47328,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, $date, $year, true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
+                        $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47074,7 +47350,7 @@ class Zend_Date extends Zend_Date_DateObject
                 // Weekday found
                 if ($cnt < 7) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + $found, 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
                 }
 
                 // Weekday not found
@@ -47097,7 +47373,7 @@ class Zend_Date extends Zend_Date_DateObject
                 // Weekday found
                 if ($cnt < 7) {
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1, 1 + $found, 1970, true),
-                                                 $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
+                        $this->mktime(0, 0, 0, 1, 1 + $weekday, 1970, true), $hour);
                 }
 
                 // Weekday not found
@@ -47110,7 +47386,7 @@ class Zend_Date extends Zend_Date_DateObject
                 if (is_numeric($date)) {
                     $week = (int) $this->toString(self::WEEK, 'iso', $locale);
                     return $this->_assign($calc, parent::mktime(0, 0, 0, 1, 1 + ($date * 7), 1970, true),
-                                                 parent::mktime(0, 0, 0, 1, 1 + ($week * 7), 1970, true), $hour);
+                        parent::mktime(0, 0, 0, 1, 1 + ($week * 7), 1970, true), $hour);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47153,7 +47429,7 @@ class Zend_Date extends Zend_Date_DateObject
                         }
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $date,  $day + $fixday, $year, true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
+                        $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
                 }
 
                 // Monthname not found
@@ -47184,7 +47460,7 @@ class Zend_Date extends Zend_Date_DateObject
                         }
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $date, $day + $fixday, $year, true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
+                        $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47226,7 +47502,7 @@ class Zend_Date extends Zend_Date_DateObject
                         }
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $date, $day + $fixday, $year, true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
+                        $this->mktime(0, 0, 0, $month, $day, $year, true), $hour);
                 }
 
                 // Monthname not found
@@ -47258,7 +47534,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $date,  $day + $fixday, $year, true),
-                                                 $this->mktime(0, 0, 0, $month, $day,           $year, true), $hour);
+                        $this->mktime(0, 0, 0, $month, $day,           $year, true), $hour);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47305,7 +47581,7 @@ class Zend_Date extends Zend_Date_DateObject
                         }
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $date,  $day + $fixday, $year, true),
-                                                 $this->mktime(0, 0, 0, $month, $day,           $year, true), $hour);
+                        $this->mktime(0, 0, 0, $month, $day,           $year, true), $hour);
                 }
 
                 // Monthname not found
@@ -47330,7 +47606,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $month, $day, intval($date), true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year,         true), false);
+                        $this->mktime(0, 0, 0, $month, $day, $year,         true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47348,7 +47624,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $month, $day, intval($date), true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year,         true), false);
+                        $this->mktime(0, 0, 0, $month, $day, $year,         true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47370,7 +47646,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $month, $day, $date, true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year, true), false);
+                        $this->mktime(0, 0, 0, $month, $day, $year, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47392,7 +47668,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime(0, 0, 0, $month, $day, $date, true),
-                                                 $this->mktime(0, 0, 0, $month, $day, $year, true), false);
+                        $this->mktime(0, 0, 0, $month, $day, $year, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47414,7 +47690,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $rest    = $rest - ($minutes * 1000 / 1440);
                     $seconds = floor($rest * 86400 / 1000);
                     return $this->_assign($calc, $this->mktime($hours, $minutes, $seconds, 1, 1, 1970, true),
-                                                 $this->mktime($hour,  $minute,  $second,  1, 1, 1970, true), false);
+                        $this->mktime($hour,  $minute,  $second,  1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47424,7 +47700,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::HOUR_SHORT_AM:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(intval($date), 0, 0, 1, 1, 1970, true),
-                                                 $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
+                        $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47434,7 +47710,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::HOUR_SHORT:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(intval($date), 0, 0, 1, 1, 1970, true),
-                                                 $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
+                        $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47444,7 +47720,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::HOUR_AM:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(intval($date), 0, 0, 1, 1, 1970, true),
-                                                 $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
+                        $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47454,7 +47730,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::HOUR:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(intval($date), 0, 0, 1, 1, 1970, true),
-                                                 $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
+                        $this->mktime($hour,         0, 0, 1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47464,7 +47740,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::MINUTE:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(0, intval($date), 0, 1, 1, 1970, true),
-                                                 $this->mktime(0, $minute,       0, 1, 1, 1970, true), false);
+                        $this->mktime(0, $minute,       0, 1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47474,7 +47750,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::SECOND:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(0, 0, intval($date), 1, 1, 1970, true),
-                                                 $this->mktime(0, 0, $second,       1, 1, 1970, true), false);
+                        $this->mktime(0, 0, $second,       1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47505,7 +47781,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::MINUTE_SHORT:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(0, intval($date), 0, 1, 1, 1970, true),
-                                                 $this->mktime(0, $minute,       0, 1, 1, 1970, true), false);
+                        $this->mktime(0, $minute,       0, 1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47515,7 +47791,7 @@ class Zend_Date extends Zend_Date_DateObject
             case self::SECOND_SHORT:
                 if (is_numeric($date)) {
                     return $this->_assign($calc, $this->mktime(0, 0, intval($date), 1, 1, 1970, true),
-                                                 $this->mktime(0, 0, $second,       1, 1, 1970, true), false);
+                        $this->mktime(0, 0, $second,       1, 1, 1970, true), false);
                 }
 
                 #require_once 'Zend/Date/Exception.php';
@@ -47562,12 +47838,13 @@ class Zend_Date extends Zend_Date_DateObject
                 if (!empty($datematch)) {
                     $dateMatchCharCount = iconv_strlen($datematch[0], 'UTF-8');
                     $tmpdate = iconv_substr($date,
-                                            $dateMatchCharCount,
-                                            iconv_strlen($date, 'UTF-8') - $dateMatchCharCount,
-                                            'UTF-8');
+                        $dateMatchCharCount,
+                        iconv_strlen($date, 'UTF-8') - $dateMatchCharCount,
+                        'UTF-8');
                 }
                 // (T)hh:mm:ss
                 preg_match('/[T,\s]{0,1}(\d{2}):(\d{2}):(\d{2})/', $tmpdate, $timematch);
+                // (T)hhmmss
                 if (empty($timematch)) {
                     preg_match('/[T,\s]{0,1}(\d{2})(\d{2})(\d{2})/', $tmpdate, $timematch);
                 }
@@ -47578,9 +47855,9 @@ class Zend_Date extends Zend_Date_DateObject
                 if (!empty($timematch)) {
                     $timeMatchCharCount = iconv_strlen($timematch[0], 'UTF-8');
                     $tmpdate = iconv_substr($tmpdate,
-                                            $timeMatchCharCount,
-                                            iconv_strlen($tmpdate, 'UTF-8') - $timeMatchCharCount,
-                                            'UTF-8');
+                        $timeMatchCharCount,
+                        iconv_strlen($tmpdate, 'UTF-8') - $timeMatchCharCount,
+                        'UTF-8');
                 }
                 if (empty($datematch)) {
                     $datematch[1] = 1970;
@@ -47594,6 +47871,9 @@ class Zend_Date extends Zend_Date_DateObject
                     $timematch[2] = 0;
                     $timematch[3] = 0;
                 }
+                if (!isset($timematch[3])) {
+                    $timematch[3] = 0;
+                }
 
                 if (($calc == 'set') || ($calc == 'cmp')) {
                     --$datematch[2];
@@ -47604,11 +47884,14 @@ class Zend_Date extends Zend_Date_DateObject
                     $year         -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($timematch[1], $timematch[2], $timematch[3], 1 + $datematch[2], 1 + $datematch[3], 1970 + $datematch[1], false),
-                                             $this->mktime($hour,         $minute,       $second,       1 + $month,        1 + $day,          1970 + $year,         false), false);
+                    $this->mktime($hour,         $minute,       $second,       1 + $month,        1 + $day,          1970 + $year,         false), false);
                 break;
 
             case self::RFC_2822:
-                $result = preg_match('/^\w{3},\s(\d{1,2})\s(\w{3})\s(\d{4})\s(\d{2}):(\d{2}):{0,1}(\d{0,2})\s([+-]{1}\d{4})$/', $date, $match);
+                $result = preg_match('/^\w{3},\s(\d{1,2})\s(\w{3})\s(\d{4})\s'
+                    . '(\d{2}):(\d{2}):{0,1}(\d{0,2})\s([+-]'
+                    . '{1}\d{4}|\w{1,20})$/', $date, $match);
+
                 if (!$result) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception("no RFC 2822 format ($date)", 0, null, $date);
@@ -47625,7 +47908,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year     -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $months, 1 + $match[1], 1970 + $match[3], false),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     false), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     false), false);
                 break;
 
             case self::TIMESTAMP:
@@ -47659,7 +47942,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47680,7 +47963,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  -= 1970;
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47701,7 +47984,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  -= 1970;
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47722,7 +48005,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  -= 1970;
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47745,7 +48028,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  -= 1970;
                     }
                     return $this->_assign($calc, $this->mktime(0, 0, 0, 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime(0, 0, 0, 1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47761,7 +48044,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
                     $parsed = Zend_Locale_Format::getTime($date, array('locale' => $locale, 'format_type' => 'iso', 'fix_date' => true));
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], $month, $day, $year, true),
-                                                 $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
+                        $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47783,7 +48066,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], $month, $day, $year, true),
-                                                 $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
+                        $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47800,7 +48083,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  = 1970;
                     }
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], $month, $day, $year, true),
-                                                 $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
+                        $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47817,7 +48100,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  = 1970;
                     }
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], $month, $day, $year, true),
-                                                 $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
+                        $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47839,7 +48122,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], $month, $day, $year, true),
-                                                 $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
+                        $this->mktime($hour,           $minute,           $second,           $month, $day, $year, true), false);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47858,7 +48141,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  -= 1970;
                     }
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47884,7 +48167,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47905,7 +48188,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  -= 1970;
                     }
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47925,7 +48208,7 @@ class Zend_Date extends Zend_Date_DateObject
                         $year  -= 1970;
                     }
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47953,7 +48236,7 @@ class Zend_Date extends Zend_Date_DateObject
                     }
 
                     return $this->_assign($calc, $this->mktime($parsed['hour'], $parsed['minute'], $parsed['second'], 1 + $parsed['month'], 1 + $parsed['day'], 1970 + $parsed['year'], true),
-                                                 $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
+                        $this->mktime($hour,           $minute,           $second,           1 + $month,           1 + $day,           1970 + $year,           true), $hour);
                 } catch (Zend_Locale_Exception $e) {
                     #require_once 'Zend/Date/Exception.php';
                     throw new Zend_Date_Exception($e->getMessage(), 0, $e, $date);
@@ -47978,7 +48261,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year     -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $match[2], 1 + $match[3], 1970 + $match[1], true),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,    1 + $day,      1970 + $year,     true), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,    1 + $day,      1970 + $year,     true), false);
                 break;
 
             case self::COOKIE:
@@ -47989,9 +48272,9 @@ class Zend_Date extends Zend_Date_DateObject
                 }
                 $matchStartPos = iconv_strpos($match[0], ' ', 0, 'UTF-8') + 1;
                 $match[0] = iconv_substr($match[0],
-                                         $matchStartPos,
-                                         iconv_strlen($match[0], 'UTF-8') - $matchStartPos,
-                                         'UTF-8');
+                    $matchStartPos,
+                    iconv_strlen($match[0], 'UTF-8') - $matchStartPos,
+                    'UTF-8');
 
                 $months    = $this->_getDigitFromName($match[2]);
                 $match[3] = self::getFullYear($match[3]);
@@ -48005,7 +48288,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year     -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $months, 1 + $match[1], 1970 + $match[3], true),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
                 break;
 
             case self::RFC_822:
@@ -48029,7 +48312,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year     -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $months, 1 + $match[1], 1970 + $match[3], false),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     false), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     false), false);
                 break;
 
             case self::RFC_850:
@@ -48051,7 +48334,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year     -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $months, 1 + $match[1], 1970 + $match[3], true),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
                 break;
 
             case self::RFC_1123:
@@ -48072,7 +48355,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year     -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $months, 1 + $match[1], 1970 + $match[3], true),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
                 break;
 
             case self::RSS:
@@ -48094,7 +48377,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year  -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $months, 1 + $match[1], 1970 + $match[3], true),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,  1 + $day,      1970 + $year,     true), false);
                 break;
 
             case self::W3C:
@@ -48113,7 +48396,7 @@ class Zend_Date extends Zend_Date_DateObject
                     $year     -= 1970;
                 }
                 return $this->_assign($calc, $this->mktime($match[4], $match[5], $match[6], 1 + $match[2], 1 + $match[3], 1970 + $match[1], true),
-                                             $this->mktime($hour,     $minute,   $second,   1 + $month,    1 + $day,      1970 + $year,     true), false);
+                    $this->mktime($hour,     $minute,   $second,   1 + $month,    1 + $day,      1970 + $year,     true), false);
                 break;
 
             default:
@@ -48142,10 +48425,8 @@ class Zend_Date extends Zend_Date_DateObject
                                 $parsed['day'] = 0;
                             }
 
-                            if (isset($parsed['year'])) {
-                                $parsed['year'] -= 1970;
-                            } else {
-                                $parsed['year'] = 0;
+                            if (!isset($parsed['year'])) {
+                                $parsed['year'] = 1970;
                             }
                         }
 
@@ -48155,7 +48436,7 @@ class Zend_Date extends Zend_Date_DateObject
                             isset($parsed['second']) ? $parsed['second'] : 0,
                             isset($parsed['month']) ? (1 + $parsed['month']) : 1,
                             isset($parsed['day']) ? (1 + $parsed['day']) : 1,
-                            isset($parsed['year']) ? (1970 + $parsed['year']) : 1970,
+                            $parsed['year'],
                             false), $this->getUnixTimestamp(), false);
                     } catch (Zend_Locale_Exception $e) {
                         if (!is_numeric($date)) {
@@ -48336,7 +48617,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $time    Time to set
      * @param  string                          $format  OPTIONAL Timeformat for parsing input
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setTime($time, $format = null, $locale = null)
@@ -48354,7 +48635,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $time    Time to add
      * @param  string                          $format  OPTIONAL Timeformat for parsing input
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addTime($time, $format = null, $locale = null)
@@ -48372,7 +48653,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $time    Time to sub
      * @param  string                          $format  OPTIONAL Timeformat for parsing input
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid inteface
+     * @return Zend_Date Provides a fluent inteface
      * @throws Zend_Date_Exception
      */
     public function subTime($time, $format = null, $locale = null)
@@ -48498,7 +48779,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $date    Date to set
      * @param  string                          $format  OPTIONAL Date format for parsing
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setDate($date, $format = null, $locale = null)
@@ -48516,7 +48797,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $date    Date to add
      * @param  string                          $format  OPTIONAL Date format for parsing input
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addDate($date, $format = null, $locale = null)
@@ -48535,7 +48816,7 @@ class Zend_Date extends Zend_Date_DateObject
      * @param  string|integer|array|Zend_Date  $date    Date to sub
      * @param  string                          $format  OPTIONAL Date format for parsing input
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subDate($date, $format = null, $locale = null)
@@ -48586,7 +48867,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|Zend_Date  $date    ISO Date to set
      * @param  string|Zend_Locale        $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setIso($date, $locale = null)
@@ -48603,7 +48884,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|Zend_Date  $date    ISO Date to add
      * @param  string|Zend_Locale        $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addIso($date, $locale = null)
@@ -48620,7 +48901,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|Zend_Date  $date    ISO Date to sub
      * @param  string|Zend_Locale        $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subIso($date, $locale = null)
@@ -48673,7 +48954,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|Zend_Date  $date    RFC 822 to set
      * @param  string|Zend_Locale        $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setArpa($date, $locale = null)
@@ -48691,7 +48972,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|Zend_Date  $date    RFC 822 Date to add
      * @param  string|Zend_Locale        $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addArpa($date, $locale = null)
@@ -48709,7 +48990,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|Zend_Date  $date    RFC 822 Date to sub
      * @param  string|Zend_Locale        $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subArpa($date, $locale = null)
@@ -48735,12 +49016,12 @@ class Zend_Date extends Zend_Date_DateObject
         return $this->_calcvalue('cmp', $date, 'arpa', self::RFC_822, $locale);
     }
 
-
     /**
      * Check if location is supported
      *
-     * @param $location array - locations array
-     * @return $horizon float
+     * @param array $location locations array
+     * @throws Zend_Date_Exception
+     * @return float $horizon float
      */
     private function _checkLocation($location)
     {
@@ -48782,7 +49063,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Returns the time of sunrise for this date and a given location as new date object
      * For a list of cities and correct locations use the class Zend_Date_Cities
      *
-     * @param  $location array - location of sunrise
+     * @param array $location location of sunrise
      *                   ['horizon']   -> civil, nautic, astronomical, effective (default)
      *                   ['longitude'] -> longitude of location
      *                   ['latitude']  -> latitude of location
@@ -48802,7 +49083,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Returns the time of sunset for this date and a given location as new date object
      * For a list of cities and correct locations use the class Zend_Date_Cities
      *
-     * @param  $location array - location of sunset
+     * @param array $location location of sunset
      *                   ['horizon']   -> civil, nautic, astronomical, effective (default)
      *                   ['longitude'] -> longitude of location
      *                   ['latitude']  -> latitude of location
@@ -48822,7 +49103,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Returns an array with the sunset and sunrise dates for all horizon types
      * For a list of cities and correct locations use the class Zend_Date_Cities
      *
-     * @param  $location array - location of suninfo
+     * @param array $location location of suninfo
      *                   ['horizon']   -> civil, nautic, astronomical, effective (default)
      *                   ['longitude'] -> longitude of location
      *                   ['latitude']  -> latitude of location
@@ -48858,11 +49139,11 @@ class Zend_Date extends Zend_Date_DateObject
         return $suninfo;
     }
 
-
     /**
      * Check a given year for leap year.
      *
-     * @param  integer|array|Zend_Date  $year  Year to check
+     * @param  integer|array|Zend_Date $year Year to check
+     * @throws Zend_Date_Exception
      * @return boolean
      */
     public static function checkLeapYear($year)
@@ -48958,7 +49239,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string                          $calc    Calculation to make
      * @param  string|integer|array|Zend_Date  $date    Date or Part to calculate
-     * @param  string                          $part    Datepart for Calculation
+     * @param  string                          $type    Datepart for Calculation
      * @param  string|Zend_Locale              $locale  Locale for parsing input
      * @return integer|string  new date
      * @throws Zend_Date_Exception
@@ -48996,11 +49277,13 @@ class Zend_Date extends Zend_Date_DateObject
     /**
      * Internal calculation, returns the requested date type
      *
-     * @param  string                    $calc    Calculation to make
-     * @param  string|integer|Zend_Date  $value   Datevalue to calculate with, if null the actual value is taken
-     * @param  string|Zend_Locale        $locale  Locale for parsing input
-     * @return integer|Zend_Date  new date
+     * @param  string                   $calc   Calculation to make
+     * @param  string|integer|Zend_Date $value  Datevalue to calculate with, if null the actual value is taken
+     * @param  string                   $type
+     * @param  string                   $parameter
+     * @param  string|Zend_Locale       $locale Locale for parsing input
      * @throws Zend_Date_Exception
+     * @return integer|Zend_Date  new date
      */
     private function _calcvalue($calc, $value, $type, $parameter, $locale)
     {
@@ -49056,9 +49339,9 @@ class Zend_Date extends Zend_Date_DateObject
      * use set() instead.
      * Returned is the new date object
      *
-     * @param  string|integer|array|Zend_Date  $date    Year to set
+     * @param  string|integer|array|Zend_Date  $year    Year to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setYear($year, $locale = null)
@@ -49075,9 +49358,9 @@ class Zend_Date extends Zend_Date_DateObject
      * use add() instead.
      * Returned is the new date object
      *
-     * @param  string|integer|array|Zend_Date  $date    Year to add
+     * @param  string|integer|array|Zend_Date  $year    Year to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addYear($year, $locale = null)
@@ -49094,9 +49377,9 @@ class Zend_Date extends Zend_Date_DateObject
      * use sub() instead.
      * Returned is the new date object
      *
-     * @param  string|integer|array|Zend_Date  $date    Year to sub
+     * @param  string|integer|array|Zend_Date  $year    Year to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subYear($year, $locale = null)
@@ -49220,7 +49503,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $month   Month to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setMonth($month, $locale = null)
@@ -49239,7 +49522,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $month   Month to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addMonth($month, $locale = null)
@@ -49258,7 +49541,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $month   Month to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subMonth($month, $locale = null)
@@ -49287,7 +49570,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Returns the day as new date object
      * Example: 20.May.1986 -> 20.Jan.1970 00:00:00
      *
-     * @param $locale  string|Zend_Locale  OPTIONAL Locale for parsing input
+     * @param Zend_Locale $locale OPTIONAL Locale for parsing input
      * @return Zend_Date
      */
     public function getDay($locale = null)
@@ -49295,13 +49578,13 @@ class Zend_Date extends Zend_Date_DateObject
         return $this->copyPart(self::DAY_SHORT, $locale);
     }
 
-
     /**
      * Returns the calculated day
      *
-     * @param $calc    string                    Type of calculation to make
-     * @param $day     string|integer|Zend_Date  Day to calculate, when null the actual day is calculated
-     * @param $locale  string|Zend_Locale        Locale for parsing input
+     * @param string      $calc   Type of calculation to make
+     * @param Zend_Date   $day    Day to calculate, when null the actual day is calculated
+     * @param Zend_Locale $locale Locale for parsing input
+     * @throws Zend_Date_Exception
      * @return Zend_Date|integer
      */
     private function _day($calc, $day, $locale)
@@ -49332,7 +49615,7 @@ class Zend_Date extends Zend_Date_DateObject
         } else {
             switch (iconv_strlen($day, 'UTF-8')) {
                 case 1 :
-                   $type = self::WEEKDAY_NARROW;
+                    $type = self::WEEKDAY_NARROW;
                     break;
                 case 2:
                     $type = self::WEEKDAY_NAME;
@@ -49362,9 +49645,9 @@ class Zend_Date extends Zend_Date_DateObject
      * Returned is the new date object
      * Example: setDay('Montag', 'de_AT'); will set the monday of this week as day.
      *
-     * @param  string|integer|array|Zend_Date  $month   Day to set
+     * @param  string|integer|array|Zend_Date  $day     Day to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setDay($day, $locale = null)
@@ -49380,9 +49663,9 @@ class Zend_Date extends Zend_Date_DateObject
      * If a localized dayname is given it will be parsed with the default locale or the optional
      * set locale.
      *
-     * @param  string|integer|array|Zend_Date  $month   Day to add
+     * @param  string|integer|array|Zend_Date  $day     Day to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addDay($day, $locale = null)
@@ -49398,9 +49681,9 @@ class Zend_Date extends Zend_Date_DateObject
      * If a localized dayname is given it will be parsed with the default locale or the optional
      * set locale.
      *
-     * @param  string|integer|array|Zend_Date  $month   Day to sub
+     * @param  string|integer|array|Zend_Date  $day     Day to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subDay($day, $locale = null)
@@ -49430,7 +49713,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Weekday is always from 1-7
      * Example: 09-Jan-2007 -> 2 = Tuesday -> 02-Jan-1970 (when 02.01.1970 is also Tuesday)
      *
-     * @param $locale  string|Zend_Locale  OPTIONAL Locale for parsing input
+     * @param Zend_Locale $locale OPTIONAL Locale for parsing input
      * @return Zend_Date
      */
     public function getWeekday($locale = null)
@@ -49448,9 +49731,9 @@ class Zend_Date extends Zend_Date_DateObject
     /**
      * Returns the calculated weekday
      *
-     * @param  $calc     string                          Type of calculation to make
-     * @param  $weekday  string|integer|array|Zend_Date  Weekday to calculate, when null the actual weekday is calculated
-     * @param  $locale   string|Zend_Locale              Locale for parsing input
+     * @param  string      $calc     Type of calculation to make
+     * @param  Zend_Date   $weekday  Weekday to calculate, when null the actual weekday is calculated
+     * @param  Zend_Locale $locale   Locale for parsing input
      * @return Zend_Date|integer
      * @throws Zend_Date_Exception
      */
@@ -49482,7 +49765,7 @@ class Zend_Date extends Zend_Date_DateObject
         } else {
             switch(iconv_strlen($weekday, 'UTF-8')) {
                 case 1:
-                   $type = self::WEEKDAY_NARROW;
+                    $type = self::WEEKDAY_NARROW;
                     break;
                 case 2:
                     $type = self::WEEKDAY_NAME;
@@ -49510,9 +49793,9 @@ class Zend_Date extends Zend_Date_DateObject
      * Returned is the new date object.
      * Example: setWeekday(3); will set the wednesday of this week as day.
      *
-     * @param  string|integer|array|Zend_Date  $month   Weekday to set
+     * @param  string|integer|array|Zend_Date  $weekday Weekday to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setWeekday($weekday, $locale = null)
@@ -49530,9 +49813,9 @@ class Zend_Date extends Zend_Date_DateObject
      * Example: addWeekday(3); will add the difference of days from the begining of the month until
      * wednesday.
      *
-     * @param  string|integer|array|Zend_Date  $month   Weekday to add
+     * @param  string|integer|array|Zend_Date  $weekday Weekday to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addWeekday($weekday, $locale = null)
@@ -49550,9 +49833,9 @@ class Zend_Date extends Zend_Date_DateObject
      * Example: subWeekday(3); will subtract the difference of days from the begining of the month until
      * wednesday.
      *
-     * @param  string|integer|array|Zend_Date  $month   Weekday to sub
+     * @param  string|integer|array|Zend_Date  $weekday Weekday to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subWeekday($weekday, $locale = null)
@@ -49604,7 +49887,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $day     Day of Year to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setDayOfYear($day, $locale = null)
@@ -49621,7 +49904,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $day     Day of Year to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addDayOfYear($day, $locale = null)
@@ -49638,7 +49921,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $day     Day of Year to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subDayOfYear($day, $locale = null)
@@ -49667,7 +49950,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Returns the hour as new date object
      * Example: 02.Feb.1986 10:30:25 -> 01.Jan.1970 10:00:00
      *
-     * @param $locale  string|Zend_Locale  OPTIONAL Locale for parsing input
+     * @param Zend_Locale $locale OPTIONAL Locale for parsing input
      * @return Zend_Date
      */
     public function getHour($locale = null)
@@ -49684,7 +49967,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $hour    Hour to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setHour($hour, $locale = null)
@@ -49701,7 +49984,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $hour    Hour to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addHour($hour, $locale = null)
@@ -49718,7 +50001,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $hour    Hour to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subHour($hour, $locale = null)
@@ -49770,7 +50053,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $minute  Minute to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setMinute($minute, $locale = null)
@@ -49787,7 +50070,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $minute  Minute to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addMinute($minute, $locale = null)
@@ -49804,7 +50087,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $minute  Minute to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subMinute($minute, $locale = null)
@@ -49856,7 +50139,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date $second Second to set
      * @param  string|Zend_Locale             $locale (Optional) Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setSecond($second, $locale = null)
@@ -49873,7 +50156,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date $second Second to add
      * @param  string|Zend_Locale             $locale (Optional) Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addSecond($second, $locale = null)
@@ -49890,7 +50173,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date $second Second to sub
      * @param  string|Zend_Locale             $locale (Optional) Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subSecond($second, $locale = null)
@@ -49931,7 +50214,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  integer $precision Precision for the fractional datepart 3 = milliseconds
      * @throws Zend_Date_Exception
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      */
     public function setFractionalPrecision($precision)
     {
@@ -49961,14 +50244,14 @@ class Zend_Date extends Zend_Date_DateObject
         return $this->_fractional;
     }
 
-
     /**
      * Sets new milliseconds for the date object
      * Example: setMilliSecond(550, 2) -> equals +5 Sec +50 MilliSec
      *
      * @param  integer|Zend_Date $milli     (Optional) Millisecond to set, when null the actual millisecond is set
      * @param  integer           $precision (Optional) Fraction precision of the given milliseconds
-     * @return Zend_Date Provides fluid interface
+     * @throws Zend_Date_Exception
+     * @return Zend_Date Provides a fluent interface
      */
     public function setMilliSecond($milli = null, $precision = null)
     {
@@ -49995,13 +50278,13 @@ class Zend_Date extends Zend_Date_DateObject
         return $this;
     }
 
-
     /**
      * Adds milliseconds to the date object
      *
      * @param  integer|Zend_Date $milli     (Optional) Millisecond to add, when null the actual millisecond is added
      * @param  integer           $precision (Optional) Fractional precision for the given milliseconds
-     * @return Zend_Date Provides fluid interface
+     * @throws Zend_Date_Exception
+     * @return Zend_Date Provides a fluent interface
      */
     public function addMilliSecond($milli = null, $precision = null)
     {
@@ -50014,15 +50297,24 @@ class Zend_Date extends Zend_Date_DateObject
         }
 
         if ($precision === null) {
-            $precision = strlen($milli);
-            if ($milli < 0) {
-                --$precision;
-            }
+            // Use internal default precision
+            // Is not as logic as using the length of the input. But this would break tests and maybe other things
+            // as an input value of integer 10, which is used in tests, must be parsed as 10 milliseconds (real milliseconds, precision 3)
+            // but with auto-detect of precision, 100 milliseconds would be added.
+            $precision = $this->_precision;
         }
 
         if (!is_int($precision) || $precision < 1 || $precision > 9) {
             #require_once 'Zend/Date/Exception.php';
-            throw new Zend_Date_Exception("precision ($precision) must be a positive integer less than 10", 0, null, $precision);
+            throw new Zend_Date_Exception(
+                "precision ($precision) must be a positive integer less than 10", 0, null, $precision
+            );
+        }
+
+        if ($this->_precision > $precision) {
+            $milli = $milli * pow(10, $this->_precision - $precision);
+        } elseif ($this->_precision < $precision) {
+            $milli = round($milli / pow(10, $precision - $this->_precision));
         }
 
         $this->_fractional += $milli;
@@ -50057,7 +50349,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  integer|Zend_Date $milli     (Optional) Millisecond to sub, when null the actual millisecond is subtracted
      * @param  integer           $precision (Optional) Fractional precision for the given milliseconds
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      */
     public function subMilliSecond($milli = null, $precision = null)
     {
@@ -50118,7 +50410,7 @@ class Zend_Date extends Zend_Date_DateObject
      * Returns the week as new date object using monday as begining of the week
      * Example: 12.Jan.2007 -> 08.Jan.1970 00:00:00
      *
-     * @param $locale  string|Zend_Locale  OPTIONAL Locale for parsing input
+     * @param Zend_Locale $locale OPTIONAL Locale for parsing input
      * @return Zend_Date
      */
     public function getWeek($locale = null)
@@ -50139,7 +50431,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $week    Week to set
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function setWeek($week, $locale = null)
@@ -50154,7 +50446,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $week    Week to add
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function addWeek($week, $locale = null)
@@ -50169,7 +50461,7 @@ class Zend_Date extends Zend_Date_DateObject
      *
      * @param  string|integer|array|Zend_Date  $week    Week to sub
      * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
-     * @return Zend_Date Provides fluid interface
+     * @return Zend_Date Provides a fluent interface
      * @throws Zend_Date_Exception
      */
     public function subWeek($week, $locale = null)
@@ -50262,8 +50554,8 @@ class Zend_Date extends Zend_Date_DateObject
         if (!is_array($date)) {
             try {
                 $parsed = Zend_Locale_Format::getDate($date, array('locale' => $locale,
-                                                      'date_format' => $format, 'format_type' => 'iso',
-                                                      'fix_date' => false));
+                    'date_format' => $format, 'format_type' => 'iso',
+                    'fix_date' => false));
             } catch (Zend_Locale_Exception $e) {
                 // Date can not be parsed
                 return false;
@@ -50275,7 +50567,7 @@ class Zend_Date extends Zend_Date_DateObject
         if (((strpos($format, 'Y') !== false) or (strpos($format, 'y') !== false)) and
             (!isset($parsed['year']))) {
             // Year expected but not found
-                return false;
+            return false;
         }
 
         if ((strpos($format, 'M') !== false) and (!isset($parsed['month']))) {
@@ -50291,7 +50583,7 @@ class Zend_Date extends Zend_Date_DateObject
         if (((strpos($format, 'H') !== false) or (strpos($format, 'h') !== false)) and
             (!isset($parsed['hour']))) {
             // Hour expected but not found
-                return false;
+            return false;
         }
 
         if ((strpos($format, 'm') !== false) and (!isset($parsed['minute']))) {
@@ -50337,7 +50629,7 @@ class Zend_Date extends Zend_Date_DateObject
 
         $date      = new self($parsed, null, $locale);
         $timestamp = $date->mktime($parsed['hour'], $parsed['minute'], $parsed['second'],
-                                   $parsed['month'], $parsed['day'], $parsed['year']);
+            $parsed['month'], $parsed['day'], $parsed['year']);
 
         if ($parsed['year'] != $date->date('Y', $timestamp)) {
             // Given year differs from parsed year
@@ -50509,7 +50801,7 @@ class Zend_Date extends Zend_Date_DateObject
  *
  * @category  Zend
  * @package   Zend_Locale
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  * @version   $Id$
  */
@@ -50519,7 +50811,7 @@ class Zend_Date extends Zend_Date_DateObject
  *
  * @category  Zend
  * @package   Zend_Locale
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Locale
@@ -50555,7 +50847,7 @@ class Zend_Locale
         'uz_UZ'  => 'uz_Latn_UZ',
         'vai_LR' => 'vai_Latn_LR',
         'zh_CN' => 'zh_Hans_CN',
-        'zh_HK' => 'zh_Hans_HK',
+        'zh_HK' => 'zh_Hant_HK',
         'zh_MO' => 'zh_Hans_MO',
         'zh_SG' => 'zh_Hans_SG',
         'zh_TW' => 'zh_Hant_TW',
@@ -50605,6 +50897,7 @@ class Zend_Locale
         'ar_SA'       => true,
         'ar_SD'       => true,
         'ar_SO'       => true,
+        'ar_SS'       => true,
         'ar_SY'       => true,
         'ar_TD'       => true,
         'ar_TN'       => true,
@@ -50652,6 +50945,9 @@ class Zend_Locale
         'ca'          => true,
         'ca_AD'       => true,
         'ca_ES'       => true,
+        'ca_ES_VALENCIA' => true,
+        'ca_FR'       => true,
+        'ca_IT'       => true,
         'cgg'         => true,
         'cgg_UG'      => true,
         'chr'         => true,
@@ -50662,6 +50958,7 @@ class Zend_Locale
         'cy_GB'       => true,
         'da'          => true,
         'da_DK'       => true,
+        'da_GL'       => true,
         'dav'         => true,
         'dav_KE'      => true,
         'de'          => true,
@@ -50688,8 +50985,10 @@ class Zend_Locale
         'el_CY'       => true,
         'el_GR'       => true,
         'en'          => true,
+        'en_001'      => true,
         'en_150'      => true,
         'en_AG'       => true,
+        'en_AI'       => true,
         'en_AS'       => true,
         'en_AU'       => true,
         'en_BB'       => true,
@@ -50699,11 +50998,17 @@ class Zend_Locale
         'en_BW'       => true,
         'en_BZ'       => true,
         'en_CA'       => true,
+        'en_CC'       => true,
+        'en_CK'       => true,
         'en_CM'       => true,
+        'en_CX'       => true,
+        'en_DG'       => true,
         'en_DM'       => true,
         'en_Dsrt'     => true,
         'en_Dsrt_US'  => true,
+        'en_ER'       => true,
         'en_FJ'       => true,
+        'en_FK'       => true,
         'en_FM'       => true,
         'en_GB'       => true,
         'en_GD'       => true,
@@ -50717,6 +51022,7 @@ class Zend_Locale
         'en_IE'       => true,
         'en_IM'       => true,
         'en_IN'       => true,
+        'en_IO'       => true,
         'en_JE'       => true,
         'en_JM'       => true,
         'en_KE'       => true,
@@ -50728,27 +51034,39 @@ class Zend_Locale
         'en_LS'       => true,
         'en_MG'       => true,
         'en_MH'       => true,
+        'en_MO'       => true,
         'en_MP'       => true,
+        'en_MS'       => true,
         'en_MT'       => true,
         'en_MU'       => true,
         'en_MW'       => true,
         'en_NA'       => true,
+        'en_NF'       => true,
         'en_NG'       => true,
+        'en_NR'       => true,
+        'en_NU'       => true,
         'en_NZ'       => true,
         'en_PG'       => true,
         'en_PH'       => true,
         'en_PK'       => true,
+        'en_PN'       => true,
         'en_PR'       => true,
         'en_PW'       => true,
+        'en_RW'       => true,
         'en_SB'       => true,
         'en_SC'       => true,
+        'en_SD'       => true,
         'en_SG'       => true,
+        'en_SH'       => true,
         'en_SL'       => true,
         'en_SS'       => true,
+        'en_SX'       => true,
         'en_SZ'       => true,
         'en_TC'       => true,
+        'en_TK'       => true,
         'en_TO'       => true,
         'en_TT'       => true,
+        'en_TV'       => true,
         'en_TZ'       => true,
         'en_UG'       => true,
         'en_UM'       => true,
@@ -50763,6 +51081,7 @@ class Zend_Locale
         'en_ZM'       => true,
         'en_ZW'       => true,
         'eo'          => true,
+        'eo_001'      => true,
         'es'          => true,
         'es_419'      => true,
         'es_AR'       => true,
@@ -50800,7 +51119,12 @@ class Zend_Locale
         'fa_AF'       => true,
         'fa_IR'       => true,
         'ff'          => true,
+        'ff_CM'       => true,
+        'ff_GN'       => true,
+        'ff_MR'       => true,
+        'fr_PM'       => true,
         'ff_SN'       => true,
+        'fr_WF'       => true,
         'fi'          => true,
         'fi_FI'       => true,
         'fil'         => true,
@@ -50854,6 +51178,8 @@ class Zend_Locale
         'fr_YT'       => true,
         'fur'         => true,
         'fur_IT'      => true,
+        'fy'          => true,
+        'fy_NL'       => true,
         'ga'          => true,
         'ga_IE'       => true,
         'gd'          => true,
@@ -50862,11 +51188,13 @@ class Zend_Locale
         'gl_ES'       => true,
         'gsw'         => true,
         'gsw_CH'      => true,
+        'gsw_LI'      => true,
         'gu'          => true,
         'gu_IN'       => true,
         'guz'         => true,
         'guz_KE'      => true,
         'gv'          => true,
+        'gv_IM'       => true,
         'ha'          => true,
         'ha_Latn'     => true,
         'ha_Latn_GH'  => true,
@@ -50949,10 +51277,14 @@ class Zend_Locale
         'kw'          => true,
         'kw_GB'       => true,
         'ky'          => true,
+        'ky_Cyrl'     => true,
+        'ky_Cyrl_KG'  => true,
         'lag'         => true,
         'lag_TZ'      => true,
         'lg'          => true,
         'lg_UG'       => true,
+        'lkt'         => true,
+        'lkt_US'      => true,
         'ln'          => true,
         'ln_AO'       => true,
         'ln_CD'       => true,
@@ -51007,6 +51339,7 @@ class Zend_Locale
         'naq_NA'      => true,
         'nb'          => true,
         'nb_NO'       => true,
+        'nb_SJ'       => true,
         'nd'          => true,
         'nd_ZW'       => true,
         'ne'          => true,
@@ -51015,6 +51348,7 @@ class Zend_Locale
         'nl'          => true,
         'nl_AW'       => true,
         'nl_BE'       => true,
+        'nl_BQ'       => true,
         'nl_CW'       => true,
         'nl_NL'       => true,
         'nl_SR'       => true,
@@ -51183,6 +51517,9 @@ class Zend_Locale
         'tzm'         => true,
         'tzm_Latn'    => true,
         'tzm_Latn_MA' => true,
+        'ug'          => true,
+        'ug_Arab'     => true,
+        'ug_Arab_CN'  => true,
         'uk'          => true,
         'uk_UA'       => true,
         'ur'          => true,
@@ -51205,6 +51542,7 @@ class Zend_Locale
         'vi'          => true,
         'vi_VN'       => true,
         'vo'          => true,
+        'vo_001'      => true,
         'vun'         => true,
         'vun_TZ'      => true,
         'wae'         => true,
@@ -51218,7 +51556,10 @@ class Zend_Locale
         'yav'         => true,
         'yav_CM'      => true,
         'yo'          => true,
+        'yo_BJ'       => true,
         'yo_NG'       => true,
+        'zgh'         => true,
+        'zgh_MA'      => true,
         'zh'          => true,
         'zh_Hans'     => true,
         'zh_Hans_CN'  => true,
@@ -52472,7 +52813,7 @@ class Zend_Locale
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Data
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -52491,7 +52832,7 @@ class Zend_Locale
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Data
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Locale_Data
@@ -52499,8 +52840,7 @@ class Zend_Locale_Data
     /**
      * Locale files
      *
-     * @var ressource
-     * @access private
+     * @var array
      */
     private static $_ldml = array();
 
@@ -52508,7 +52848,6 @@ class Zend_Locale_Data
      * List of values which are collected
      *
      * @var array
-     * @access private
      */
     private static $_list = array();
 
@@ -52516,7 +52855,6 @@ class Zend_Locale_Data
      * Internal cache for ldml values
      *
      * @var Zend_Cache_Core
-     * @access private
      */
     private static $_cache = null;
 
@@ -52530,8 +52868,7 @@ class Zend_Locale_Data
     /**
      * Internal option, cache disabled
      *
-     * @var    boolean
-     * @access private
+     * @var boolean
      */
     private static $_cacheDisabled = false;
 
@@ -52604,8 +52941,8 @@ class Zend_Locale_Data
      * @param  string $attribute
      * @param  string $value
      * @param  array  $temp
+     * @return bool
      * @throws Zend_Locale_Exception
-     * @access private
      */
     private static function _findRoute($locale, $path, $attribute, $value, &$temp)
     {
@@ -52680,11 +53017,13 @@ class Zend_Locale_Data
     /**
      * Read the right LDML file
      *
-     * @param  string $locale
-     * @param  string $path
-     * @param  string $attribute
-     * @param  string $value
-     * @access private
+     * @param  string      $locale
+     * @param  string      $path
+     * @param  string|bool $attribute
+     * @param  string|bool $value
+     * @param  array       $temp
+     * @return array
+     * @throws Zend_Locale_Exception
      */
     private static function _getFile($locale, $path, $attribute = false, $value = false, $temp = array())
     {
@@ -52700,6 +53039,14 @@ class Zend_Locale_Data
         // 3. -> zh
         // 4. -> root
         if (($locale != 'root') && ($result)) {
+            // Search for parent locale
+            if (false !== strpos($locale, '_')) {
+                $parentLocale = self::getContent($locale, 'parentlocale');
+                if ($parentLocale) {
+                    $temp = self::_getFile($parentLocale, $path, $attribute, $value, $temp);
+                }
+            }
+
             $locale = substr($locale, 0, -strlen(strrchr($locale, '_')));
             if (!empty($locale)) {
                 $temp = self::_getFile($locale, $path, $attribute, $value, $temp);
@@ -52735,8 +53082,9 @@ class Zend_Locale_Data
     /**
      * Internal function for checking the locale
      *
-     * @param string|Zend_Locale $locale Locale to check
+     * @param  string|Zend_Locale $locale Locale to check
      * @return string
+     * @throws Zend_Locale_Exception
      */
     private static function _checkLocale($locale)
     {
@@ -52759,11 +53107,11 @@ class Zend_Locale_Data
     /**
      * Read the LDML file, get a array of multipath defined value
      *
-     * @param  string $locale
-     * @param  string $path
-     * @param  string $value
+     * @param  string      $locale
+     * @param  string      $path
+     * @param  bool|string $value
      * @return array
-     * @access public
+     * @throws Zend_Locale_Exception
      */
     public static function getList($locale, $path, $value = false)
     {
@@ -52784,7 +53132,7 @@ class Zend_Locale_Data
         }
 
         $val = urlencode($val);
-        $id = strtr('Zend_LocaleL_' . $locale . '_' . $path . '_' . $val, array('-' => '_', '%' => '_', '+' => '_'));
+        $id  = self::_filterCacheId('Zend_LocaleL_' . $locale . '_' . $path . '_' . $val);
         if (!self::$_cacheDisabled && ($result = self::$_cache->load($id))) {
             return unserialize($result);
         }
@@ -53409,11 +53757,11 @@ class Zend_Locale_Data
     /**
      * Read the LDML file, get a single path defined value
      *
-     * @param  string $locale
-     * @param  string $path
-     * @param  string $value
+     * @param  string      $locale
+     * @param  string      $path
+     * @param  bool|string $value
      * @return string
-     * @access public
+     * @throws Zend_Locale_Exception
      */
     public static function getContent($locale, $path, $value = false)
     {
@@ -53433,7 +53781,7 @@ class Zend_Locale_Data
             $val = implode('_' , $value);
         }
         $val = urlencode($val);
-        $id = strtr('Zend_LocaleC_' . $locale . '_' . $path . '_' . $val, array('-' => '_', '%' => '_', '+' => '_'));
+        $id  = self::_filterCacheId('Zend_LocaleC_' . $locale . '_' . $path . '_' . $val);
         if (!self::$_cacheDisabled && ($result = self::$_cache->load($id))) {
             return unserialize($result);
         }
@@ -53932,6 +54280,13 @@ class Zend_Locale_Data
                 $temp = self::_getFile($locale, '/ldml/units/unitLength/unit[@type=\'' . $value[0] . '\']/unitPattern[@count=\'' . $value[1] . '\']', '');
                 break;
 
+            case 'parentlocale':
+                if (false === $value) {
+                    $value = $locale;
+                }
+                $temp = self::_getFile('supplementalData', "/supplementalData/parentLocales/parentLocale[contains(@locales, '" . $value . "')]", 'parent', 'parent');
+                break;
+
             default :
                 #require_once 'Zend/Locale/Exception.php';
                 throw new Zend_Locale_Exception("Unknown detail ($path) for parsing locale data.");
@@ -54014,7 +54369,7 @@ class Zend_Locale_Data
     /**
      * Disables the cache
      *
-     * @param unknown_type $flag
+     * @param bool $flag
      */
     public static function disableCache($flag)
     {
@@ -54024,7 +54379,7 @@ class Zend_Locale_Data
     /**
      * Internal method to check if the given cache supports tags
      *
-     * @param Zend_Cache $cache
+     * @return bool
      */
     private static function _getTagSupportForCache()
     {
@@ -54037,6 +54392,25 @@ class Zend_Locale_Data
         }
 
         return self::$_cacheTags;
+    }
+
+    /**
+     * Filter an ID to only allow valid variable characters
+     *
+     * @param  string $value
+     * @return string
+     */
+    protected static function _filterCacheId($value)
+    {
+        return strtr(
+            $value,
+            array(
+                '-' => '_',
+                '%' => '_',
+                '+' => '_',
+                '.' => '_',
+            )
+        );
     }
 }
 /**
@@ -54055,7 +54429,7 @@ class Zend_Locale_Data
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Format
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @version    $Id$
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54069,7 +54443,7 @@ class Zend_Locale_Data
  * @category   Zend
  * @package    Zend_Locale
  * @subpackage Format
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Locale_Format
@@ -54082,7 +54456,7 @@ class Zend_Locale_Format
                                      'fix_date'      => false,
                                      'locale'        => null,
                                      'cache'         => null,
-                                     'disableCache'  => false,
+                                     'disableCache'  => null,
                                      'precision'     => null);
 
     /**
@@ -54192,7 +54566,9 @@ class Zend_Locale_Format
                     break;
 
                 case 'disablecache' :
-                    Zend_Locale_Data::disableCache($value);
+                    if (null !== $value) {
+                        Zend_Locale_Data::disableCache($value);
+                    }
                     break;
 
                 case 'precision' :
@@ -54296,10 +54672,8 @@ class Zend_Locale_Format
         // Get correct signs for this locale
         $symbols = Zend_Locale_Data::getList($options['locale'],'symbols');
         // Change locale input to be default number
-        if ((strpos($input, $symbols['minus']) !== false) ||
-            (strpos($input, '-') !== false)) {
-            $input = strtr($input, array($symbols['minus'] => '', '-' => ''));
-            $input = '-' . $input;
+        if (($input[0] == $symbols['minus']) && ('-' != $input[0])) {
+            $input = '-' . substr($input, 1);
         }
 
         $input = str_replace($symbols['group'],'', $input);
@@ -54789,21 +55163,54 @@ class Zend_Locale_Format
             return null;
         }
 
-        $convert = array('d' => 'dd'  , 'D' => 'EE'  , 'j' => 'd'   , 'l' => 'EEEE', 'N' => 'eee' , 'S' => 'SS'  ,
-                         'w' => 'e'   , 'z' => 'D'   , 'W' => 'ww'  , 'F' => 'MMMM', 'm' => 'MM'  , 'M' => 'MMM' ,
-                         'n' => 'M'   , 't' => 'ddd' , 'L' => 'l'   , 'o' => 'YYYY', 'Y' => 'yyyy', 'y' => 'yy'  ,
-                         'a' => 'a'   , 'A' => 'a'   , 'B' => 'B'   , 'g' => 'h'   , 'G' => 'H'   , 'h' => 'hh'  ,
-                         'H' => 'HH'  , 'i' => 'mm'  , 's' => 'ss'  , 'e' => 'zzzz', 'I' => 'I'   , 'O' => 'Z'   ,
-                         'P' => 'ZZZZ', 'T' => 'z'   , 'Z' => 'X'   , 'c' => 'yyyy-MM-ddTHH:mm:ssZZZZ',
-                         'r' => 'r'   , 'U' => 'U');
-        $values = str_split($format);
-        foreach ($values as $key => $value) {
-            if (isset($convert[$value]) === true) {
-                $values[$key] = $convert[$value];
+        $convert = array(
+            'd' => 'dd'  , 'D' => 'EE'  , 'j' => 'd'   , 'l' => 'EEEE',
+            'N' => 'eee' , 'S' => 'SS'  , 'w' => 'e'   , 'z' => 'D'   ,
+            'W' => 'ww'  , 'F' => 'MMMM', 'm' => 'MM'  , 'M' => 'MMM' ,
+            'n' => 'M'   , 't' => 'ddd' , 'L' => 'l'   , 'o' => 'YYYY',
+            'Y' => 'yyyy', 'y' => 'yy'  , 'a' => 'a'   , 'A' => 'a'   ,
+            'B' => 'B'   , 'g' => 'h'   , 'G' => 'H'   , 'h' => 'hh'  ,
+            'H' => 'HH'  , 'i' => 'mm'  , 's' => 'ss'  , 'e' => 'zzzz',
+            'I' => 'I'   , 'O' => 'Z'   , 'P' => 'ZZZZ', 'T' => 'z'   ,
+            'Z' => 'X'   , 'c' => 'yyyy-MM-ddTHH:mm:ssZZZZ', 'r' => 'r',
+            'U' => 'U',
+        );
+        $escaped = false;
+        $inEscapedString = false;
+        $converted = array();
+        foreach (str_split($format) as $char) {
+            if (!$escaped && $char == '\\') {
+                // Next char will be escaped: let's remember it
+                $escaped = true;
+            } elseif ($escaped) {
+                if (!$inEscapedString) {
+                    // First escaped string: start the quoted chunk
+                    $converted[] = "'";
+                    $inEscapedString = true;
+                }
+                // Since the previous char was a \ and we are in the quoted
+                // chunk, let's simply add $char as it is
+                $converted[] = $char;
+                $escaped = false;
+            } elseif ($char == "'") {
+                // Single quotes need to be escaped like this
+                $converted[] = "''";
+            } else {
+                if ($inEscapedString) {
+                    // Close the single-quoted chunk
+                    $converted[] = "'";
+                    $inEscapedString = false;
+                }
+                // Convert the unescaped char if needed
+                if (isset($convert[$char])) {
+                    $converted[] = $convert[$char];
+                } else {
+                    $converted[] = $char;
+                }
             }
         }
 
-        return implode($values);
+        return implode($converted);
     }
 
     /**
@@ -55328,20 +55735,22 @@ class Zend_Locale_Format
             ? iconv_get_encoding('internal_encoding')
             : ini_get('default_charset');
 
+        return $oenc;
     }
 
     /**
      * Internal method to set the encoding via the ini setting
      * default_charset for PHP >= 5.6 or iconv_set_encoding otherwise.
      *
+     * @param string $encoding
      * @return void
      */
-    protected static function _setEncoding($enc)
+    protected static function _setEncoding($encoding)
     {
         if (PHP_VERSION_ID < 50600) {
-            iconv_set_encoding('internal_encoding', $enc);
+            iconv_set_encoding('internal_encoding', $encoding);
         } else {
-            ini_set('default_charset', $enc);
+            ini_set('default_charset', $encoding);
         }
     }
 }
@@ -55360,7 +55769,7 @@ class Zend_Locale_Format
  *
  * @category   Zend
  * @package    Zend_Locale
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -55374,7 +55783,7 @@ class Zend_Locale_Format
  *
  * @category   Zend
  * @package    Zend_Locale
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 

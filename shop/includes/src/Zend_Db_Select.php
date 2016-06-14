@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Select
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  * @version    $Id$
  */
@@ -38,9 +38,11 @@
  * @category   Zend
  * @package    Zend_Db
  * @subpackage Select
- * @copyright  Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
+
+
 class Zend_Db_Select
 {
 
@@ -154,6 +156,20 @@ class Zend_Db_Select
      * @var array
      */
     protected $_tableCols = array();
+
+
+    /**
+     * List of MySql specific control characters
+     *
+     * @var array
+     */
+    protected $_controlCharacters = array(
+        ';',
+        '--',
+        '#',
+        '/*',
+        '*/',
+    );
 
     /**
      * Class constructor
@@ -509,13 +525,31 @@ class Zend_Db_Select
         }
 
         foreach ($spec as $val) {
-            if (preg_match('/\(.*\)/', (string) $val)) {
+            if (preg_match('/\(.*\)/', (string) $val)
+                && !$this->isContainControlCharacters((string) $val)
+            ) {
                 $val = new Zend_Db_Expr($val);
             }
             $this->_parts[self::GROUP][] = $val;
         }
 
         return $this;
+    }
+
+    /**
+     * Check is expression contains some MySql control characters
+     *
+     * @param string $expression
+     * @return bool
+     */
+    public function isContainControlCharacters($expression) {
+        foreach ($this->_controlCharacters as $controlChar) {
+            if (strpos($expression, $controlChar) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -601,7 +635,9 @@ class Zend_Db_Select
                     $val = trim($matches[1]);
                     $direction = $matches[2];
                 }
-                if (preg_match('/^[\w]*\(.*\)$/', $val)) {
+                if (preg_match('/\(.*\)/', (string) $val)
+                    && !$this->isContainControlCharacters((string) $val)
+                ) {
                     $val = new Zend_Db_Expr($val);
                 }
                 $this->_parts[self::ORDER][] = array($val, $direction);
@@ -805,7 +841,9 @@ class Zend_Db_Select
                  * @see Zend_Db_Select_Exception
                  */
                 #require_once 'Zend/Db/Select/Exception.php';
-                throw new Zend_Db_Select_Exception("You cannot define a correlation name '$correlationName' more than once");
+                throw new Zend_Db_Select_Exception(
+                    "You cannot define a correlation name '$correlationName' more than once"
+                );
             }
 
             if ($type == self::FROM) {
@@ -943,7 +981,9 @@ class Zend_Db_Select
                     $alias = $m[2];
                 }
                 // Check for columns that look like functions and convert to Zend_Db_Expr
-                if (preg_match('/\(.*\)/', $col)) {
+                if (preg_match('/\(.*\)/', (string) $col)
+                    && !$this->isContainControlCharacters((string) $col)
+                ) {
                     $col = new Zend_Db_Expr($col);
                 } elseif (preg_match('/(.+)\.(.+)/', $col, $m)) {
                     $currentCorrelationName = $m[1];
@@ -1096,7 +1136,7 @@ class Zend_Db_Select
             }
         }
 
-        return $sql .= ' ' . implode(', ', $columns);
+        return $sql . ' ' . implode(', ', $columns);
     }
 
     /**
