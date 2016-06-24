@@ -27,6 +27,7 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
     public function preDispatch()
     {
         parent::preDispatch();
+
         $this->_amazonOrderReferenceId = htmlentities($this->getRequest()->getParam('amazon_order_reference_id'));
 
         if (!$this->_amazonOrderReferenceId) {
@@ -41,7 +42,7 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
         $token = htmlentities($this->getRequest()->getParam('access_token'));
 
         if ($token) {
-            $_amazonLogin = Mage::getModel('amazon_login/customer');
+            $_amazonLogin = Mage::getModel('amazon_payments/customer');
 
             if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
                 if (!$this->_getConfig()->isGuestCheckout() || !$this->_getOnepage()->getQuote()->isAllowedGuestCheckout()) {
@@ -62,7 +63,10 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
             // Full-page redirect (user did not sign in using popup)
             if ($this->getRequest()->getParam('nopopup')) {
                 $this->_redirectUrl(Mage::helper('amazon_payments')->getCheckoutUrl(false) . '#access_token=' . $token);
-
+            }
+            // Redirect to account page
+            else if (Mage::app()->getRequest()->getParams('account') == 'redirect') {
+                $this->_redirect('customer/account');
             }
             // Redirect to clean URL
             else if (!$this->getRequest()->getParam('ajax')) {
@@ -83,6 +87,19 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
         Mage::helper('amazon_payments/data')->clearSession();
     }
 
+    /**
+     * Redirect to account
+     */
+    public function accountAction()
+    {
+        // User logged in at order details page and wants to update payment method from async decline
+        if ($orderIdRedirect = Mage::getModel('core/cookie')->get('amazonOrderIdRedirect')) {
+            Mage::getModel('core/cookie')->delete('amazonOrderIdRedirect');
+            $this->_redirect('sales/order/view/order_id/' . $orderIdRedirect);
+        } else {
+            $this->_redirect('customer/account');
+        }
+    }
 
     /**
      * Validate ajax request and redirect on failure
@@ -203,6 +220,7 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
                 'lastname'    => $lastName,
                 'street'      => array($address->getAddressLine1(), $address->getAddressLine2()),
                 'city'        => $address->getCity(),
+                'region'      => $address->getStateOrRegion(),
                 'region_id'   => $regionId,
                 'postcode'    => $address->getPostalCode(),
                 'country_id'  => $address->getCountryCode(),
@@ -218,13 +236,13 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
             // Set billing address (if allowed by scope)
             if ($orderReferenceDetails->getBillingAddress()) {
                 $billing = $orderReferenceDetails->getBillingAddress()->getPhysicalAddress();
-                $data['use_for_shipping'] = false;
+                //$data['use_for_shipping'] = false;
 
                 $name      = $billing->getName();
                 $firstName = substr($name, 0, strrpos($name, ' '));
                 $lastName  = substr($name, strlen($firstName) + 1);
 
-                $regionModel = Mage::getModel('directory/region')->loadByCode($address->getStateOrRegion(), $address->getCountryCode());
+                $regionModel = Mage::getModel('directory/region')->loadByCode($billing->getStateOrRegion(), $billing->getCountryCode());
                 $regionId    = $regionModel->getId();
 
                 $dataBilling = array(
@@ -232,6 +250,7 @@ abstract class Amazon_Payments_Controller_Checkout extends Mage_Checkout_Control
                     'lastname'    => $lastName,
                     'street'      => array($billing->getAddressLine1(), $billing->getAddressLine2()),
                     'city'        => $billing->getCity(),
+                    'region'      => $billing->getStateOrRegion(),
                     'region_id'   => $regionId,
                     'postcode'    => $billing->getPostalCode(),
                     'country_id'  => $billing->getCountryCode(),

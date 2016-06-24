@@ -37,9 +37,6 @@ class Amazon_Payments_Model_Config
     const CONFIG_XML_PATH_BUTTON_SIZE    = 'payment/amazon_payments/button_size';
     const CONFIG_XML_PATH_BUTTON_BADGE   = 'payment/amazon_payments/button_badge';
 
-    const CONFIG_XML_PATH_LOGIN_ENABLED  = 'amazon_login/settings/enabled';
-
-
     /**
      * Retrieve config value for store by path
      *
@@ -89,7 +86,7 @@ class Amazon_Payments_Model_Config
      */
     public function isGuestCheckout($store = null)
     {
-        return ! (bool) $this->_getStoreConfig(self::CONFIG_XML_PATH_LOGIN_ENABLED, $store);
+        return false;
     }
 
     /**
@@ -122,7 +119,7 @@ class Amazon_Payments_Model_Config
      */
     public function getClientSecret($store = null)
     {
-        return trim($this->_getStoreConfig(self::CONFIG_XML_PATH_CLIENT_SECRET, $store));
+        return Mage::helper('core')->decrypt(trim($this->_getStoreConfig(self::CONFIG_XML_PATH_CLIENT_SECRET, $store)));
     }
 
     /**
@@ -144,7 +141,7 @@ class Amazon_Payments_Model_Config
      */
     public function getAccessKey($store = null)
     {
-        return trim($this->_getStoreConfig(self::CONFIG_XML_PATH_ACCESS_KEY, $store));
+        return $this->_getStoreConfig(self::CONFIG_XML_PATH_ACCESS_KEY, $store);
     }
 
     /**

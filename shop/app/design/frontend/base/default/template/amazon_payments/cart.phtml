@@ -18,7 +18,7 @@
 <div class="cart">
     <div class="page-title title-buttons">
         <?php if(!$this->hasError()): ?>
-        <ul class="checkout-types asdf">
+        <ul class="checkout-types">
         <?php foreach ($this->getMethods('top_methods') as $method): ?>
             <?php if ($methodHtml = $this->getMethodHtml($method)): ?>
             <li><?php echo $methodHtml; ?></li>

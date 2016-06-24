@@ -159,7 +159,7 @@ class Amazon_Payments_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function switchOnepageLoginTemplateIf($amazonTemplate, $defaultTemplate)
     {
-        if ($this->getConfig()->isCheckoutOnepage()) {
+        if ($this->isEnabled()) {
             return $amazonTemplate;
         } else {
             return $defaultTemplate;
@@ -167,11 +167,21 @@ class Amazon_Payments_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Is Payment Method enabled?
+     */
+    public function isEnabled()
+    {
+        return $this->getConfig()->isEnabled();
+    }
+
+    /**
      * Show modal?
      */
     public function showModal()
     {
-        return (Mage::app()->getRequest()->getParam('amazon_modal') && $this->getConfig()->isCheckoutModal());
+        return (Mage::app()->getRequest()->getParam('amazon_modal')
+            && !Mage::app()->getRequest()->getParam('ajax')
+            && $this->getConfig()->isCheckoutModal());
     }
 
     /**
@@ -183,4 +193,66 @@ class Amazon_Payments_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return ($this->getConfig()->isButtonBadgeEnabled() && $this->getConfig()->isEnabled());
     }
+
+    /**
+     * Retrieve customer verify url
+     *
+     * @return string
+     */
+    public function getVerifyUrl()
+    {
+        return $this->_getUrl('amazon_payments/customer/verify');
+    }
+
+    /**
+     * Retrieve Amazon Profile in session
+     */
+    public function getAmazonProfileSession()
+    {
+        return Mage::getSingleton('customer/session')->getAmazonProfile();
+    }
+
+    /**
+     * Retreive additional login access scope
+     */
+    public function getAdditionalScope()
+    {
+        $scope = trim(Mage::getStoreConfig('amazon_login/settings/additional_scope'));
+        return ($scope) ? ' ' . $scope : '';
+    }
+
+    /**
+     * Return login authorize URL
+     *
+     * @return string
+     */
+    public function getLoginAuthUrl()
+    {
+        return $this->_getUrl('amazon_payments/customer/authorize', array('_forced_secure' => true));
+    }
+
+    /**
+     * Is login a popup or full-page redirect?
+     */
+    public function isPopup()
+    {
+        return (Mage::getStoreConfig('amazon_login/settings/popup'));
+    }
+
+    /**
+     * Get config by website or store admin scope
+     */
+    public function getAdminConfig($path)
+    {
+        if ($storeCode = Mage::app()->getRequest()->getParam('store')) {
+            return Mage::getStoreConfig($path, $storeCode);
+        }
+        else if ($websiteCode = Mage::app()->getRequest()->getParam('website')) {
+            return Mage::app()->getWebsite($websiteCode)->getConfig($path);
+        }
+        else {
+            return Mage::getStoreConfig($path);
+        }
+    }
+
 }

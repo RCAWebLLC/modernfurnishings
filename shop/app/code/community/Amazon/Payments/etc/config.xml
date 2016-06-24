@@ -10,8 +10,12 @@
 <config>
     <modules>
         <Amazon_Payments>
-            <version>1.3.0</version>
+            <version>1.4.0</version>
         </Amazon_Payments>
+        <Amazon_Login>
+            <!-- Disable legacy module -->
+            <active>false</active>
+        </Amazon_Login>
     </modules>
     <global>
         <blocks>
@@ -22,7 +26,16 @@
         <models>
             <amazon_payments>
                 <class>Amazon_Payments_Model</class>
+                <resourceModel>login_mysql4</resourceModel>
             </amazon_payments>
+            <login_mysql4>
+                <class>Amazon_Payments_Model_Resource</class>
+                <entities>
+                    <login>
+                        <table>amazon_login</table>
+                    </login>
+                </entities>
+            </login_mysql4>
             <sales>
                 <rewrite>
                     <order_creditmemo>Amazon_Payments_Model_Order_Creditmemo</order_creditmemo>
@@ -34,14 +47,26 @@
                 <class>Amazon_Payments_Helper</class>
             </amazon_payments>
         </helpers>
-
+        <template>
+            <email>
+               <amazon_payments_async_decline_soft>
+                   <label>Amazon Payments Async Decline (Soft)</label>
+                   <file>amazon_payments_async_decline_soft.html</file>
+                   <type>html</type>
+               </amazon_payments_async_decline_soft>
+               <amazon_payments_async_decline_hard>
+                   <label>Amazon Payments Async Decline (Hard)</label>
+                   <file>amazon_payments_async_decline_hard.html</file>
+                   <type>html</type>
+               </amazon_payments_async_decline_hard>
+            </email>
+        </template>
         <rewrite>
             <amazon_payments_checkout>
                 <from><![CDATA[#^/checkout/amazon_payments#]]></from>
                 <to>/amazon_payments/checkout</to>
             </amazon_payments_checkout>
         </rewrite>
-
         <resources>
             <payments_setup>
                 <setup>
@@ -53,7 +78,6 @@
                 </connection>
             </payments_setup>
         </resources>
-
     </global>
     <admin>
         <routers>
@@ -61,6 +85,7 @@
                 <args>
                     <modules>
                         <Amazon_Payments after="Mage_Adminhtml">Amazon_Payments_Adminhtml</Amazon_Payments>
+                        <Amazon_Simplepath after="Mage_Adminhtml">Amazon_Simplepath_Adminhtml</Amazon_Simplepath>
                     </modules>
                 </args>
             </adminhtml>
@@ -83,14 +108,25 @@
                     </amazon_payments>
                 </observers>
             </adminhtml_widget_container_html_before>
+            <sales_order_save_commit_after>
+                <observers>
+                    <amazon_payments_observer>
+                        <class>Amazon_Payments_Model_Observer_Order</class>
+                        <method>closeAmazonOrder</method>
+                    </amazon_payments_observer>
+                </observers>
+            </sales_order_save_commit_after>
         </events>
     </adminhtml>
-
     <frontend>
         <secure_url>
             <cart_updatepost>/checkout/cart/updatePost</cart_updatepost>
+            <cart_couponpost>/checkout/cart/couponPost</cart_couponpost>
+            <cart_estimatepost>/checkout/cart/estimatePost</cart_estimatepost>
             <checkout_amazon>/checkout/amazon_payments</checkout_amazon>
             <amazon_checkout>/amazon_payments/checkout</amazon_checkout>
+            <simplepath>/amazon_payments/simplepath</simplepath>
+            <amazon_login_verify>/amazon_payments/customer/verify</amazon_login_verify>
         </secure_url>
         <routers>
             <amazon_payments>
@@ -143,13 +179,13 @@
             </custom_quote_process>
         </events>
     </frontend>
-
     <default>
         <payment>
             <amazon_payments>
-                <title>Amazon Payments</title>
+                <title>Login and Pay with Amazon</title>
                 <model>amazon_payments/paymentMethod</model>
                 <payment_action>authorize_capture</payment_action>
+                <checkout_page>amazon</checkout_page>
                 <show_pay_cart>1</show_pay_cart>
                 <order_status>processing</order_status>
                 <active>1</active>
@@ -158,10 +194,17 @@
                 <button_color>Gold</button_color>
                 <button_size>medium</button_size>
                 <button_badge>1</button_badge>
+                <popup>1</popup>
+                <access_secret backend_model="adminhtml/system_config_backend_encrypted" />
+                <client_secret backend_model="adminhtml/system_config_backend_encrypted" />
             </amazon_payments>
         </payment>
+        <amazon_login>
+            <settings>
+                <popup>1</popup>
+            </settings>
+        </amazon_login>
     </default>
-
     <crontab>
         <jobs>
             <amazon_payments_async>
@@ -170,5 +213,4 @@
             </amazon_payments_async>
         </jobs>
     </crontab>
-
 </config>
