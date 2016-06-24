@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+
+    <!--
+    Default layout, loads most of the pages
+    -->
+    <default>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/magehit_callforprice/callforprice.js</name></action>
+            <!--<action method="addJs"><script>magehit_callforprice/jquery-1.9.0.min.js</script></action>-->
+            <action method="addJs"><script>magehit_callforprice/jquery.fancybox.js</script></action>
+            <action method="addJs"><script>magehit_callforprice/jquery.fancybox.pack.js</script></action>
+            <action method="addJs"><script>magehit_callforprice/jquery.mousewheel-3.0.6.pack.js</script></action>
+            <action method="addJs"><script>magehit_callforprice/jquery.noconflict.js</script></action>
+            <action method="addCss"><stylesheet>css/magehit_callforprice/callforprice.css</stylesheet></action>
+            <action method="addCss"><stylesheet>css/magehit_callforprice/jquery.fancybox.css</stylesheet></action>
+        </reference>
+    </default>
+    
+</layout>

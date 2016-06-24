@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <callforprice module="magehit_callforprice" translate="title" >
+            <title>Call For Price</title>
+            <sort_order>100</sort_order>
+            <children>
+                <request module="magehit_callforprice" translate="title" >
+                    <title>Manage Request</title>
+                    <sort_order>0</sort_order>
+                    <action>adminhtml/request</action>
+                </request>
+                <configuration>
+
+                    <title>Configuration</title>
+
+                    <sort_order>50</sort_order>
+
+                    <action>adminhtml/system_config/edit/section/callforprice</action>
+
+                </configuration>
+            </children>
+        </callforprice>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <magehit_callforprice translate="title" module="magehit_callforprice">
+                        <title>CallPrice</title>
+                        <sort_order>1000</sort_order>
+                        <children>
+                            <callforpricebackend translate="title">
+                                <title>Backend Page Title</title>
+                            </callforpricebackend>
+                            <request translate="title">
+                                <title>Manage Request</title>
+                                <sort_order>0</sort_order>
+                            </request>
+                            <configuration>
+
+                                <title>Configuration</title>
+
+                                <sort_order>50</sort_order>
+
+                            </configuration>
+                        </children>
+                    </magehit_callforprice>
+                    <system>
+
+                        <children>
+
+                            <config>
+
+                                <children>
+
+                                    <callforprice translate="title" module="magehit_callforprice">
+
+                                        <title>Call For Price</title>
+
+                                    </callforprice>
+
+                                </children>
+
+                            </config>
+
+                        </children>
+
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
