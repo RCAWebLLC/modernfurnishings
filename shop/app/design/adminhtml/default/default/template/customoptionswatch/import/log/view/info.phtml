@@ -1,0 +1,33 @@
+<?php
+$_log = $this->getLog();
+$logDate = $this->formatDate($_log->getCreated(), 'medium', true);
+?>
+<div class="box-left">
+    <!--Log Information-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-account"><?php echo Mage::helper('custom_option_swatch')->__('Custom Option Swatch Log # %s', $_log->getId()) ?></h4>
+        </div>
+        <div class="fieldset">
+            <table cellspacing="0" class="form-list">
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('custom_option_swatch')->__('Log Date') ?></label></td>
+                    <td class="value"><strong><?php echo $logDate  ?></strong></td>
+                </tr>
+
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('custom_option_swatch')->__('Num Submited') ?></label></td>
+                    <td class="value"><strong><span id="order_status"><?php echo $_log->getNumSubmited()  ?></span></strong></td>
+                </tr>
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('custom_option_swatch')->__('Num Processed') ?></label></td>
+                    <td class="value"><strong><?php echo $_log->getNumProcessed()  ?></strong></td>
+                </tr>
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('custom_option_swatch')->__('Notes') ?></label></td>
+                    <td class="value"><strong><?php echo nl2br($_log->getNotes());  ?></strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <adminhtml_request_index>
+        <reference name="content">
+            <block type="magehit_callforprice/adminhtml_request" name="request" />
+        </reference>
+    </adminhtml_request_index>
+</layout>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Magehit_CallForPrice>
+      <active>true</active>
+      <codePool>local</codePool>
+      <version>0.1.1</version>
+    </Magehit_CallForPrice>
+  </modules>
+</config>

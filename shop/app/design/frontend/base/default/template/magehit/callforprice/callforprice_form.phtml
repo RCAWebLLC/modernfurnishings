@@ -1,0 +1,69 @@
+<?php $submiturl = $this->helper('magehit_callforprice')->submitformurl();?>
+<?php $customer_id = Mage::getSingleton('customer/session')->getCustomer()->getId();
+ if($customer_id!="")
+ {
+     $customerData = Mage::getModel('customer/customer')->load($customer_id);
+
+ }
+ 
+?>
+<div class="callprice_request_form">
+    <form action="<?php echo $this->getFormAction() ?>" name="cp_form" id="cp_form" method="post">
+    <div class="fieldset">
+        <ul class="form-list products-list">
+             <li class="fields">
+                <div class="field" style="float: left;">
+                    <a href="<?php echo $product->getProductUrl() ?>" style="width: 15%;" title="<?php echo $this->stripTags($this->getImageLabel($product, 'small_image'), null, true) ?>" class="product-image">
+                    <?php $_imgSize = 50; ?>
+                        <img id="product-collection-image-<?php echo $product->getId(); ?>"
+                         src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->keepFrame(false)->resize($_imgSize); ?>"
+                         alt="<?php echo $this->stripTags($this->getImageLabel($product, 'small_image'), null, true) ?>" />
+                    </a>
+                    <div class="product-shop" style="width: 85%;">
+                        <div class="product-name">
+                            <span class="h1" style="border-bottom: none;"><?php echo $product->getName() ?></span>
+                        </div>
+                        <p><?php echo substr($product->getShortDescription(),0,96); ?></p>
+                    </div>
+                </div>
+            
+                <div class="field">
+                    <label class="required" for="name"><em>*</em><?php echo $this->__('Name') ?></label>
+                    <div class="input-box">
+                        <input id="name" style="float:left;width: 80%;" name="name" type="text" class="input-text required-entry" value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getName() ?>"/>
+                    </div>
+                </div>
+                <div class="field">              
+                    <label class="required" for="email"><em>*</em><?php echo $this->__('Email') ?></label>
+                    <div class="input-box">
+                        <input id="email" style="float:left;width: 80%;" name="email" type="text" class="input-text required-entry validate-email" value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getEmail() ?>"/>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="required" for="telephone"><em>*</em><?php echo $this->__('Telephone') ?></label>
+                    <div class="input-box">
+                        <input id="telephone" style="float:left;width: 80%;" name="telephone" type="text" class="input-text required-entry " value="<?php echo Mage::getSingleton('customer/session')->getCustomer()->getTelephone() ?>"/>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="required" for="comment"><em>*</em><?php echo $this->__('Do you have a general remark with this Quote Request?') ?></label>
+                    <div class="input-box">
+                        <textarea rows="3" style="float:left;width: 80%;" cols="5" class="required-entry input-text" title="details" id="details" name="details"></textarea>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div>
+            <button type="button" style="float: left" class="button" onclick="if(dataForm.validator && dataForm.validator.validate()){submitcallforpriceform(this.form,'<?php echo $submiturl?>');}"><span><span><?php echo $this->__('Submit Quote Request') ?></span></span></button>
+            <img class="img_loader_callforprice" id="img_loader_callforprice" src="<?php echo $this->getSkinUrl('images/magehit_callforprice/ajax-loader.gif', array()); ?>" alt="" style="display: none;float: left;margin: 11px;">
+        </div>
+    </div>
+        <input type="hidden" name="product_id" value="<?php echo $product->getId(); ?>"/>
+    </form>
+    <b style="color: #2C26EC" id="messageresponse" style="display: none;" class="messageresponse"></b>
+</div>
+<script type="text/javascript">
+    //<![CDATA[
+    var dataForm = new VarienForm('cp_form', true);
+    //]]>
+</script>

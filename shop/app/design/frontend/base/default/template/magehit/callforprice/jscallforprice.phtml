@@ -1,0 +1,55 @@
+<?php
+$showPrice = 1;  
+$storeId = Mage::app()->getStore()->getStoreId();
+$loadformurl = $this->helper('magehit_callforprice')->loadformurl();
+$canshow = $this->helper("magehit_callforprice")->showCallForPriceButton($product);
+$enableModule = $this->helper("magehit_callforprice")->enableModule($storeId);
+if($canshow == 1 && $enableModule): ?>
+    <?php $buttonTitle = $this->helper("magehit_callforprice")->getButtonTitle();?>
+    <script type="text/javascript">
+        var buttomHtml = '<div><input type="button" title="<?php echo $buttonTitle ?>" onClick="loadCallForPriceFormFromListProduct(\'<?php echo $loadformurl ?>\',\'<?php echo $product->getId() ?>\')" class="button btcallforprice" value="<?php echo $buttonTitle ?>"></input></div>';
+        var showprice<?php echo $product->getId() ?> = '<?php echo $canshow; ?>';
+        var elementPriceBox = $$('#item_<?php echo $wishId ?> .price-box');
+        var elementCompareListPriceBox = $$('.compare_item_<?php echo $product->getId() ?> .price-box');
+        var elementBtnCart = $$('.my-wishlist #item_<?php echo $wishId ?> .btn-cart');
+        var elementCartCell = $$('.my-wishlist #item_<?php echo $wishId ?> .cart-cell');
+        var elementLinkCartInSidebarWishList = $$('.mini-products-list #wish_item_<?php echo $wishId ?> .link-cart');
+        var elementPriceInSidebarWishList = $$('#product-price-<?php echo $product->getId() ?>-wishlist');
+        var elementBtnCartInCompareList = $$('#product_comparison .compare_item_<?php echo $product->getId() ?> p');
+        
+        var elementProductPrice = $('product-price-<?php echo $product->getId() ?>');
+        //var elementAddAllWishListToCart = $$('.my-wishlist .buttons-set .btn-add');
+        if(showprice<?php echo $product->getId() ?> == '1'){ 
+            if(elementProductPrice) elementProductPrice.remove();
+            if(elementBtnCart) elementBtnCart.invoke('remove');
+            if(elementLinkCartInSidebarWishList) elementLinkCartInSidebarWishList.invoke('remove');
+            if(elementBtnCartInCompareList){
+                elementBtnCartInCompareList.each(function(element){
+                    element.update(buttomHtml);
+                });    
+            }
+            if(elementCompareListPriceBox) elementCompareListPriceBox.invoke('remove');
+            if(elementCartCell){
+                elementCartCell.each(function(element){
+                    element.update(buttomHtml);
+                });    
+            }
+            if(elementPriceBox){
+                elementPriceBox.each(function(element){
+                    element.update(buttomHtml);
+                });
+            }
+            //if(elementCompareListPriceBox){
+//                elementCompareListPriceBox.each(function(element){
+//                    element.update(buttomHtml);
+//                });
+//            }
+            if(elementPriceInSidebarWishList){
+                elementPriceInSidebarWishList.each(function(element){
+                    element.update(buttomHtml);
+                });    
+            }
+        }
+        
+    </script>
+<?php endif; ?>

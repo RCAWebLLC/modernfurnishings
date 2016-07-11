@@ -1,0 +1,54 @@
+<?php
+
+$showPrice = 1;
+$storeId = Mage::app()->getStore()->getStoreId();
+$loadformurl = $this->helper('magehit_callforprice')->loadformurl();
+$canshow = $this->helper("magehit_callforprice")->showCallForPriceButton($product);
+$enableModule = $this->helper("magehit_callforprice")->enableModule($storeId);
+$buttonTitle = $this->helper("magehit_callforprice")->getButtonTitle();
+$productType = $product->getTypeID();
+if($productType =="grouped"){
+	$script = '<script type="text/javascript">';
+	$groups = $product->getTypeInstance(true)->getAssociatedProducts($product);
+	foreach($groups as $_product){
+		$groupedTypeCanShow = $this->helper("magehit_callforprice")->showCallForPriceButton($_product);
+		if($groupedTypeCanShow == 1 && $enableModule){
+			$script .= "var callForPriceBtn_". $_product->getId() ." = '<div class=\"price-box\"><input type=\"button\" title=\"". $buttonTitle ."\" onClick=\"loadCallForPriceFormFromListProduct(\'". $loadformurl ."\',\'". $_product->getId() ."\')\" class=\"button btcallforprice\" value=\"".$buttonTitle ." \"></input></div>';";
+			$script .= 'if($("product-price-'. $_product->getId() .'")) document.getElementById("product-price-'. $_product->getId().'").closest(".price-box").replace(callForPriceBtn_'. $_product->getId() .');';
+			
+		}
+	}
+	$script .="</script>";
+	echo $script;
+}
+if($canshow == 1 && $enableModule): ?>
+    <?php if (!Mage::registry('product')) : ?>
+        <?php if($product->isSaleable()): ?>
+            <div>
+                <input type="button" title="<?php echo $buttonTitle ?>" id="callforprice_btn_<?php echo $product->getId()?>" onClick="loadCallForPriceFormFromListProduct('<?php echo $loadformurl ?>','<?php echo $product->getId() ?>')" class="button btcallforprice" value="<?php echo $buttonTitle ?>"></input>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+    <script type="text/javascript">
+        var buttomHtml = '<div><input type="button" title="<?php echo $buttonTitle ?>" onClick="loadCallForPriceFormFromListProduct(\'<?php echo $loadformurl ?>\',\'<?php echo $product->getId() ?>\')" class="button btcallforprice" value="<?php echo $buttonTitle ?>"></input></div>';
+        var showprice<?php echo $product->getId() ?> = '<?php echo $canshow; ?>';
+        var elementCallForPrice = $('button-callforprice');
+        var elementAddToCartForm = $('product_addtocart_form');
+        var elementBtnCart = $$('.category-products .callforprice-<?php echo $product->getId() ?> .btn-cart');
+        var elementProductPrice = $$('.callforprice-<?php echo $product->getId() ?> .price-box');
+        var elementProductPriceRegular = $('product-price-<?php echo $product->getId() ?>');
+        var elementProductPriceOld = $('old-price-<?php echo $product->getId() ?>');
+        var elementAddToCart = $$('.product-view .add-to-cart');
+        if(showprice<?php echo $product->getId() ?> == '1'){
+            if(elementAddToCartForm) $('product_addtocart_form').setAttribute('action','');  
+            if(elementProductPrice) elementProductPrice.invoke('remove');
+            if(elementProductPriceRegular) elementProductPriceRegular.remove();
+            if(elementProductPriceOld) elementProductPriceOld.remove();
+            if(elementBtnCart) elementBtnCart.invoke('remove');
+            if(elementAddToCart) elementAddToCart.invoke('remove');
+            if(elementCallForPrice) elementCallForPrice.remove('button').insert(buttomHtml);
+            //$$('.price-info .price-box, .grouped-items-table-wrapper .price-box').each(function(s) {s.hide();});
+        }
+        
+    </script>
+<?php endif; ?>

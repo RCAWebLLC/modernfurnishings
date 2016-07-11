@@ -1,0 +1,17 @@
+<h1>Custom Option Swatch Importer</h1>
+<br />
+<p></p>
+
+<form action="<?php echo Mage::helper("adminhtml")->getUrl("custom_option_swatch/adminhtml_import/submit"); ?>"  enctype="multipart/form-data" method="post">
+	<input type="hidden" name="actionId" value="1" />
+	<input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>" />
+        <label>Please select zip file with images <input type="file" name="file" /></label><br />
+        <label>Regular expression <input type="text" name="regex" value="" /></label><br />
+        
+        <label><input type="radio" name="action" value="import">Import new swatches</label><br />
+        <label><input type="radio" name="action" value="update" checked>Update existing one's</label><br />
+	<p>Supported file extension is ".zip".</p>
+        
+	<br /><br />
+	<button type="submit">Import</button>
+</form>
