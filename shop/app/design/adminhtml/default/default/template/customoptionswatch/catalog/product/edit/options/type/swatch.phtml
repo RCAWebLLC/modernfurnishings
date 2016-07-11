@@ -1,0 +1,400 @@
+<?php
+/**
+ * ExtensionsMall
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the ExtensionsMall EULA that is available through 
+ * the world-wide-web at this URL: http://www.extensionsmall.com/license.html
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade the extension
+ * to newer versions in the future. If you wish to customize the extension
+ * for your needs please refer to support@extensionsmall.com for more information.
+ *
+ * @category   ExtensionsMall
+ * @package    ExtensionsMall_CustomOptionSwatch
+ * @author     ExtensionsMall Dev Team
+ * @copyright  Copyright (c) 2015 ExtensionsMall (http://www.extensionsmall.com/)
+ * @license    http://www.extensionsmall.com/license.html
+ */
+?>
+
+<script type="text/javascript">
+//<![CDATA[
+    OptionTemplateSwatch = '<table class="border" cellpadding="0" cellspacing="0">' +
+            '<input type="hidden" class="required-option-swatch-type-rows" name="validation_{{option_id}}_result" value="" >' +
+            '<thead>' +
+            '<tr class="headings">' +
+            '<th class="type-title"><?php echo Mage::helper('catalog')->__('Title') ?> <span class="required">*</span></th>' +
+            '<th class="type-price"><?php echo Mage::helper('catalog')->__('Price') ?></th>' +
+            '<th class="type-type"><?php echo Mage::helper('catalog')->__('Price Type') ?></th>' +
+            '<th class="type-sku"><?php echo Mage::helper('catalog')->__('SKU') ?></th>' +
+            '<th class="type-order"><?php echo Mage::helper('catalog')->__('Sort Order') ?></th>' +
+            '<th class="type-butt last">&nbsp;</th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody id="swatch_option_type_row_{{option_id}}">' +
+            '</tbody>' +
+            '<tfoot>' +
+            '<tr>' +
+            '<td colspan="100" class="a-right"><?php echo $this->getSwatchSelectBox(); ?> <?php echo $this->getAddButtonHtml() ?></td>' +
+            '</tr>' +
+            '</tfoot>' +
+            '</table>' +
+            '<div id="swatch_option_type_grid_selection_{{option_id}}" class="swatch-grid"> &nbsp; </div>';
+
+    OptionTemplateSwatchRow = '<tr id="product_option_{{id}}_swatch_{{swatch_id}}" >' +
+            '<td>' +
+            '<input type="hidden" name="product[options][{{id}}][values][{{select_id}}][option_type_id]" value="{{option_type_id}}">' +
+            '<input type="hidden" class="swatch" name="product[options][{{id}}][values][{{select_id}}][swatch_id]" value="{{swatch_id}}">' +
+            '<input type="hidden" id="product_option_{{id}}_swatch_{{swatch_id}}_is_delete" name="product[options][{{id}}][values][{{select_id}}][is_delete]" value="">' +
+            '{{swatch_preview}}<input style="  margin: 0 10px;vertical-align: top;width: 110px !important;" type="text" class="required-entry input-text swatch-type-title" id="product_option_{{id}}_swatch_{{select_id}}_title" name="product[options][{{id}}][values][{{select_id}}][title]" value="{{name}}">{{checkboxScopeTitle}}</td>' +
+            '<td><input type="text" class="input-text validate-number product-option-price" id="product_option_{{id}}_swatch_{{select_id}}_price" name="product[options][{{id}}][values][{{select_id}}][price]" value="{{price}}"></td>' +
+            '<td><?php echo $this->getPriceTypeSelectHtml() ?>{{checkboxScopePrice}}</td>' +
+            '<td><input type="text" class="input-text" name="product[options][{{id}}][values][{{select_id}}][sku]" value="{{sku}}"></td>' +
+            '<td><input type="text" class="validate-zero-or-greater input-text" name="product[options][{{id}}][values][{{select_id}}][sort_order]" value="{{sort_order}}"></td>' +
+            '<td class="last"><span title="Delete row"><?php echo $this->getDeleteButtonHtml() ?></span></td>' +
+            '</tr>';
+
+    swatchOptionType = {
+        div: 'swatch_option_type_row',
+        itemCount: 0,
+        templateSyntax: /(^|.|\r|\n)({{(\w+)}})/,
+        templateText: OptionTemplateSwatchRow,
+        gridSelection: new Hash(),
+        add: function (data) {
+
+            this.template = new Template(this.templateText, this.templateSyntax);
+
+            if (data.target || data.srcElement) {//data is Event (work in IE and Firefox)
+                element = $(Event.findElement(data, 'button'));
+                optionId = element.readAttribute('id').sub('add_swatch_row_button_', '');
+                data = {};
+                data.option_type_id = '-1';
+                data.swatch_id = this.itemCount;
+            } else {
+                optionId = data.option_id;
+                data.swatch_id = data.option_type_id;
+                this.itemCount = data.item_count;
+            }
+
+            data.id = optionId;
+
+            Element.insert($(this.div + '_' + data.id), {'bottom': this.template.evaluate(data)});
+
+            if (data.checkboxScopeTitle) {
+                //set disabled
+                if ($('product_option_' + data.id + '_swatch_' + data.swatch_id + '_title') && data.scopeTitleDisabled) {
+                    $('product_option_' + data.id + '_swatch_' + data.swatch_id + '_title').disable();
+                }
+            }
+            if (data.checkboxScopePrice) {
+                //set disabled
+                if ($('product_option_' + data.id + '_swatch_' + data.swatch_id + '_price') && data.scopePriceDisabled) {
+                    $('product_option_' + data.id + '_swatch_' + data.swatch_id + '_price').disable();
+                    $('product_option_' + data.id + '_swatch_' + data.swatch_id + '_price_type').disable();
+                }
+            }
+
+            if (data.price_type) {
+                $A($('product_option_' + data.id + '_swatch_' + data.swatch_id + '_price_type').options).each(function (option) {
+                    if (option.value == data.price_type)
+                        option.swatched = true;
+                });
+            }
+
+            this.itemCount++;
+            this.bindRemoveButtons();
+        },
+        addRow: function (data) {
+
+//        if (data.target || data.srcElement) {//data is Event (work in IE and Firefox)
+//            element = $(Event.findElement(data, 'button'));
+//            optionId = element.readAttribute('id').sub('add_select_row_button_', '');
+//            data = {};
+//            data.option_type_id = '-1';
+//            data.select_id = this.itemCount;
+//        } else {
+//            optionId = data.option_id;
+//            data.select_id = data.option_type_id;
+//            this.itemCount = data.item_count;
+//        }
+
+            if (data.id) {
+                data.option_type_id = '-1';
+                data.select_id = this.itemCount;
+            } else {
+                data.id = data.option_id;
+                data.select_id = data.option_type_id;
+            }
+
+
+
+
+            this.template = new Template(this.templateText, this.templateSyntax);
+            Element.insert($(this.div + '_' + data.id), {'bottom': this.template.evaluate(data)});
+            this.itemCount++;
+        },
+        remove: function (event) {
+            var element = $(Event.findElement(event, 'tr'));
+            if (element) {
+                $(element.readAttribute('id') + '_is_delete').value = '1';
+                element.addClassName('no-display');
+                element.addClassName('ignore-validate');
+                element.hide();
+            }
+        },
+        bindRemoveButtons: function () {
+            var buttons = $$('.delete-swatch-row');
+            for (var i = 0; i < buttons.length; i++) {
+                if (!$(buttons[i]).binded) {
+                    $(buttons[i]).binded = true;
+                    Event.observe(buttons[i], 'click', this.remove.bind(this));
+                }
+            }
+        },
+        bindAddButton: function ()
+        {
+            var buttons = $$('.add-swatch-row');
+            for (var i = 0; i < buttons.length; i++) {
+                if (!$(buttons[i]).binded) {
+                    $(buttons[i]).binded = true;
+                    // Event.observe(buttons[i], 'click', this.add.bind(this));
+                    Event.observe(buttons[i], 'click', this.loadSwatchGrid.bind(this));
+                }
+            }
+        },
+        loadSwatchGrid: function (data) {
+
+            if (data.target || data.srcElement) {//data is Event (work in IE and Firefox)
+                element = $(Event.findElement(data, 'button'));
+                optionId = element.readAttribute('id').sub('add_swatch_row_button_', '');
+                data = {};
+                data.option_type_id = '-1';
+                data.swatch_id = this.itemCount;
+            } else {
+                optionId = data.option_id;
+                data.swatch_id = data.option_type_id;
+                this.itemCount = data.item_count;
+            }
+
+            data.id = optionId;
+
+
+            var swatches = new Array();
+            var inputs = $A($$('#product_option_' + optionId + '_type_swatches' + ' input.swatch'));
+
+            for (i = 0; i < inputs.length; i++) {
+                if ($(inputs[i].up('tr').id + '_is_delete').value != 1) {
+                    swatches.push(inputs[i].value);
+                }
+            }
+
+            this.gridSelection.set(data.id, $H({}));
+            $('add_swatch_row_button_' + data.id).hide();
+
+            new Ajax.Updater('swatch_option_type_grid_selection_' + data.id, "<?php echo Mage::getUrl('custom_option_swatch/adminhtml_swatch_selection/search') ?>", {
+                method: 'post',
+                parameters: {'index': data.id, 'swatches[]': swatches, 'form_key': FORM_KEY},
+                evalScripts: true
+            });
+
+        },
+        swatchGridRowInit: function (grid, row) {
+
+            var checkbox = $(row).getElementsByClassName('checkbox')[0];
+            var inputs = $(row).getElementsByClassName('input-text');
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].checkbox = checkbox;
+                Event.observe(inputs[i], 'keyup', this.swatchGridRowInputChange.bind(this));
+                Event.observe(inputs[i], 'change', this.swatchGridRowInputChange.bind(this));
+            }
+
+            var id = row.up('table').id.split('_')[6];
+            if (this.gridSelection.get(id).get(checkbox.value)) {
+                checkbox.checked = true;
+            }
+
+        },
+        swatchGridCheckboxCheck: function (grid, element, checked) {
+            var id = element.up('table').id.split('_')[6];
+
+            if (element.value > 0) {
+
+                if (element.checked) {
+
+                    var tr = element.parentNode.parentNode;
+
+                    if (!this.gridSelection.get(id)) {
+                        this.gridSelection.set(id, new Hash());
+                    }
+
+                    this.gridSelection.get(id).set(element.value, $H({}));
+                    this.gridSelection.get(id).get(element.value).set('name', tr.select('td.name')[0].innerHTML.trim());
+                    this.gridSelection.get(id).get(element.value).set('swatch_id', element.value);
+                    this.gridSelection.get(id).get(element.value).set('swatch_preview', "<img src=\"" + tr.select('td.swatch_preview img')[0].src + "\" height='20px' />");
+
+                } else {
+                    this.gridSelection.get(id).unset(element.value);
+                }
+            }
+        },
+        swatchGridRowClick: function (grid, event) {
+            var trElement = Event.findElement(event, 'tr');
+            var isInput = Event.element(event).tagName == 'INPUT';
+            if (trElement) {
+                var checkbox = Element.select(trElement, 'input');
+                if (checkbox[0]) {
+                    var checked = isInput ? checkbox[0].checked : !checkbox[0].checked;
+                    grid.setCheckboxChecked(checkbox[0], checked);
+                }
+            }
+        },
+        swatchGridRowInputChange: function (event) {
+            var element = Event.element(event);
+            if (!element.checkbox.checked) {
+                return;
+            }
+            var id = element.up('table').id.split('_')[4];
+            //alert(id);
+            this.gridSelection.get(id).set(element.value, $H({}));
+            this.gridSelection.get(id).get(element.value).set('name', tr.select('td.name')[0].innerHTML);
+            this.gridSelection.get(id).get(element.value).set('swatch_id', element.value);
+            this.gridSelection.get(id).get(element.value).set('swatch_preview', "<img src=\"" + tr.select('td.swatch_preview')[0].src + "\" height='15px' />");
+            //this.gridSelection.get(id).get(element.value).set('swatch_preview', tr.select('td.swatch_preview')[0].innerHTML);
+        },
+        swatchGridAddSelected: function (event) {
+            var element = Event.findElement(event, 'button');
+            var parts = element.id.split('_');
+
+            $('swatch_option_type_grid_selection_' + parts[2]).innerHTML = '';
+            $('add_swatch_row_button_' + parts[2]).show();
+            /*
+             $$('#product_option_'+parts[2]+'_type_swatches tr').each( function(element, index) {
+             
+             //alert(element + ' ' + index);
+             tempswatchid = element.id.sub('product_option_7_swatch_', '');
+             alert(tempswatchid);
+             }); 
+             */
+//product_option_7_swatch_3
+
+//        this.gridSelection.get(id).get(element.value)
+
+            this.gridSelection.get(parts[2]).each(
+                    function (pair) {
+                        var qty = pair.value.get('qty');
+
+                        var data = {
+                            'name': pair.value.get('name'),
+                            'swatch_preview': pair.value.get('swatch_preview'),
+                            'swatch_id': pair.value.get('swatch_id'), // or can be used  pair.key
+                            'id': parts[2]  // ovo je option_id ali ovde je samo id jer option jos nije snimljen
+                        };
+                        if (element = $('product_option_' + data.id + '_swatch_' + data.swatch_id)) {
+                            $(element.readAttribute('id') + '_is_delete').value = '0';
+                            element.removeClassName('no-display');
+                            element.removeClassName('ignore-validate');
+                            element.show();
+                        } else {
+                            this.addRow(data);
+                        }
+
+                    }.bind(this)
+                    );
+            this.bindRemoveButtons();
+        },
+        initSelect: function () {
+            var selections = $$('.swatch-selection-wrapper');
+
+            for (var i = 0; i < selections.length; i++) {
+                if (!$(selections[i]).binded) {
+                    $(selections[i]).binded = true;
+                    new CustomOptionSwatchSelectBox(selections[i]);
+                    /*
+                     Event.observe(selections[i], 'click', this.openSelect.bind(this, selections[i]));
+                     
+                     selections[i].descendants().each( function(element, index) {
+                     element.isSwatchSelect = true;
+                     });
+                     
+                     $(selections[i]).select('LI').each( function(element, index) {
+                     Event.observe(element, 'click', this.swatchSelected.bind(this, element));
+                     
+                     }.bind(this) );
+                     
+                     Event.observe(selections[i], 'mouseout', this.closeSelect.bind(this, selections[i]));
+                     */
+                }
+            }
+        }
+    }
+
+
+
+    if ($('option_panel_type_swatch')) {
+        $('option_panel_type_swatch').remove();
+    }
+
+    swatchOptionType.bindRemoveButtons();
+
+
+
+    Validation.addAllThese([
+        ['required-option-swatch-type-rows', '<?php echo Mage::helper('catalog')->__('Please add rows to option.') ?>', function (v, elm) {
+                var optionContainerElm = elm.up('div.grid');
+                var swatchTypesFlag = false;
+                swatchTypeElements = $$('#' + optionContainerElm.id + ' .swatch-type-title');
+                swatchTypeElements.each(function (elm) {
+                    if (elm.id && elm.up('tr').visible()) {
+                        swatchTypesFlag = true;
+                    }
+                });
+                elm.advaiceContainer = optionContainerElm.id + '_advice';
+                return swatchTypesFlag;
+            }]]);
+
+    if ($('add_swatch_row_button')) {
+        Event.observe('add_swatch_row_button', 'click', swatchOptionType.add.bind(swatchOptionType));
+    }
+//]]>
+</script>
+<style type="text/css">
+    .swatch-selection-wrapper {
+        cursor:pointer;
+        float:left;
+        position: relative;
+        text-align: left;
+    }
+    .swatch-selection-wrapper div.current-swatch-selection {
+        border:1px solid #FFF;
+        padding:2px 5px;
+        height: 15px;
+        overflow: hidden;
+    }
+    .swatch-selection-wrapper ul {
+        position:absolute;
+        z-index:1;
+    }
+    .swatch-selection-wrapper li {
+        text-align:left;
+        white-space: nowrap;
+        height:30px;
+        display:block;
+        padding:1px;
+    }
+    .swatch-selection-wrapper li img {
+
+    }
+    .swatch-selection-wrapper li span {
+
+        line-height:30px;
+        padding:0px 5px;
+    }
+    .swatch-selection-wrapper li.active,
+    .swatch-selection-wrapper li:hover {
+        background:#AAA;
+    }
+</style>

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+
+<layout>
+    <custom_option_swatch_adminhtml_swatch_index>
+        <reference name="content">
+            <block type="custom_option_swatch/adminhtml_swatches" name="custom_option_swatch" />
+        </reference>
+    </custom_option_swatch_adminhtml_swatch_index>
+    
+    <!--    Swatch import START     -->
+    <custom_option_swatch_adminhtml_import_view>
+        <reference name="content">
+            <block type="custom_option_swatch/adminhtml_import_log_view" name="custom_option_swatch_import_log_view"></block>
+        </reference>
+        <reference name="left">
+            <!--    ExtensionsMall_CustomOptionSwatch_Block_Adminhtml_Import_Log_View_Tabs  -->
+            <block type="custom_option_swatch/adminhtml_import_log_view_tabs" name="custom_option_swatch_import_log_view_tabs">
+                <block type="custom_option_swatch/adminhtml_import_log_view_tab_info" name="custom_option_swatch_import_log_view_tab_info" template="customoptionswatch/import/log/view/info.phtml"></block>
+                <action method="addTab">
+                    <name>info_section</name>
+                    <block>custom_option_swatch_import_log_view_tab_info</block>
+                </action>
+            </block>
+            
+        </reference>
+    </custom_option_swatch_adminhtml_import_view>
+    
+    
+    
+    <custom_option_swatch_adminhtml_import_new>
+        <reference name="content">
+            <block type="custom_option_swatch/adminhtml_import" name="custom_option_swatch_import" template="customoptionswatch/import.phtml"/>
+        </reference> 
+    </custom_option_swatch_adminhtml_import_new>
+    <!--    Swatch import END      -->
+    
+    
+    <adminhtml_custom_option_swatch_edit>
+        <update handle="editor"/>
+        <reference name="head">
+           
+            <action method="addJs">
+                <script>tiny_mce/tiny_mce.js</script>
+            </action>
+            <action method="addJs">
+                <script>mage/adminhtml/wysiwyg/tiny_mce/setup.js</script>
+            </action>
+
+        </reference>
+
+    </adminhtml_custom_option_swatch_edit>
+
+
+    <adminhtml_catalog_product_edit>
+
+        <reference name="head">
+            <!--action method="addJs"><script>custom_option_swatch/adminhtml/widget.js</script></action-->
+            <action method="addCss">
+                <name>custom-option-swatch.css</name>
+            </action>
+        </reference>
+
+    </adminhtml_catalog_product_edit>
+    <adminhtml_catalog_product_new>
+
+        <reference name="head">
+            <!--action method="addJs"><script>custom_option_swatch/adminhtml/widget.js</script></action-->
+            <action method="addCss">
+                <name>custom-option-swatch.css</name>
+            </action>
+        </reference>
+
+    </adminhtml_catalog_product_new>
+</layout>

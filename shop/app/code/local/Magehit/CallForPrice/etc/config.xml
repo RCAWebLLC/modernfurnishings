@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Magehit_CallForPrice>
+            <version>0.1.2</version>
+        </Magehit_CallForPrice>
+    </modules>
+
+    <global>
+        <events>
+            <controller_action_predispatch_wishlist_index_allcart>
+                <observers>
+                    <callforprice_wishlist_index_allcart>
+                        <type>singleton</type>
+                        <class>magehit_callforprice/obsever</class>
+                        <method>checkProductCallForPrice</method>
+                    </callforprice_wishlist_index_allcart>
+                </observers>
+            </controller_action_predispatch_wishlist_index_allcart> 
+        </events>
+        <blocks>
+            <magehit_callforprice>
+                <class>Magehit_CallForPrice_Block</class>
+            </magehit_callforprice>
+        </blocks>
+        <helpers>
+            <magehit_callforprice>
+                <class>Magehit_CallForPrice_Helper</class>
+            </magehit_callforprice>
+        </helpers>
+        <models>
+
+            <magehit_callforprice>
+
+                <class>Magehit_CallForPrice_Model</class>
+
+                <resourceModel>magehit_callforprice_mysql4</resourceModel>
+
+            </magehit_callforprice>
+
+            <magehit_callforprice_mysql4>
+
+                <class>Magehit_CallForPrice_Model_Mysql4</class>
+
+                <entities>
+
+                    <request>
+                        <table>magehit_callforprice_request</table>
+                    </request>                  
+
+                </entities>
+
+            </magehit_callforprice_mysql4>
+        </models>
+        <resources>
+            <magehit_callforprice_setup>
+                <setup>
+                    <module>Magehit_CallForPrice</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </magehit_callforprice_setup>
+            <magehit_callforprice_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </magehit_callforprice_write>
+            <magehit_callforprice_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </magehit_callforprice_read>
+        </resources>
+        <template>
+            <email>
+                <callforprice_config_email_template translate="label" module="magehit_callforprice">
+                    <label>Email From Client</label>
+                    <file>magehit_callforprice/magehit_callforprice_from_client.html</file>
+                    <type>html</type>
+                </callforprice_config_email_template>
+                <callforprice_config_email_template_reply translate="label" module="magehit_callforprice">
+                    <label>Reply from Admin</label>
+                    <file>magehit_callforprice/magehit_callforprice_reply_from_admin.html</file>
+                    <type>html</type>
+                </callforprice_config_email_template_reply>
+            </email>
+        </template>
+    </global>
+
+    <frontend>
+        <routers>
+            <Magehit_CallForPrice>
+                <use>standard</use>
+                <args>
+                    <module>Magehit_CallForPrice</module>
+                    <frontName>callforprice</frontName>
+                </args>
+            </Magehit_CallForPrice>
+        </routers>
+        <layout>
+            <updates>
+                <magehit_callforprice>
+                      <file>magehit_callforprice.xml</file>
+                  </magehit_callforprice>
+              </updates>
+          </layout>
+          <translate>
+              <modules>
+                  <Magehit_CallForPrice>
+                      <files>
+                          <default>Magehit_CallForPrice.csv</default>
+                      </files>
+                  </Magehit_CallForPrice>
+              </modules>
+          </translate>
+      </frontend>
+
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <callforprice after="Mage_Adminhtml">Magehit_CallForPrice_Adminhtml</callforprice>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <magehit_callforprice>
+                    <file>magehit_callforprice.xml</file>
+                </magehit_callforprice>
+          </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Magehit_CallForPrice>
+                    <files>
+                        <default>Magehit_CallForPrice.csv</default>
+                    </files>
+                </Magehit_CallForPrice>
+            </modules>
+        </translate>
+        <acl>
+
+            <resources>
+
+                <all>
+
+                    <title>Allow Everything</title>
+
+                </all>
+
+                <admin>
+
+                    <children>
+
+                        <Magehit_CallForPrice>
+
+                            <title>Call For Price Module</title>
+
+                            <sort_order>10</sort_order>
+
+                        </Magehit_CallForPrice>
+
+                    </children>
+
+                </admin>
+
+            </resources>
+
+        </acl>
+    </adminhtml>
+    <default>
+        <callforprice>
+            <config>
+                <enabled>1</enabled>
+                <call_for_price_button_text>Call For Price</call_for_price_button_text>
+                <email_template>callforprice_config_email_template</email_template>
+                <email_template_reply>callforprice_config_email_template_reply</email_template_reply>
+            </config>
+        </callforprice>
+    </default>
+</config>

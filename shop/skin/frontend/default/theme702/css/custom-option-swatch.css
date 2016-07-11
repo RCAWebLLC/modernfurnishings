@@ -1,0 +1,33 @@
+
+ul.custom-option-swatch {
+    display: block;
+    float: left;
+    margin-bottom: 3px;
+    width:99%;
+}
+
+ul.custom-option-swatch li {
+    float:left;
+    margin:4px;
+    cursor:pointer;
+}
+
+ul.custom-option-swatch li.active {
+    border:1px solid red;
+    margin:3px;
+}
+
+.clearfloat {
+    clear:both;
+    line-height: 0px;
+    height: 0px;
+}
+
+.product-options .custom-option-swatch-wrapper ul.validation-failed {
+    padding:0px;
+}
+
+.custom-option-swatch-option img {
+        width:30px;
+        height:30px;
+}

@@ -1,0 +1,7 @@
+License type: single
+Domains info:
+localhost ;
+127.0.0.1 ;
+
+
+Files info:

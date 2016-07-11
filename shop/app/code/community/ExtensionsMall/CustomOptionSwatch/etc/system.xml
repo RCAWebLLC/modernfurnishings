@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<config>
+    <tabs>
+        <extensionsmall>
+            <label>ExtensionsMall</label>
+            <sort_order>250</sort_order>
+        </extensionsmall>
+    </tabs>
+    <sections>
+        <custom_option_swatch translate="label comment" module="custom_option_swatch">
+            <tab>extensionsmall</tab>
+            <label>Custom Option Swatch</label>
+            <frontend_type>text</frontend_type>
+            <sort_order>20</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label comment" module="custom_option_swatch">
+                    <label>General Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        
+                        <swatch_width translate="label">
+                            <label>Default Swatch Width</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[ <script type="text/javascript"> Event.observe($('custom_option_swatch_general_swatch_width'), 'change', function() { cV=parseInt(this.value); this.value = isNaN(cV) ? 0 : cV; } );</script> <p class="note">Default swatch image width in px</p> ]]>   </comment>
+                        </swatch_width>
+                        <swatch_height translate="label">
+                            <label>Default Swatch Height</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>22</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[ <script type="text/javascript"> Event.observe($('custom_option_swatch_general_swatch_height'), 'change', function() { cV=parseInt(this.value); this.value = isNaN(cV) ? 0 : cV; } );</script> <p class="note">Default swatch image height in px</p> ]]>   </comment>
+                        </swatch_height>
+                        
+                        <checkout_cart_option_value_type translate="label">
+                            <label>Show in Shopping Cart as </label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>custom_option_swatch/system_config_source_shoppingcart_option_value</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+
+                        </checkout_cart_option_value_type>
+						
+                    </fields>
+                </general>
+            </groups>
+        </custom_option_swatch>
+    </sections>
+</config>

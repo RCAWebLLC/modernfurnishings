@@ -1,0 +1,58 @@
+<script type="text/javascript">
+
+/*	$$('.custom-option-swatch-wrapper  input.required-entry ').each( function(element, index) { element.callbackFunction = 'validateCustomOptionSwatch'; });
+	customOptionSwatchPrice = <?php echo Mage::helper('core')->jsonEncode($this->getUpdateOpConfig()) ?>;
+
+	$$('.custom-option-swatch-wrapper ul.custom-option-swatch li').each( function(element, index) {
+		element.observe("click", function() {
+			optionTypeId = this.className.split(' ').first().split('-')[5];
+			optionId = this.up('.custom-option-swatch-wrapper').className.split(' ')[1].split('-')[3];
+
+			$('custom-option-swatch-'+optionId+'-hidden-input').value = optionTypeId;
+			opConfig.config[optionId] = customOptionSwatchPrice[optionId][optionTypeId];
+
+			this.up('ul').select('li.active').each( function(element, index) {  Element.removeClassName(element, 'active'); });
+
+			swatchInfoLabel = this.up('dd').previous().select('label span.info');
+			if (swatchInfoLabel.length) {
+				swatchInfoLabel.first().update(this.down('img').alt);
+			} else {
+				swatchLabel = this.up('dd').previous().select('label');
+				swatchLabel.first().update(swatchLabel.first().innerHTML + ' <span class="info">' + this.down('img').alt + '</span>');
+			}
+
+			Element.addClassName(this, 'active');
+			if (!customOptionSwatchPrice[optionId].getSkipJsReloadPrice) { opConfig.reloadPrice(); }
+
+		});
+	});
+    
+	function validateCustomOptionSwatch(elmId, result){
+		var container = $(elmId).up('div.custom-option-swatch-wrapper').select("ul").first();
+		if (result == 'failed') {
+			container.removeClassName('validation-passed');
+			container.addClassName('validation-failed');
+		} else {
+			container.removeClassName('validation-failed');
+			container.addClassName('validation-passed');
+		}
+	}
+	<?php
+        if ($this->getReloadPrice()) : /* this is used only edit cart product */ ?>
+		$$('.custom-option-swatch-wrapper input.product-custom-option ').each( function(element, index) {
+			optionId = element.id.split('-')[3];
+			opConfig.config[optionId] = customOptionSwatchPrice[optionId][element.value];
+			swatchLabel = element.up('dd').previous().select('label');
+			swatchLabel.first().update(swatchLabel.first().innerHTML + ' <span class="info">' + element.up().down('li.active img').alt + '</span>');
+		});
+
+		opConfig.reloadPrice(); 
+	<?php endif; ?>
+            */
+</script>
+<?php
+if ($this->helper('custom_option_swatch')->hasError()) {
+	echo '<p class="error">' . $this->helper('custom_option_swatch')->getError() . '</p>';
+}
+
+?>

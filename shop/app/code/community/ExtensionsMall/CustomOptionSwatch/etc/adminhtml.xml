@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<config>
+    <menu>
+        <catalog translate="title" module="custom_option_swatch">
+            <children>
+                <custom_option_swatch translate="title" module="custom_option_swatch">
+                    <title>Custom Option Swatch</title>
+                    <sort_order>30</sort_order>
+                    <children>
+                        <custom_option_swatch_images translate="title" module="custom_option_swatch">
+                            <title>Manage Swatch Images</title>
+                            <action>custom_option_swatch/adminhtml_swatch/index</action>
+                            <sort_order>10</sort_order>
+                        </custom_option_swatch_images>
+                        <custom_option_swatch_import translate="title" module="custom_option_swatch">
+                            <title>Import Swatches</title>
+                            <action>custom_option_swatch/adminhtml_import/index</action>
+                            <sort_order>20</sort_order>
+                        </custom_option_swatch_import>
+                    </children>
+                </custom_option_swatch>
+            </children>
+        </catalog>
+    </menu>
+    <acl>
+        <resources>
+            <all>
+                <title>Allow Everything</title>
+            </all>
+            <admin>
+                <children>
+                    <catalog>
+                        <children>
+                            <custom_option_swatch>
+                                <title>Custom Option Swatch</title>
+                                <children>
+                                    <custom_option_swatch_images>
+                                        <title>Manage Swatch Images</title>
+                                    </custom_option_swatch_images>
+                                </children>
+                                <children>
+                                    <custom_option_swatch_import>
+                                        <title>Import Swatches</title>
+                                    </custom_option_swatch_import>
+                                </children>
+                            </custom_option_swatch>
+                        </children>
+                    </catalog>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <custom_option_swatch>
+                                        <title>Custom Option Swatch Settings</title>
+                                    </custom_option_swatch>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+	
+</config>
