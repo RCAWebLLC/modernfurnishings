@@ -160,7 +160,6 @@ Product.Config.prototype.amconfCreateOptionImage = function(option, attributeId,
             jQuery(div).tooltipster({
                 content: jQuery(amcontent),
                 theme: 'tooltipster-light',
-                animation: 'grow',
                 touchDevices: false,
                 position: "top"
             });

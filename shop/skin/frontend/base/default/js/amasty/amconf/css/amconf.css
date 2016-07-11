@@ -1,22 +1,27 @@
+.amtooltip-label {
+	margin:10px 0;
+	margin-bottom:5px;
+	text-align:left !important;
+	display:block;
+}
 .amconf-image{
     margin: 3px;
-    border-radius: 3px;
+    border-radius: 0px;
     cursor: pointer;
 }
 
 .amconf-noimage-div {
     background-color: ghostwhite;
     border: 1px solid black;
-    text-align: center;
     cursor: pointer;
     overflow: hidden;
-    border-radius: 3px;
+    border-radius: 0px;
 }
 
 .amconf-color-container{
     cursor: pointer;
     overflow: hidden;
-    border-radius: 3px;
+    border-radius: 0px;
 }
 
 em{
@@ -59,7 +64,6 @@ em{
 
 .product-image {
     overflow: visible;
-    text-align: center;
     position: relative;
 }
 
@@ -112,10 +116,8 @@ hr.amconf-hr{
 {
     display: inline-block;
     position: relative;
-    text-align: center;
-    margin-right: 5px;
-    margin-bottom: 3px;
- vertical-align: top;
+ margin:4px;
+	vertical-align: top;
 }
 
 .amconf-image-container img, .amconf-image-container div:first-child

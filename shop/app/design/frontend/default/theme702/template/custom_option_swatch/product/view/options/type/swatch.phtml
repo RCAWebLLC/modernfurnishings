@@ -1,0 +1,24 @@
+<?php /* @var $this Mage_Catalog_Block_Product_View_Options_Type_Swatch */ ?>
+<?php
+$_option = $this->getOption();
+$required = '>';
+if ($_option->getIsRequire()) {
+    $required = ' class="required"><em>*</em>';
+}
+?>
+<dt>
+<label<?php echo $required; ?>
+<?php echo $this->htmlEscape($_option->getTitle()) ?>
+    <span class="info"></span>
+</label>
+</dt>
+<dd<?php if ($_option->decoratedIsLast) { ?> class="last"<?php } ?>>
+    <div class="input-box">
+<div id="demo-position-grid"></div>
+<?php echo $this->getValuesHtml() ?> 
+    </div>
+</dd>
+
+<?php #print_r(get_class($this)) ?>
+<?php #echo $this->getMultiselect()  ?> 
+

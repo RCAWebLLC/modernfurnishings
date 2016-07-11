@@ -61,8 +61,10 @@
                     <?php endif; ?>
                 <?php endif; ?> 
             <?php endif; ?> 
-            <?php echo $this->getChildHtml('product_type_data') ?>
-            <?php echo $this->getTierPriceHtml() ?>
+<?php if ($_product->getAttributeText('call_for_price_active') == 'No') : ?>
+         <?php echo $this->getChildHtml('product_type_data'); ?>
+<?php endif; ?>
+ <?php echo $this->getTierPriceHtml() ?>
             <div class="clear"></div>
             <?php if ($_product->getShortDescription()):?>
                 <div class="short-description">
@@ -70,13 +72,21 @@
                     <div class="std" itemprop="description"><?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?></div>
                 </div>
             <?php endif;?>
+<?php if ($_product->getAttributeText('call_for_price_active') == 'Yes') : ?>
+<!--add button callforprice-->
+
+    <div id="button-callforprice" class="button-callforprice"><input type="button" title="Call For Price" onClick="loadCallForPriceFormFromListProduct('https://dev.modernfurnishings.com/callforprice/form/loadform/','<?php echo $_product->getId(); ?>')" class="button btcallforprice" value="Call For Price"></input></div>
+<!--//-->
+<?php endif; ?>
             <div class="clear"></div>
             <?php echo $this->getChildHtml('extrahint') ?>
 
             <?php if (!$this->hasOptions()):?>
                 <div class="add-to-box">
                     <?php if($_product->isSaleable()): ?>
-                        <?php echo $this->getChildHtml('addtocart') ?>
+			<?php if ($_product->getAttributeText('call_for_price_active') == 'No'):?>
+			 <?php echo $this->getChildHtml('addtocart') ?>
+			<?php endif; ?>
                         <?php if( $this->helper('wishlist')->isAllow() || $_compareUrl=$this->helper('catalog/product_compare')->getAddUrl($_product)): ?>
                             <span class="or"><?php echo $this->__('OR') ?></span>
                         <?php endif; ?>
@@ -89,6 +99,12 @@
                     <?php echo $this->getChildHtml('addto') ?>
                 </div>
             <?php endif; ?>
+
+<?php if ($_product->getAttributeText('call_for_price_active') == 'Yes' && $this->hasOptions()):?>
+<div class="add-to-box">
+                    <?php echo $this->getChildHtml('addto') ?>
+                </div>
+<?php endif; ?>
 
             <?php echo $this->getChildHtml('other');?>
             <?php if ($_product->isSaleable() && $this->hasOptions()):?>
@@ -106,9 +122,11 @@
         </div>
         <div class="clearer"></div>
         <?php if ($_product->isSaleable() && $this->hasOptions()):?>
-            <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+           <?php if ($_product->getAttributeText('call_for_price_active') == 'No'):?>
+		 <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+		<?php endif; ?>
         <?php endif;?>
-    </form>
+ </form>
     <script type="text/javascript">
     //<![CDATA[
         var productAddToCartForm = new VarienForm('product_addtocart_form');
@@ -186,4 +204,5 @@
         <?php endif; ?>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
 <?php echo $this->getChildHtml('upsell_products') ?>

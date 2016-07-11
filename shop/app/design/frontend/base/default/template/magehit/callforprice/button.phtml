@@ -46,7 +46,7 @@ if($canshow == 1 && $enableModule): ?>
             if(elementProductPriceOld) elementProductPriceOld.remove();
             if(elementBtnCart) elementBtnCart.invoke('remove');
             if(elementAddToCart) elementAddToCart.invoke('remove');
-            if(elementCallForPrice) elementCallForPrice.insert(buttomHtml);
+            if(elementCallForPrice) elementCallForPrice.remove('button').insert(buttomHtml);
             //$$('.price-info .price-box, .grouped-items-table-wrapper .price-box').each(function(s) {s.hide();});
         }
         

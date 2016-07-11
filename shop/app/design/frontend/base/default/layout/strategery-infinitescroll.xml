@@ -52,7 +52,7 @@
 
         </reference>
         <reference name="before_body_end">
-            <block type="infinitescroll/init" name="infinitescroll_init">
+        <block type="infinitescroll/init" name="infinitescroll_init">
                 <action method="setTemplate">
                     <template>strategery/infinitescroll/init.phtml</template>
                 </action>
