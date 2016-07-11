@@ -13,4 +13,5 @@ cms/system/expressionengine/config/database.php
 cms/system/expressionengine/cache/*
 !cms/system/expressionengine/cache/index.html
 .DS_Store
-
+shop/media/captcha/*
+shop/feeds/*
