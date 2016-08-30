@@ -81,13 +81,11 @@
 			<?php else: ?>
                             <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
                         <?php endif; ?>
-<?php if ($_product->getAttributeText('call_for_price_active') == 'Yes')  :?>
 <?php
     if(Mage::helper('core')->isModuleEnabled('Magehit_CallForPrice')):
         echo $this->helper("magehit_callforprice")->getButtonCallPriceTemplate($_product);
     endif;
 ?>
-<?php endif; ?>
                         <ul class="add-to-links">
                             <?php if ($this->helper('wishlist')->isAllow()) : ?>
     							<li><a title="<?php echo $this->__('Add to Wishlist') ?>" href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist tooltips"><?php echo $this->__('Add to Wishlist') ?></a></li>
@@ -151,13 +149,11 @@
 						</ul>
 					</div>
 				</div>
-<?php if ($_product->getAttributeText('call_for_price_active') == 'Yes')  :?>
 <?php
     if(Mage::helper('core')->isModuleEnabled('Magehit_CallForPrice')):
         echo $this->helper("magehit_callforprice")->getButtonCallPriceTemplate($_product);
     endif;
 ?>
-<?php endif; ?>
                 <?php $_product = Mage::getModel('catalog/product')->load($_product->getId()); ?>
                 <div class="label-product">
                     <?php if($_product->getData('new')){echo '<span class="new">'.$this->__('New').'</span>';  }?>
