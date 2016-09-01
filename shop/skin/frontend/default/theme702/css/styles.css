@@ -3413,3 +3413,6 @@ div.AuthorizeNetSeal{
 iframe{
   border: none;
 }
+.grid-full .level1 .catagory-level1 {
+	font-size: 15px !important;
+}

@@ -26,7 +26,7 @@
     padding: 0px;
     background: #2e2c2c;
 }
-.nav .grid-full > li {}
+.nav .grid-full > li {position:relative;}
 .nav .grid-full > li.parent > a {padding-right: 10px;}
 .nav .grid-full > li:first-child {}
 .nav .grid-full ul li a {
@@ -53,8 +53,8 @@
 }
 .grid-full > li > a {
     font-family: 'Brawler', serif;
-    font-size: 16px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 1em;
     color: #fff;
     text-transform: uppercase;
     display: block;
@@ -105,8 +105,16 @@
     -moz-box-shadow: 0 5px 21px rgba(0,0,0,0.09);
     -webkit-box-shadow:0 5px 21px rgba(0,0,0,0.09);
     display: none;
-    overflow-y: scroll;
+    overflow: hidden;
     max-height: 768px;
+	
+width:730px;
+padding:10px;
+}
+
+.nav-7 .grid-full > li > .level-top {
+	right:0;
+	left:inherit;
 }
 .isStuck .grid-full > li > .level-top {
     top: 41px;
@@ -123,12 +131,17 @@
   left: 0px;
   z-index: 99999;
 }
+.grid-full li.nav-7.parent:hover > .level-top {
+        right:0;
+        left:inherit;
+}
 .grid-full ul ul {
     position: static !important;
     width: 100%;
 }
 .nav .grid-full ul.level2{
     margin: 0px;
+	margin-left:10px;
 }
 .nav li > ul.shown-sub,
 .nav li > div.shown-sub{
@@ -147,7 +160,9 @@
 }
 .grid-full .parent div.level-top > ul.level .level > .catagory_children {
     padding: 40px 0 50px;
-    width: 100% !important;
+    /*width: 100% !important;*/
+padding:10px 0 10px 0;
+width:400px !important;
 }
 
 .grid-full div.level-top ul.level ul.level{
@@ -163,12 +178,12 @@
 }
 .grid-full .level1 .catagory-level1 {
     font-family: 'Brawler', serif;
-    font-size: 26px;
-    line-height: 26px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 16px;
+    line-height: 1em;
     color: #2d2b2c;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     font-weight: normal;
-    text-transform: uppercase;
 }
 .grid-full .level1 .catagory-level1:hover,
 .grid-full .level1.active .catagory-level1 {
@@ -310,12 +325,14 @@
   background: none;
 }
 .grid-full .catagory_children > .level1{
-    width: 25% !important;
+/*    width: 25% !important;
+*/
+width:50% !important;
 }
 .grid-full .column1 .catagory_children .level1 {/* width: 100% !important; */ margin: 0;}
 .grid-full .catagory_children .level1 span{
 	padding: 0px !important;
-    text-transform: uppercase !important;
+    text-transform: none !important;
     text-shadow: none;
     position: relative;
 }
@@ -868,11 +885,11 @@
 }
 
 @media only screen and (min-width: 1200px){
-    .grid-full > li > .level-top > ul{
+/*    .grid-full > li > .level-top > ul{
         width: 1170px !important;
         margin: 0 auto;
         float: none !important;
-    }
+    }*/
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -882,11 +899,11 @@
     .isStuck .grid-full > li > a > span {
       padding: 10px 15px 13px 15px;
     }
-    .grid-full > li > .level-top > ul{
+    /*.grid-full > li > .level-top > ul{
         width: 930px !important;
         margin: 0 auto;
         float: none !important;
-    }
+    }*/
 }
 
 @media only screen and (max-width: 991px) {
@@ -900,4 +917,19 @@
         width: auto;
         background: #2e2c2c;
    }
+}
+.static-block-right{
+padding: 10px 20px 0 0;
+}
+.static-block-right img {
+	width:100%;
+	height:auto;
+}
+.cms-home .grid-full > li > .level-top{
+top:49px;
+}
+@media (min-width: 1401px) {
+.cms-home .grid-full > li > .level-top {
+top:76px
+}
 }
