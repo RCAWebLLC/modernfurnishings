@@ -156,7 +156,7 @@ padding:10px;
     padding: 0;
     float: left;
     top: 0px;
-    width: 100%;
+    width: 100% !important;
 }
 .grid-full .parent div.level-top > ul.level .level > .catagory_children {
     padding: 40px 0 50px;
