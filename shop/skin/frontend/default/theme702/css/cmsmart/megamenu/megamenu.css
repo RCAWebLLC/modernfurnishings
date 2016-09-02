@@ -108,13 +108,16 @@
     overflow: hidden;
     max-height: 768px;
 	
-width:730px;
-padding:10px;
+width:750px;
+padding:0px;
 }
 
-.nav-7 .grid-full > li > .level-top {
-	right:0;
-	left:inherit;
+li.edge > .level-top {
+	right:0 !important;
+	left:inherit !important;
+}
+li.edge.initial {
+position:initial;
 }
 .isStuck .grid-full > li > .level-top {
     top: 41px;
@@ -156,19 +159,19 @@ padding:10px;
     padding: 0;
     float: left;
     top: 0px;
-    width: 100% !important;
+/*    width: 100% !important;*/
 }
 .grid-full .parent div.level-top > ul.level .level > .catagory_children {
     padding: 40px 0 50px;
     /*width: 100% !important;*/
 padding:10px 0 10px 0;
-width:400px !important;
+/*width:400px !important;*/
 }
 
 .grid-full div.level-top ul.level ul.level{
     float: left;
     width: 100%;
-    margin: 0px;
+    margin: 10px;
     padding: 0;
     height:  auto;
 }
@@ -327,7 +330,13 @@ width:400px !important;
 .grid-full .catagory_children > .level1{
 /*    width: 25% !important;
 */
-width:50% !important;
+width:48% !important;
+}
+.column2 .catagory_children li.level1 {
+        width: 48% !important;
+}
+.column3 .catagory_children li.level1 {
+	width: 33% !important;
 }
 .grid-full .column1 .catagory_children .level1 {/* width: 100% !important; */ margin: 0;}
 .grid-full .catagory_children .level1 span{
@@ -894,7 +903,7 @@ width:50% !important;
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
     .nav,
-    .catagory_children {width: auto !important;}
+    .catagory_children {/*width: auto !important;*/}
     .grid-full > li > a {font-size: 13px;}
     .isStuck .grid-full > li > a > span {
       padding: 10px 15px 13px 15px;
@@ -919,7 +928,8 @@ width:50% !important;
    }
 }
 .static-block-right{
-padding: 10px 20px 0 0;
+/*padding: 10px 20px 0 0;*/
+margin-left:10px;
 }
 .static-block-right img {
 	width:100%;

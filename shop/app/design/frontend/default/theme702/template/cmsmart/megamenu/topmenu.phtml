@@ -70,3 +70,30 @@
             </div>
         </div>
 </div> <!-- end: nav-container -->
+<script>
+jQuery().ready(function($) {
+	$("#nav li").on('mouseover', function (e) {
+	if ($('.level-top', this).length) {
+            var elm = $('.level-top:first', this);
+            var off = elm.offset();
+            var l = off.left;
+            var w = elm.width();
+            var docH = $(".wrapper").height();
+            var docW = $(".wrapper").width();
+            var isEntirelyVisible = (l + w <= docW);
+	console.log(l+w);
+if ( l+w < 750 ) {
+	$(this).addClass('initial');
+}
+            if (!isEntirelyVisible) {
+                $(this).addClass('edge');
+            } else {
+                //$(this).removeClass('edge');
+            }
+        }
+    });
+});
+	jQuery(window).on('resize', function() {
+		jQuery('#nav li').removeClass('edge').removeClass('initial');
+	});
+</script>
