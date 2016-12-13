@@ -1,1 +1,93 @@
-eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('v=11.10();v.12={13:4(){},T:4(i){6 2=i.2();2.8(\'z\').H().h(4(q){q.m(\'E\')});2.8(\'z\').n(\'E\');7.D(2);7.G(2);7.I(2)},G:4(2){y=2.8(\'z\').F.s(\' \').o().s(\'-\')[5];d=2.8(\'.c-b-9-r\').F.s(\' \')[1].s(\'-\')[3];$(\'c-b-9-\'+d+\'-16-N\').Y=y;7.g.V[d]=7.j[d][y];p(!7.j[d].W){7.g.1a()}},D:4(2){6 w=2.w;k=2.8(\'1i\').1h().t(\'.1j\');k.o().1k(w)},I:4(2){6 k=2.C(\'A-9-1l\');p($$(\'.K-a-J\').L>0){6 u=$$(\'.K-a-J\').o().t(\'[19="\'+k+\'"]\');p(u.L>0){6 B=1c.C(u[0],\'A-a-P\');6 a=$(\'a-\'+B).n(\'M\');a.H().h(4(q){q.m(\'M\')})}}}};1g.U("18:1d",4(){6 l=1e v();l.j=j;l.g=g;$$(\'.c-b-9-r 1b\').h(4(2){2.U(\'1f\',4(i){l.T(i)})});$$(\'.c-b-9-r  N.1m-17 \').h(4(2,P){2.X=\'Q\'})});4 Q(R,O){6 e=$(R).8(\'Z.c-b-9-r\').t("14").o();p(O===\'x\'){e.m(\'f-S\');e.n(\'f-x\')}15{e.m(\'f-x\');e.n(\'f-S\')}}',62,85,'||element||function||var|this|up|swatch|image|option|custom|optionId|container|validation|opConfig|each|event|customOptionSwatchPrice|swatchLabel|CustomOptionSwatchObject|removeClassName|addClassName|first|if|item|wrapper|split|select|thumb|CustomOptionSwatch|alt|failed|optionTypeId|li|data|thumbIndex|readAttribute|setSwatchLabel|active|className|updatePrice|siblings|updateImage|thumbs|product|length|visible|input|result|index|validateCustomOptionSwatch|elmId|passed|swatchClick|observe|config|getSkipJsReloadPrice|callbackFunction|value|div|create|Class|prototype|initialize|ul|else|hidden|entry|dom|title|reloadPrice|img|Element|loaded|new|click|document|previous|dd|info|update|label|required'.split('|'),0,{}))
+/**
+ * ExtensionsMall
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the ExtensionsMall EULA that is available through
+ * the world-wide-web at this URL: http://www.extensionsmall.com/license.html
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade the extension
+ * to newer versions in the future. If you wish to customize the extension
+ * for your needs please refer to support@extensionsmall.com for more information.
+ *
+ * @category   ExtensionsMall
+ * @package    ExtensionsMall_CustomOptionSwatch
+ * @author     ExtensionsMall Dev Team
+ * @copyright  Copyright (c) 2015 ExtensionsMall (http://www.extensionsmall.com/)
+ * @license    http://www.extensionsmall.com/license.html
+ */
+CustomOptionSwatch = Class.create();
+CustomOptionSwatch.prototype = {
+    initialize: function () {
+    },
+    swatchClick: function (event) {
+        var element = event.element();
+        element.up('li').siblings().each(function (item) {
+            item.removeClassName('active');
+        });
+        element.up('li').addClassName('active');
+        this.setSwatchLabel(element);
+
+        this.updatePrice(element);
+        this.updateImage(element);
+    },
+    updatePrice: function (element) {
+        optionTypeId = element.up('li').className.split(' ').first().split('-')[5];
+        optionId = element.up('.custom-option-swatch-wrapper').className.split(' ')[1].split('-')[3];
+        $('custom-option-swatch-' + optionId + '-hidden-input').value = optionTypeId;
+        this.opConfig.config[optionId] = this.customOptionSwatchPrice[optionId][optionTypeId];
+        if (!this.customOptionSwatchPrice[optionId].getSkipJsReloadPrice) {
+            this.opConfig.reloadPrice();
+        }
+    },
+    setSwatchLabel: function (element) {
+        var alt = element.alt;
+        swatchLabel = element.up('dd').previous().select('.info');
+        swatchLabel.first().update(alt);
+    },
+    updateImage: function (element) {
+        var swatchLabel = element.readAttribute('data-swatch-label');
+        if ($$('.product-image-thumbs').length > 0){
+            var thumb = $$('.product-image-thumbs').first().select('[title="' + swatchLabel + '"]');
+            if (thumb.length > 0) {
+                var thumbIndex = Element.readAttribute(thumb[0], 'data-image-index');
+                var image = $('image-' + thumbIndex).addClassName('visible');
+                image.siblings().each(function (item) {
+                    item.removeClassName('visible');
+                });
+            }
+        }
+    }
+};
+
+document.observe("dom:loaded", function () {
+    var CustomOptionSwatchObject = new CustomOptionSwatch();
+    if (typeof(customOptionSwatchPrice) != "undefined") {
+        CustomOptionSwatchObject.customOptionSwatchPrice = customOptionSwatchPrice;
+    }
+    if (typeof(opConfig) != "undefined") {
+        CustomOptionSwatchObject.opConfig = opConfig;
+    }
+
+    $$('.custom-option-swatch-wrapper img').each(function (element) {
+        element.observe('click', function (event) {
+            CustomOptionSwatchObject.swatchClick(event);
+        });
+    });
+    $$('.custom-option-swatch-wrapper  input.required-entry ').each(function (element, index) {
+        element.callbackFunction = 'validateCustomOptionSwatch';
+    });
+});
+
+function validateCustomOptionSwatch(elmId, result) {
+    var container = $(elmId).up('div.custom-option-swatch-wrapper').select("ul").first();
+    if (result === 'failed') {
+        container.removeClassName('validation-passed');
+        container.addClassName('validation-failed');
+    } else {
+        container.removeClassName('validation-failed');
+        container.addClassName('validation-passed');
+    }
+}
