@@ -59,7 +59,7 @@ jQuery(document).ready(function(){
 		jQuery.fn.slideFadeToggle = function(speed, easing, callback) {
 		  return this.animate({opacity: 'toggle', height: 'toggle'}, speed, easing, callback);
 		};
-		jQuery('.box-collateral').not('.box-up-sell').find('h2').append('<span class="toggle"></span>');
+		jQuery('.box-collateral').not('.box-up-sell').not('#amfile-list').find('h2').append('<span class="toggle"></span>');
 		jQuery('.form-add').find('.box-collateral-content').css({'display':'block'}).parents('.form-add').find('> h2 > span').addClass('opened');
 
 		jQuery('.box-collateral > h2').click(function(){
