@@ -328,7 +328,7 @@
 }
 .camera_prev:hover > span:after,
 .camera_next:hover > span:after{
-	color: #f16021;
+	color: #E3B04B;
 }
 .camera_commands {
 	right: 41px;
