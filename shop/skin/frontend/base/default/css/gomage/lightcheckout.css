@@ -61,7 +61,7 @@ h2.glc-title{ font-size:14px; text-transform:uppercase; padding-top:15px; }
 .order-totals .data-table td{ border:none; padding:6px 20px; font-size:15px; color:#6a6969; vertical-align: baseline; }
 .order-totals .data-table td .price{ font-size:18px; color:#4d4d4f; font-weight:normal; }
 .order-totals .data-table td strong{ font-weight:normal; }
-.order-totals .data-table td strong .price{ font-weight:bold; font-size:24px; color:#f16021; }
+.order-totals .data-table td strong .price{ font-weight:bold; font-size:24px; color:#E3B04B; }
 #checkout-review-submit{ padding:10px 0 20px; text-align:right; float:right; clear:both; width:334px; margin-top:-1px; }
 
 .lightcheckout-discount-form label  { display:block; font:800 12px/27px "Open Sans", arial, sans-serif; text-transform:uppercase; }

@@ -26,7 +26,7 @@ div.ajaxcartanimate{ position:absolute; z-index:999990; width:100px; height:100p
 }
 
 #ajaxcartloading {
-	background-color: #f16021;
+	background-color: #E3B04B;
     display: none;
     height: 10px;
     left: 0 !important;
@@ -263,7 +263,7 @@ div#ajaxcart .truncated:hover .item-options { top:auto; left:auto; }
 		padding: 70px 0 45px;
 	}
 	.block-cart-header:hover,
-	.block-cart-header.active {background: #f16021;}
+	.block-cart-header.active {background: #E3B04B;}
 	/* .block-cart-header h3 {
 		font-size: 20px;
 		font-weight: bold;
