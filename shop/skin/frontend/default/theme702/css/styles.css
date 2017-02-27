@@ -3030,6 +3030,17 @@ span.opened:before {content: "\f068";}
 	line-height: 22px;
 }
 
+.mobile-call-to-action{
+	display:none;
+}
+
+.shop-now{
+	color: #E3B04B;
+	margin-top: 20px;
+	font-size: 23px;
+	float: right;
+}
+
 .menu-1{
 	padding-bottom: 75px;
 }
