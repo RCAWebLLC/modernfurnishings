@@ -39,18 +39,18 @@
                 <table_prefix><![CDATA[]]></table_prefix>
             </db>
             <default_setup>
-                <connection>
-                    <host><![CDATA[rds.modernfurnishings.com]]></host>
-                    <username><![CDATA[modern]]></username>
+                 <connection>
+                    <host><![CDATA[maria.modernfurnishings.com]]></host>
+                    <username><![CDATA[ModernMaria]]></username>
                     <password><![CDATA[husH3u6dred9]]></password>
-                    <dbname><![CDATA[ModernFurnishing]]></dbname>
+                    <dbname><![CDATA[ModernFurnishings-1.9]]></dbname>
                     <initStatements><![CDATA[SET NAMES utf8]]></initStatements>
                     <model><![CDATA[mysql4]]></model>
                     <type><![CDATA[pdo_mysql]]></type>
                     <pdoType><![CDATA[]]></pdoType>
                     <active>1</active>
                 </connection>
-            </default_setup>
+	    </default_setup>
         </resources>
 	<remote_addr_headers>
 		<header1>HTTP_X_REAL_IP</header1>
