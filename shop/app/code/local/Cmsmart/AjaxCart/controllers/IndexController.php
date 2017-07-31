@@ -70,7 +70,7 @@ class Cmsmart_AjaxCart_IndexController extends Mage_Core_Controller_Front_Action
 			Mage::dispatchEvent('catalog_controller_product_view', array('product'=>$product));
 			if ($this->getRequest()->getParam('options')) {
 				$notice = $product->getTypeInstance(true)->getSpecifyOptionMessage();
-				Mage::getSingleton('catalog/session')->addNotice($notice);
+				//Mage::getSingleton('catalog/session')->addNotice($notice);
 			}
 			if(@$product) Mage::getSingleton('catalog/session')->setLastViewedProductId($product->getId());
 			
