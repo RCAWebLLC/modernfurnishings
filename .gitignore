@@ -1,3 +1,6 @@
+shop/downloader/connect.cfg
+shop/app/etc/local.xml
+shop/app/etc/save.xml
 shop/merchandising.zip
 __MACOSX/
 shop/media/catalog/product/cache/*
