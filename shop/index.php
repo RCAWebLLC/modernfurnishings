@@ -44,6 +44,9 @@ if (file_exists($compilerConfig)) {
     include $compilerConfig;
 }
 
+$ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+$allowed = array('54.208.159.89');
+
 $mageFilename = MAGENTO_ROOT . '/app/Mage.php';
 $maintenanceFile = 'maintenance.flag';
 
@@ -56,7 +59,7 @@ if (!file_exists($mageFilename)) {
     exit;
 }
 
-if (file_exists($maintenanceFile)) {
+if (file_exists($maintenanceFile) && (!in_array($ip[0], $allowed) && !in_array($ip[1], $allowed))) {
     include_once dirname(__FILE__) . '/errors/503.php';
     exit;
 }
