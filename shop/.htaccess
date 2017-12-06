@@ -1,3 +1,4 @@
+SetEnvIf X-Forwarded-Proto https HTTPS=on
 ############################################
 ## uncomment these lines for CGI mode
 ## make sure to specify the correct cgi php binary file name
@@ -30,8 +31,6 @@
 
 ############################################
 ## adjust memory limit
-
-SetEnvIf X-Forwarded-Proto https HTTPS=on
 
 #    php_value memory_limit 64M
     php_value memory_limit 256M
@@ -145,6 +144,21 @@ SetEnvIf X-Forwarded-Proto https HTTPS=on
 
     RewriteCond %{REQUEST_METHOD} ^TRAC[EK]
     RewriteRule .* - [L,R=405]
+
+<IfModule mod_setenvif.c>
+    <IfModule mod_headers.c>
+
+        ############################################
+        # X-Content-Type-Options: nosniff disable content-type sniffing on some browsers.
+        Header set X-Content-Type-Options: nosniff
+
+        ############################################
+        # This header forces to enables the Cross-site scripting (XSS) filter in browsers (if disabled)
+        BrowserMatch \bMSIE\s8 ie8
+        Header set X-XSS-Protection: "1; mode=block" env=!ie8
+
+    </IfModule>
+</IfModule>
 
 ############################################
 ## redirect for mobile user agents
