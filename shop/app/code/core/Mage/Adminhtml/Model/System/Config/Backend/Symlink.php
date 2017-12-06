@@ -25,27 +25,20 @@
  */
 
 /**
- * Adminhtml report review product blocks content block
+ * System config symlink backend model
  *
- * @category   Mage
- * @package    Mage_Adminhtml
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @category Mage
+ * @package  Mage_Adminhtml
  */
-
-class Mage_Adminhtml_Block_Report_Review_Detail extends Mage_Adminhtml_Block_Widget_Grid_Container
+class Mage_Adminhtml_Model_System_Config_Backend_Symlink extends Mage_Core_Model_Config_Data
 {
-
-    public function __construct()
+    /**
+     * Save object data
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    public function save()
     {
-        $this->_controller = 'report_review_detail';
-
-        $product = Mage::getModel('catalog/product')->load($this->getRequest()->getParam('id'));
-        $this->_headerText = Mage::helper('reports')->__('Reviews for %s', $this->escapeHtml($product->getName()));
-
-        parent::__construct();
-        $this->_removeButton('add');
-        $this->setBackUrl($this->getUrl('*/report_review/product/'));
-        $this->_addBackButton();
+        return $this;
     }
-
 }
